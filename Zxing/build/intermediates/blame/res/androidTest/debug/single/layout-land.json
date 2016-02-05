@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/res/merged/androidTest/debug/layout-land/share.xml",
+        "source": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/bundles/debug/res/layout-land/share.xml"
+    },
+    {
+        "merged": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/res/merged/androidTest/debug/layout-land/encode.xml",
+        "source": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/bundles/debug/res/layout-land/encode.xml"
+    }
+]

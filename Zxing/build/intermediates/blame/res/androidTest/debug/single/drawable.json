@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/res/merged/androidTest/debug/drawable/launcher_icon.png",
+        "source": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/bundles/debug/res/drawable/launcher_icon.png"
+    },
+    {
+        "merged": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/res/merged/androidTest/debug/drawable/share_via_barcode.png",
+        "source": "/Users/zhoujia/android_art/ZXingDemo/Zxing/build/intermediates/bundles/debug/res/drawable/share_via_barcode.png"
+    }
+]
