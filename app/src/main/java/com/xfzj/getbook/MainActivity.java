@@ -58,6 +58,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     protected void onSetContentView() {
         setContentView(R.layout.activity_main);
+        toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(this);
         fm = getSupportFragmentManager();

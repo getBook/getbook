@@ -17,4 +17,6 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="note">备注</string>
+    <string name="add_note">添加该书的描述，帮它选择最合适的主人...</string>
 </resources>
