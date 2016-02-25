@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PicAddView" >
+        <attr name="MaxPics"  format="integer"/>
+        <attr name="lastSrc" format="reference" />
+        <attr name="defaultSrc" format="reference" />
+    </declare-styleable>
+</resources>

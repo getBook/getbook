@@ -21,16 +21,17 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    compile project(':Zxing')
+    //bmob-sdk ：Bmob的android sdk包
+    //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile 'com.android.support:appcompat-v7:22.2.1'
-//    compile project(':Zxing')
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
-    //bmob-sdk ：Bmob的android sdk包
     compile 'cn.bmob.android:bmob-sdk:3.4.5'
-    //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okio:okio:1.4.0'
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.android.support:support-v4:22.2.1'
 }

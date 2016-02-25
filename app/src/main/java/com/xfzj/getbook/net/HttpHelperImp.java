@@ -7,7 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by zj on 2016/1/28.
@@ -19,12 +24,21 @@ public class HttpHelperImp implements IHttpHelper {
     }
 
     @Override
-    public byte[] DoConnection(String url, int requestType, Map<String, String> params) {
+    public byte[] DoConnection(String strUrl, int requestType, Map<String, String> params) {
         try {
-            HttpURLConnection urlConnection = getHttpURLConnection(new URL(url));
+            HttpURLConnection urlConnection = getHttpURLConnection(new URL(strUrl));
+            return doConect(urlConnection, requestType, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    private byte[] doConect(HttpURLConnection urlConnection, int requestType, Map<String, String> params) {
+        try {
             if (requestType == IHttpHelper.METHOD_POST) {
                 if (null != params) {
+                    urlConnection.setDoOutput(true);
                     byte[] bytes = getParams(params);
                     urlConnection.setRequestMethod("POST");
                     OutputStream ops = urlConnection.getOutputStream();
@@ -35,7 +49,7 @@ public class HttpHelperImp implements IHttpHelper {
             } else {
                 urlConnection.setRequestMethod("GET");
             }
-            MyLog.print(getClass().getName(), urlConnection.getResponseCode() + "");
+            MyLog.print(getClass().getName(), urlConnection.getResponseCode() + " ");
             if (urlConnection.getResponseCode() == 200) {
                 InputStream ips = urlConnection.getInputStream();
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -84,11 +98,48 @@ public class HttpHelperImp implements IHttpHelper {
     private HttpURLConnection getHttpURLConnection(URL url) throws Exception {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setDoInput(true);
+
+        urlConnection.setReadTimeout(30000);
+        urlConnection.setConnectTimeout(300000);
+        urlConnection.setUseCaches(false);
+        urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//        urlConnection.setRequestProperty("Content-Type", "application/x-jpg");
+        urlConnection.setRequestProperty("Accept"," text/html, application/xhtml+xml, image/jxr, */*");
+        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586");
+        return urlConnection;
+    }
+
+    private HttpsURLConnection getHttpsURLConnection(URL url) throws Exception {
+        HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+        urlConnection.setDoInput(true);
         urlConnection.setDoOutput(true);
         urlConnection.setReadTimeout(30000);
         urlConnection.setConnectTimeout(300000);
         urlConnection.setUseCaches(false);
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;");
         return urlConnection;
+    }
+
+    private class TrustAllManager implements X509TrustManager {
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+                throws CertificateException {
+            // TODO Auto-generated method stub  
+
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+                throws CertificateException {
+            // TODO Auto-generated method stub  
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            // TODO Auto-generated method stub  
+            return null;
+        }
     }
 }

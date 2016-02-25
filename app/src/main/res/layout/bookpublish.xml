@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
 
-    <include
-        layout="@layout/bookinfo"
+
+    <FrameLayout
+        android:id="@+id/framBookInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"/>
 
+    <com.xfzj.getbook.views.gridview.PicAddView
+        android:id="@+id/addView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:MaxPics="4"
+        app:defaultSrc="@mipmap/addpicture"
+        app:lastSrc="@mipmap/ic_launcher" />
 
     <include
         layout="@layout/bookedit"
