@@ -1,6 +1,7 @@
 package com.xfzj.getbook.views.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,7 @@ public class BookInfoView extends LinearLayout {
         LayoutParams p = new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(p);
         addView(view);
-        
+
     }
 
 
@@ -63,15 +64,25 @@ public class BookInfoView extends LinearLayout {
             return;
         }
         iv.setUrlImage(bookInfo.getImage());
-        bookName.setText(bookInfo.getBookName());
-        bookIsbn.setText(bookInfo.getIsbn());
-        StringBuilder sb = new StringBuilder();
-        String[] a = bookInfo.getAuthor();
-        for (int i = 0; i < a.length; i++) {
-            sb.append(a[i]);
+        if (!TextUtils.isEmpty(bookInfo.getBookName())) {
+            bookName.setText(bookInfo.getBookName());
         }
-        bookAuthor.setText(sb.toString());
-        bookPublisher.setText(bookInfo.getPublish());
-        bookOriginPrice.setText(bookInfo.getOriginPrice());
+        if (!TextUtils.isEmpty(bookInfo.getIsbn())) {
+            bookIsbn.setText(bookInfo.getIsbn());
+        }
+        String[] a = bookInfo.getAuthor();
+        if (null != a) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < a.length; i++) {
+                sb.append(a[i]);
+            }
+            bookAuthor.setText(sb.toString());
+        }
+        if (!TextUtils.isEmpty(bookInfo.getPublish())) {
+            bookPublisher.setText(bookInfo.getPublish());
+        }
+        if (!TextUtils.isEmpty(bookInfo.getOriginPrice())) {
+            bookOriginPrice.setText(bookInfo.getOriginPrice());
+        }
     }
 }

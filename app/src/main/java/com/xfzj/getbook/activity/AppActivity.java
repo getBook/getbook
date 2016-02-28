@@ -15,6 +15,7 @@ public abstract class AppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+   
         onSetContentView();
         ButterKnife.bind(this);
         onCreateView(savedInstanceState);

@@ -19,4 +19,29 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note">备注</string>
     <string name="add_note">添加该书的描述，帮它选择最合适的主人...</string>
+    <string name="yuan">\u00a5</string>
+    <string name="get_bookinfo_fail">获取书籍信息失败</string>
+    <string name="no_externalstorage">暂无外部存储</string>
+    <string name="publish">发布</string>
+    <string name="select">选择</string>
+    <string name="has_selected">完成(%1$d/%2$d)</string>
+    <string name="max_selected">对不起，最多只能选择%1$d张图片</string>
+    <string name="complete">完成</string>
+    <string name="please_to_input">请输入%1$s</string>
+    <string name="price">价格</string>
+    <string name="newold">新旧程度</string>
+    <string name="count">数量</string>
+    <string name="tele">手机号码</string>
+    <string name="please_to_selectPics">请选择图片</string>
+    <string name="sao_yi_sao">扫一扫</string>
+    <string name="scanner">扫一扫</string>
+    <string name="id_verify_fail">身份认证失败，请重新登录</string>
+    <string name="max_pics">最多添加%1$d张照片</string>
+    <string name="jifenzhiji">%1$d/%2$d</string>
+    <string name="tishi">提示</string>
+    <string name="want_delete">要删除这张照片吗?</string>
+    <string name="cancel">取消</string>
+    <string name="ensure">确定</string>
+    <string name="publishing">发布中...</string>
+
 </resources>

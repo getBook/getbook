@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.loader.ImageLoader;
@@ -25,7 +24,6 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
     protected Drawable defaultImage;
     protected boolean IsGridViewIdle;
     protected ImageLoader imageLoader;
-    private GridView gridView;
 
     // Constructor
     public BaseGridViewAdapter(Context c, List<T> paths) {
@@ -34,12 +32,6 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
         defaultImage = c.getDrawable(R.mipmap.image_default);
         imageLoader = ImageLoader.build(c);
     }
-
-    public void setGridView(GridView gridView) {
-        this.gridView = gridView;
-        this.gridView.setOnScrollListener(this);
-    }
-
     @Override
     public int getCount() {
         return paths.size();
@@ -102,8 +94,31 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
         notifyDataSetChanged();
     }
 
+
+    public void delete(T path) {
+        if (null == paths) {
+            return;
+        }
+        if (null == this.paths || this.paths.size() ==  0) {
+            return;
+        }
+        this.paths.remove(path);
+    }
+    public void deleteAll() {
+        if (null == paths || paths.size() ==  0) {
+            return;
+        }
+        paths.clear();
+        notifyDataSetChanged();
+    }
+
     public void addAll(List<T> paths) {
         this.paths.addAll(paths);
+        notifyDataSetChanged();
+    }
+
+    public void add(T  paths) {
+        this.paths.add(paths);
         notifyDataSetChanged();
     }
 

@@ -6,17 +6,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar" />
+    <com.xfzj.getbook.views.view.BaseToolBar
+        android:id="@+id/baseToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        zms:pstsShouldExpand="true"
-        android:layout_height="48dip" />
+        android:layout_height="48dip"
+        zms:pstsShouldExpand="true" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
-        android:layout_below="@id/tabs"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:layout_below="@id/tabs" />
+
     <FrameLayout
         android:id="@+id/fram"
         android:layout_width="match_parent"
@@ -25,39 +31,39 @@
 
 
     <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="0"-->
-        <!--android:orientation="vertical">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="0"-->
+    <!--android:orientation="vertical">-->
 
-        <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:background="@color/divider" />-->
+    <!--<ImageView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/divider" />-->
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:orientation="horizontal">-->
-            <!--<TextView-->
-                <!--android:id="@+id/tvSale"-->
-                <!--style="@style/main_bottom"-->
-                <!--android:drawableTop="@mipmap/sell_normal"-->
-                <!--android:text="@string/sale" />-->
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="5dp"-->
+    <!--android:layout_marginTop="5dp"-->
+    <!--android:orientation="horizontal">-->
+    <!--<TextView-->
+    <!--android:id="@+id/tvSale"-->
+    <!--style="@style/main_bottom"-->
+    <!--android:drawableTop="@mipmap/sell_normal"-->
+    <!--android:text="@string/sale" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/tvWant"-->
-                <!--style="@style/main_bottom"-->
-                <!--android:drawableTop="@mipmap/buy_normal"-->
-                <!--android:text="@string/want" />-->
+    <!--<TextView-->
+    <!--android:id="@+id/tvWant"-->
+    <!--style="@style/main_bottom"-->
+    <!--android:drawableTop="@mipmap/buy_normal"-->
+    <!--android:text="@string/want" />-->
 
-            <!--<TextView-->
-                <!--android:id="@+id/tvMy"-->
-                <!--style="@style/main_bottom"-->
-                <!--android:drawableTop="@mipmap/user_normal"-->
-                <!--android:text="@string/my" />-->
-        <!--</LinearLayout>-->
+    <!--<TextView-->
+    <!--android:id="@+id/tvMy"-->
+    <!--style="@style/main_bottom"-->
+    <!--android:drawableTop="@mipmap/user_normal"-->
+    <!--android:text="@string/my" />-->
+    <!--</LinearLayout>-->
     <!--</LinearLayout>-->
 </LinearLayout>

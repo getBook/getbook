@@ -1,6 +1,7 @@
 package com.xfzj.getbook;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,11 +23,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.activity.BaseActivity;
+import com.xfzj.getbook.activity.CaptureAty;
+import com.xfzj.getbook.activity.FlashActivity;
+import com.xfzj.getbook.activity.LoginAty;
+import com.xfzj.getbook.async.LoginAsync;
+import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.fragment.MyFrag;
 import com.xfzj.getbook.fragment.SaleFrag;
 import com.xfzj.getbook.fragment.WantFrag;
 import com.xfzj.getbook.recycleview.LoadMoreRVAdapter;
+import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
+import com.xfzj.getbook.views.view.BaseToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +44,17 @@ import java.util.List;
 import butterknife.Bind;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
+    public static final String FROM = "MainActivity.class";
+
     @Bind(R.id.fram)
     FrameLayout fram;
     @Bind(R.id.pager)
     ViewPager pager;
     @Bind(R.id.tabs)
     PagerSlidingTabStrip slidingTabStrip;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
+    @Bind(R.id.baseToolbar)
+    BaseToolBar baseToolbar;
+    private Toolbar toolbar;
     OkAdapter okAdapter;
     private boolean isRefresh;
     /**
@@ -55,20 +68,23 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private FragmentManager fm;
     private TextView[] tvs;
 
+
     @Override
     protected void onSetContentView() {
         setContentView(R.layout.activity_main);
-        toolbar.setTitle(getResources().getString(R.string.app_name));
-        setSupportActionBar(toolbar);
-        toolbar.setOnMenuItemClickListener(this);
-        fm = getSupportFragmentManager();
-        init();
-        toolbar.setTitleTextColor(Color.WHITE);
+
+
     }
 
     @Override
     public void onCreateView(Bundle savedInstanceState) {
-
+        baseToolbar.initToolbar(this, getResources().getString(R.string.app_name));
+        toolbar = baseToolbar.getToolbar();
+        toolbar.setOnMenuItemClickListener(this);
+        toolbar.setTitleTextColor(Color.WHITE);
+        fm = getSupportFragmentManager();
+        init();
+        isNeedLogin();
 //        List<String> lists = new ArrayList<>();
 //        lists.addAll(addData());
 //        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -133,6 +149,47 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     /**
+     * 根据从哪个界面进入，判断是否需要登录
+     */
+    private void isNeedLogin() {
+        Intent i = getIntent();
+        String str = i.getStringExtra(FROM);
+        if (!TextUtils.isEmpty(str) && str.equals(FlashActivity.FROM)) {
+            //需要登陆一次获得最新的cookie
+            BaseApplication baseApplication = (BaseApplication) getApplication();
+            final User user = baseApplication.user;
+            String password = SharedPreferencesUtils.getUserPassword(getApplicationContext(), user.getSno());
+           
+            if (TextUtils.isEmpty(password)) {
+                MyToast.show(getApplicationContext(), "no password");
+                return;
+            }
+            LoginAsync loginAsync = new LoginAsync(getApplicationContext(), user.getSno(), password);
+            loginAsync.execute();
+            loginAsync.setCallback(new LoginAction.CallBack() {
+                @Override
+                public void onSuccess() {
+                    MyToast.show(getApplicationContext(), "登陆成功");
+                    
+                }
+
+                @Override
+                public void onFail() {
+                    MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
+                    jump2Login(user.getName());
+                }
+            });
+        }
+
+
+    }
+    private void jump2Login(String str) {
+        Intent i = new Intent(this, LoginAty.class);
+        i.putExtra(LoginAty.ACCOUNT, str);
+        startActivity(i);
+        finish();
+    }
+    /**
      * 初始化菜单
      */
     private void init() {
@@ -169,9 +226,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //        }
 //        fm.executePendingTransactions();
 //    }
+
     /**
-     * mPagerSlidingTabStrip默认值配置 
-     *
+     * mPagerSlidingTabStrip默认值配置
      */
     private void initTabsValue() {
         // 底部游标颜色   
@@ -190,8 +247,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //        slidingTabStrip.setSelectedTextColor(Color.WHITE);
         // 正常文字颜色   
         slidingTabStrip.setTextColor(getResources().getColor(R.color.blue_dark));
-        
+
     }
+
     private void initSaleFrag() {
         saleFrag = (SaleFrag) fm.findFragmentByTag(SaleFrag.SALE);
         if (null == saleFrag) {
@@ -239,8 +297,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "assad", Toast.LENGTH_SHORT).show();
+            case R.id.action_scanner:
+                Intent intent = new Intent(this, CaptureAty.class);
+                startActivity(intent);
                 break;
         }
         return false;
@@ -248,7 +307,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        
+
     }
 
     @Override
@@ -260,24 +319,26 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         View view = slidingTabStrip.getChildAt(0);
         if (view instanceof LinearLayout) {
             for (int i = 0; i < 3; i++) {
-            View viewText = ((LinearLayout) view).getChildAt(i);
-            TextView tabTextView = (TextView) viewText;
-            if (viewText instanceof TextView) {
-                if (position == i) {
-                    tabTextView.setTextColor(Color.WHITE);
-                } else {
-                    tabTextView.setTextColor(getResources().getColor(R.color.blue_dark));
+                View viewText = ((LinearLayout) view).getChildAt(i);
+                TextView tabTextView = (TextView) viewText;
+                if (viewText instanceof TextView) {
+                    if (position == i) {
+                        tabTextView.setTextColor(Color.WHITE);
+                    } else {
+                        tabTextView.setTextColor(getResources().getColor(R.color.blue_dark));
+                    }
                 }
             }
-        }
 
-    }
+        }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
 
     }
+
+
 //
 //    private class OkAdapter extends BaseRecycleViewAdapter<String> {
 //

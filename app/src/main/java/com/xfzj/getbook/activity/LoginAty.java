@@ -25,6 +25,7 @@ import cn.bmob.v3.BmobUser;
  * Created by zj on 2016/1/28.
  */
 public class LoginAty extends AppActivity {
+    public static final String ACCOUNT ="account" ;
     @Bind(R.id.edtUserName)
     EditText edtUserName;
     @Bind(R.id.edtPassword)
@@ -58,6 +59,11 @@ public class LoginAty extends AppActivity {
         });
         userHeadAsync.execute();
 
+        String str = getIntent().getStringExtra(ACCOUNT);
+        if (!TextUtils.isEmpty(str)) {
+            edtUserName.setText(str);
+            edtPassword.requestFocus();
+        }
     }
 
     @OnClick(R.id.btnLogin)

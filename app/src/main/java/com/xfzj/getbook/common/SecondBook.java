@@ -1,7 +1,5 @@
 package com.xfzj.getbook.common;
 
-import com.bmob.BmobProFile;
-
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -10,14 +8,31 @@ import cn.bmob.v3.BmobObject;
 public class SecondBook extends BmobObject {
     private User user;
     private String isbn;
-    private String bookName;
-    private String publish;
-    private String originPrice;
     private String discount;
     private String newold;
     private Integer count;
-    private BmobProFile pictures;
+    private String[] pictures;
     private String tips;
+    private String telePhone;
+
+    public SecondBook(User user, String isbn, String discount, String newold, Integer count, String[] pictures, String tips, String telePhone) {
+        this.user = user;
+        this.isbn = isbn;
+        this.discount = discount;
+        this.newold = newold;
+        this.count = count;
+        this.pictures = pictures;
+        this.tips = tips;
+        this.telePhone = telePhone;
+    }
+
+    public String getTelePhone() {
+        return telePhone;
+    }
+
+    public void setTelePhone(String telePhone) {
+        this.telePhone = telePhone;
+    }
 
     public User getUser() {
         return user;
@@ -33,30 +48,6 @@ public class SecondBook extends BmobObject {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public String getPublish() {
-        return publish;
-    }
-
-    public void setPublish(String publish) {
-        this.publish = publish;
-    }
-
-    public String getOriginPrice() {
-        return originPrice;
-    }
-
-    public void setOriginPrice(String originPrice) {
-        this.originPrice = originPrice;
     }
 
     public String getDiscount() {
@@ -83,11 +74,11 @@ public class SecondBook extends BmobObject {
         this.count = count;
     }
 
-    public BmobProFile getPictures() {
+    public String[] getPictures() {
         return pictures;
     }
 
-    public void setPictures(BmobProFile pictures) {
+    public void setPictures(String[] pictures) {
         this.pictures = pictures;
     }
 
@@ -97,5 +88,19 @@ public class SecondBook extends BmobObject {
 
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    @Override
+    public String toString() {
+        return "SecondBook{" +
+                "user=" + user +
+                ", isbn='" + isbn + '\'' +
+                ", discount='" + discount + '\'' +
+                ", newold='" + newold + '\'' +
+                ", count=" + count +
+                ", pictures=" + pictures +
+                ", tips='" + tips + '\'' +
+                ", telePhone='" + telePhone + '\'' +
+                '}';
     }
 }

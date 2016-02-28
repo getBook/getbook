@@ -16,23 +16,6 @@
 
 package com.google.zxing.client.android;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.Result;
-import com.google.zxing.ResultMetadataType;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.camera.CameraManager;
-import com.google.zxing.client.android.clipboard.ClipboardInterface;
-import com.google.zxing.client.android.history.HistoryActivity;
-import com.google.zxing.client.android.history.HistoryItem;
-import com.google.zxing.client.android.history.HistoryManager;
-import com.google.zxing.client.android.result.ResultButtonListener;
-import com.google.zxing.client.android.result.ResultHandler;
-import com.google.zxing.client.android.result.ResultHandlerFactory;
-import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
-import com.google.zxing.client.android.share.ShareActivity;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,12 +30,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -63,6 +46,20 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.Result;
+import com.google.zxing.ResultMetadataType;
+import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.camera.CameraManager;
+import com.google.zxing.client.android.clipboard.ClipboardInterface;
+import com.google.zxing.client.android.history.HistoryItem;
+import com.google.zxing.client.android.history.HistoryManager;
+import com.google.zxing.client.android.result.ResultButtonListener;
+import com.google.zxing.client.android.result.ResultHandler;
+import com.google.zxing.client.android.result.ResultHandlerFactory;
+import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -79,12 +76,12 @@ import java.util.Map;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
+public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
   private static final String TAG = CaptureActivity.class.getSimpleName();
 
   private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
-  private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
+  protected static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
 
   private static final String[] ZXING_URLS = { "http://zxing.appspot.com/scan", "zxing://scan/" };
 
@@ -115,7 +112,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   private InactivityTimer inactivityTimer;
   private BeepManager beepManager;
   private AmbientLightManager ambientLightManager;
-
+  
   ViewfinderView getViewfinderView() {
     return viewfinderView;
   }
@@ -364,28 +361,28 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     return super.onCreateOptionsMenu(menu);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    int id=item.getItemId();
-    if (id == R.id.menu_share) {
-      intent.setClassName(this, ShareActivity.class.getName());
-      startActivity(intent);
-    } else if (id == R.id.menu_history) {
-      intent.setClassName(this, HistoryActivity.class.getName());
-      startActivityForResult(intent, HISTORY_REQUEST_CODE);
-    } else if (id == R.id.menu_settings) {
-      intent.setClassName(this, PreferencesActivity.class.getName());
-      startActivity(intent);
-    } else if (id == R.id.menu_help) {
-      intent.setClassName(this, HelpActivity.class.getName());
-      startActivity(intent);
-    } else {
-      return super.onOptionsItemSelected(item);
-    }
-    return true;
-  }
+//  @Override
+//  public boolean onOptionsItemSelected(MenuItem item) {
+//    Intent intent = new Intent(Intent.ACTION_VIEW);
+//    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//    int id=item.getItemId();
+//    if (id == R.id.menu_share) {
+//      intent.setClassName(this, ShareActivity.class.getName());
+//      startActivity(intent);
+//    } else if (id == R.id.menu_history) {
+//      intent.setClassName(this, HistoryActivity.class.getName());
+//      startActivityForResult(intent, HISTORY_REQUEST_CODE);
+//    } else if (id == R.id.menu_settings) {
+//      intent.setClassName(this, PreferencesActivity.class.getName());
+//      startActivity(intent);
+//    } else if (id == R.id.menu_help) {
+//      intent.setClassName(this, HelpActivity.class.getName());
+//      startActivity(intent);
+//    } else {
+//      return super.onOptionsItemSelected(item);
+//    }
+//    return true;
+//  }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -526,7 +523,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   }
 
   // Put up our own UI for how to handle the decoded contents.
-  private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
+  protected void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
 
     CharSequence displayContents = resultHandler.getDisplayContents();
 

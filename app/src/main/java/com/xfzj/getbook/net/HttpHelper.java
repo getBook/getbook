@@ -11,20 +11,16 @@ public class HttpHelper implements IHttpHelper {
     private IHttpHelper iHttpHelper;
     private static HttpHelper httpHelper;
 
-    private HttpHelper() {
+    public HttpHelper() {
         iHttpHelper = new HttpHelperImp();
     }
 
-    public static HttpHelper getInstance() {
-        if (null == httpHelper) {
-            httpHelper = new HttpHelper();
-        }
-        return httpHelper;
-    }
+  
+    
 
     @Override
 
-    public byte[] DoConnection(String url) {
+    public byte[] DoConnection(String url) throws Exception {
         if (TextUtils.isEmpty(url)) {
             return iHttpHelper.NET_ERROR;
         }
@@ -32,7 +28,7 @@ public class HttpHelper implements IHttpHelper {
     }
 
     @Override
-    public byte[] DoConnection(String url, int requestType, Map<String, String> params) {
+    public byte[] DoConnection(String url, int requestType, Map<String, String> params) throws Exception {
         if (TextUtils.isEmpty(url)) {
             return iHttpHelper.NET_ERROR;
         }

@@ -9,9 +9,11 @@ import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.net.IHttpHelper;
 import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,19 +54,19 @@ public class LoginAction extends BaseAction {
      * @param password
      * @return
      */
-    public CallBack loginAll(String userName, String password,CallBack callBack) {
+    public CallBack loginAll(String userName, String password, CallBack callBack) {
         String msg = signIn(userName, password);
         if (TextUtils.isEmpty(msg)) {
-            loginBmob(userName, password,callBack);
+            loginBmob(userName, password, callBack);
             return callBack;
         }
         if (hasUser()) {
             if (isSameUser()) {
-                updateUserMsg();
+                updateUserMsg(callBack);
                 return callBack;
             } else {
                 logOutBmob();
-                registerBmob(newUser,callBack);
+                registerBmob(newUser, callBack);
                 return callBack;
             }
         } else {
@@ -94,7 +96,7 @@ public class LoginAction extends BaseAction {
             map.put("schoolCode", "nuist");
             map.put("signType", "SynSno");
             map.put("password", password);
-            String result = new String(HttpHelper.getInstance().DoConnection(BaseHttp.SignInAndGetUserPlus, IHttpHelper.METHOD_POST, map), "utf-8");
+            String result = new String(new HttpHelper().DoConnection(BaseHttp.SignInAndGetUserPlus, IHttpHelper.METHOD_POST, map), "utf-8");
             MyLog.print("sigin", result);
             JSONObject jsonObject = new JSONObject(result);
             boolean isSucc = jsonObject.getBoolean("success");
@@ -146,17 +148,24 @@ public class LoginAction extends BaseAction {
     /**
      * 更新用户的msg字段
      */
-    private void updateUserMsg() {
+    private void updateUserMsg(final CallBack callBack) {
 
         newUser.update(context, currUser.getObjectId(), new UpdateListener() {
             @Override
             public void onSuccess() {
                 baseApplication.user = newUser;
+                if (null != callBack) {
+                    callBack.onSuccess();
+
+                }
             }
 
             @Override
             public void onFailure(int i, String s) {
+                if (null != callBack) {
+                    callBack.onSuccess();
 
+                }
             }
         });
     }
@@ -181,14 +190,14 @@ public class LoginAction extends BaseAction {
             @Override
             public void onSuccess() {
                 MyLog.print("register", "onsuccess");
-                loginBmob(user,callBack);
+                loginBmob(user, callBack);
             }
 
             @Override
             public void onFailure(int i, String s) {
                 //已经注册过了就进行登陆
                 if (i == 202) {
-                    loginBmob(user,callBack);
+                    loginBmob(user, callBack);
                 }
             }
         });
@@ -203,21 +212,40 @@ public class LoginAction extends BaseAction {
             public void onSuccess() {
                 MyLog.print("loginBmob", "onSuccess");
                 baseApplication.user = user;
+                String password = getPassword(user);
+                if (!TextUtils.isEmpty(password)) {
+                    SharedPreferencesUtils.saveUser(context, user.getSno(), password);
+                }
                 if (null != callBack) {
                     callBack.onSuccess();
 
                 }
+
+
             }
 
             @Override
             public void onFailure(int i, String s) {
-                MyLog.print("loginBmob", "onFailure"+s);
+                MyLog.print("loginBmob", "onFailure" + s);
                 if (null != callBack) {
                     callBack.onFail();
-                    
+
                 }
             }
         });
+    }
+
+    private String getPassword(User user) {
+        String password = "";
+
+        try {
+            Field field = user.getClass().getSuperclass().getDeclaredField("password");
+            field.setAccessible(true);
+            password = (String) field.get((BmobUser) user);
+        } catch (Exception e) {
+
+        }
+        return password;
     }
 
     public interface CallBack {

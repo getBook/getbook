@@ -48,6 +48,7 @@ public class NetImageView extends ImageView {
 
     public void setUrlImage(String url) {
         if (TextUtils.isEmpty(url)) {
+            setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.image_default));
             return;
         }
         setUrl(url);
@@ -60,20 +61,24 @@ public class NetImageView extends ImageView {
             protected void onPost(Bitmap bitmap) {
                 if (null != bitmap) {
                     setImageBitmap(bitmap);
-                }else {
+                } else {
                     setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.image_default));
                 }
             }
 
             @Override
             protected Bitmap doExcute(Void[] params) {
-                byte[] bytes = HttpHelper.getInstance().DoConnection(url);
-                if(null==bytes){
+                try {
+                    byte[] bytes = new HttpHelper().DoConnection(url);
+                    if (null == bytes) {
+                        return null;
+                    }
+                    return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                     return null;
                 }
-                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-
             }
         }.execute();
     }

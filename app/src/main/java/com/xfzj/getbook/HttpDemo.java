@@ -11,12 +11,12 @@ import java.util.Map;
  * Created by zj on 2016/1/28.
  */
 public class HttpDemo {
-    public static byte[] excute() {
+    public static byte[] excute() throws Exception {
 
 
         BaseHttp baseHttp = new BaseHttp();
         String url = baseHttp.SignInAndGetUserPlus;
-        HttpHelper httpHelper = HttpHelper.getInstance();
+        HttpHelper httpHelper = new HttpHelper();
         Map<String, String> map = new HashMap<>();
         map.put("account", "20121314024");
         map.put("schoolCode", "nuist");

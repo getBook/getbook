@@ -14,9 +14,8 @@ import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
+import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.BookInfoView;
-
-import java.io.UnsupportedEncodingException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 public class BookInfoFrag extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public static final String ARG_PARAM1 = "param1";
+    public static final String ARG_PARAM1 = "BookInfoFrag";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -95,17 +94,17 @@ public class BookInfoFrag extends Fragment {
             protected void onPost(BookInfo bookInfo) {
                 if (null != bookInfo) {
                     bookInfoView.updateBookInfo(bookInfo);
-                }else{
+                }else {
+                    MyToast.show(getActivity(), getResources().getString(R.string.get_bookinfo_fail));
                     
                 }
-        
             }
 
             @Override
             protected BookInfo doExcute(Void[] params) {
               
                 try {
-                    byte[] bytes=HttpHelper.getInstance().DoConnection(url);
+                    byte[] bytes=new HttpHelper().DoConnection(url);
                     if (null==bytes) {
                         return null;
                     }else {
@@ -115,7 +114,7 @@ public class BookInfoFrag extends Fragment {
                         bookInfo.setIsbn(getIsbn());
                         return bookInfo;
                     }
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 }

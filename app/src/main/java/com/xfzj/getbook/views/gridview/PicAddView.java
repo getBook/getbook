@@ -6,10 +6,10 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.common.PicPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,9 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
     private int maxPics;
     private int lastSrc;
     private int defaultSrc;
-    private GridView gv;
+    private NoScrollGridView gv;
     private PicAddAdapter adapter;
-    private List<String> paths;
+    private List<PicPath> paths;
 
     public void setOnItemClick(OnItemClick onItemClick) {
         this.onItemClick = onItemClick;
@@ -57,47 +57,83 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
         a.recycle();
 
         View view = LayoutInflater.from(context).inflate(R.layout.addpictures, null);
-        gv = (GridView) view.findViewById(R.id.gridview);
+        gv = (NoScrollGridView) view.findViewById(R.id.gridview);
         paths = new ArrayList<>();
-        adapter = new PicAddAdapter(context, paths);
+        adapter = new PicAddAdapter(context, paths, gv);
         adapter.setLastSrc(lastSrc);
         adapter.setDefaultSrc(defaultSrc);
         adapter.setMaxPics(maxPics);
-
         gv.setAdapter(adapter);
         addView(view);
         gv.setOnItemClickListener(this);
+
     }
 
-    public void addAll(List<String> paths) {
+    public void deleteAlbum() {
+        List<PicPath> lists = adapter.getPaths();
+        if (null == lists || lists.size() == 0) {
+            return;
+        }
+        List<PicPath> ps = new ArrayList<>();
+
+        for (PicPath picPath : lists) {
+            if (picPath.getFlag() == PicPath.FLAG_ALBUM) {
+                ps.add(picPath);
+            }
+        }
+        for (PicPath picPath : ps) {
+            adapter.delete(picPath);
+        }
+    }
+
+    public void deleteAll() {
+        adapter.deleteAll();
+    }
+
+    public void delete(int position) {
+        adapter.delete(position);
+
+    }
+
+    public void addAll(List<PicPath> paths) {
         adapter.addAll(paths);
     }
 
-    public List<String> getPaths() {
+    public void add(PicPath paths) {
+        adapter.add(paths);
+    }
+
+    public List<PicPath> getPaths() {
         return adapter.getPaths();
+    }
+    
+    
+    public List<String> getPath() {
+        List<PicPath> picPaths = adapter.getPaths();
+        List<String> lists = new ArrayList<>();
+        for (PicPath picPath : picPaths) {
+            lists.add(picPath.getPath());
+        }
+        return lists;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (adapter.isLast(position)) {
             if (null != onItemClick) {
-                if (getPaths().size() < maxPics) {
-                    onItemClick.onAddClick(position, getPaths().size(),maxPics);
-                } else {
-                    onItemClick.onUnAddClick(position, getPaths().size());
-                }
+                onItemClick.onAddClick(position, getPaths().size(), maxPics);
             }
         } else {
             if (null != onItemClick) {
-                onItemClick.onPicClick(position, getPaths().get(position));
+                onItemClick.onPicClick(position, getPaths().get(position).getPath());
             }
 
         }
     }
 
     public interface OnItemClick {
-        void onAddClick(int position,int size,int maxPics);
-        void onUnAddClick(int position,int size);
+        void onAddClick(int position, int size, int maxPics);
+
         void onPicClick(int position, String path);
     }
 

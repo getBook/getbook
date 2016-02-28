@@ -1,11 +1,14 @@
 package com.xfzj.getbook.views.gridview;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.xfzj.getbook.R;
+import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.utils.MyUtils;
 
 import java.util.List;
@@ -21,9 +24,12 @@ public class PicAddAdapter extends BaseGridViewAdapter {
     private int maxPics;
 
     private int defaultSrc;
+    private GridView gv;
 
-    public PicAddAdapter(Context c, List<String> paths) {
+    public PicAddAdapter(Context c, List<PicPath> paths, GridView gv) {
+        
         super(c, paths);
+        this.gv = gv;
     }
 
     public void setDefaultSrc(int defaultSrc) {
@@ -64,26 +70,33 @@ public class PicAddAdapter extends BaseGridViewAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         int dimen = (int) MyUtils.dp2px(mContext, 85);
+        int padding=(int) MyUtils.dp2px(mContext, 2);
         if (convertView == null) {
             imageView = new ImageView(mContext);
             imageView.setLayoutParams(new GridView.LayoutParams(dimen, dimen));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(padding, padding , padding, padding );
+            Drawable d = mContext.getDrawable(R.drawable.gridview);
+            imageView.setBackground(d);
+            imageView.setAdjustViewBounds(true);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                            
         } else {
             imageView = (ImageView) convertView;
         }
         if (LAST == getItemViewType(position)) {
+            imageView.setBackground(null);
             imageView.setImageResource(lastSrc);
         } else {
             String tag = (String) imageView.getTag();
-            String uri = (String) getItem(position);
-
+            String uri = ((PicPath) getItem(position)).getPath();
+            
             if (!uri.equals(tag)) {
                 imageView.setImageResource(defaultSrc);
             }
             if (!IsGridViewIdle) {
                 imageView.setTag(uri);
-                imageLoader.bindBitmap(uri, imageView, dimen, dimen);
+                imageLoader.bindBitmap(uri, gv, imageView, dimen, dimen);
             }
         }
         return imageView;

@@ -22,7 +22,13 @@ public class LoginAsync extends BaseAsyncTask<Integer, Integer,LoginAction.CallB
         loginAction = new LoginAction(context);
         setProgressDialog(title, message);
     }
-
+    public LoginAsync(Context context, String userName, String password) {
+        super(context);
+        this.userName = userName;
+        this.password = password;
+        this.context = context;
+        loginAction = new LoginAction(context);
+    }
     public void setCallback(LoginAction.CallBack callback) {
         this.callBack = callback;
     }

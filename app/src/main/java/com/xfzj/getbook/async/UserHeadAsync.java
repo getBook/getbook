@@ -44,15 +44,20 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, Bitmap> {
 
     @Override
     protected Bitmap doExcute(Integer[] params) {
-        Map<String, String> param = new HashMap<>();
-        if (null == baseApplication || null == baseApplication.user) {
+        try {
+            Map<String, String> param = new HashMap<>();
+            if (null == baseApplication || null == baseApplication.user) {
+                return null;
+            }
+            param.put("sno", baseApplication.user.getSno());
+            param.put("iPlanetDirectoryPro", baseApplication.user.getMsg());
+            param.put("schoolCode", "nuist");
+            byte[] bytes = new HttpHelper().DoConnection(BaseHttp.GetMyPhoto, IHttpHelper.METHOD_POST, param);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
-        param.put("sno", baseApplication.user.getSno());
-        param.put("iPlanetDirectoryPro", baseApplication.user.getMsg());
-        param.put("schoolCode", "nuist");
-        byte[] bytes = HttpHelper.getInstance().DoConnection(BaseHttp.GetMyPhoto, IHttpHelper.METHOD_POST, param);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     public void setCallBack(LoadBitmapCallBack callBack) {

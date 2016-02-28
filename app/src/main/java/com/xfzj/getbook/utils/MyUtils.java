@@ -52,6 +52,14 @@ public class MyUtils {
                 context.getResources().getDisplayMetrics());
     }
 
+    public static int getStatusBarHeight(Context context) {
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
     public static boolean isWifi(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);

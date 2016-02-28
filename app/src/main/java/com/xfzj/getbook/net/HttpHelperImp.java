@@ -19,54 +19,50 @@ import javax.net.ssl.X509TrustManager;
  */
 public class HttpHelperImp implements IHttpHelper {
     @Override
-    public byte[] DoConnection(String url) {
+    public byte[] DoConnection(String url) throws Exception {
         return DoConnection(url, IHttpHelper.METHOD_GET, null);
     }
 
     @Override
-    public byte[] DoConnection(String strUrl, int requestType, Map<String, String> params) {
-        try {
-            HttpURLConnection urlConnection = getHttpURLConnection(new URL(strUrl));
-            return doConect(urlConnection, requestType, params);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    public byte[] DoConnection(String strUrl, int requestType, Map<String, String> params) throws Exception {
+        HttpURLConnection urlConnection = getHttpURLConnection(new URL(strUrl));
+        byte[] bytes = doConect(urlConnection, requestType, params);
+        if (null == bytes) {
+            throw new Exception(IHttpHelper.NET_ERROR.toString());
+        } else {
+            return bytes;
         }
     }
 
-    private byte[] doConect(HttpURLConnection urlConnection, int requestType, Map<String, String> params) {
-        try {
-            if (requestType == IHttpHelper.METHOD_POST) {
-                if (null != params) {
-                    urlConnection.setDoOutput(true);
-                    byte[] bytes = getParams(params);
-                    urlConnection.setRequestMethod("POST");
-                    OutputStream ops = urlConnection.getOutputStream();
-                    ops.write(bytes);
-                    ops.flush();
-                    ops.close();
-                }
-            } else {
-                urlConnection.setRequestMethod("GET");
+    private byte[] doConect(HttpURLConnection urlConnection, int requestType, Map<String, String> params) throws Exception {
+
+        if (requestType == IHttpHelper.METHOD_POST) {
+            if (null != params) {
+                urlConnection.setDoOutput(true);
+                byte[] bytes = getParams(params);
+                urlConnection.setRequestMethod("POST");
+                OutputStream ops = urlConnection.getOutputStream();
+                ops.write(bytes);
+                ops.flush();
+                ops.close();
             }
-            MyLog.print(getClass().getName(), urlConnection.getResponseCode() + " ");
-            if (urlConnection.getResponseCode() == 200) {
-                InputStream ips = urlConnection.getInputStream();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] bytes = new byte[1024];
-                int len = 0;
-                while ((len = ips.read(bytes)) != -1) {
-                    bos.write(bytes, 0, len);
-                }
-                bos.flush();
-                bos.close();
-                return bos.toByteArray();
-            }
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            urlConnection.setRequestMethod("GET");
         }
+        MyLog.print(getClass().getName(), urlConnection.getResponseCode() + " ");
+        if (urlConnection.getResponseCode() == 200) {
+            InputStream ips = urlConnection.getInputStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] bytes = new byte[1024];
+            int len = 0;
+            while ((len = ips.read(bytes)) != -1) {
+                bos.write(bytes, 0, len);
+            }
+            bos.flush();
+            bos.close();
+            return bos.toByteArray();
+        }
+        return null;
     }
 
     /**
@@ -104,7 +100,7 @@ public class HttpHelperImp implements IHttpHelper {
         urlConnection.setUseCaches(false);
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 //        urlConnection.setRequestProperty("Content-Type", "application/x-jpg");
-        urlConnection.setRequestProperty("Accept"," text/html, application/xhtml+xml, image/jxr, */*");
+        urlConnection.setRequestProperty("Accept", " text/html, application/xhtml+xml, image/jxr, */*");
         urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586");
         return urlConnection;
     }
