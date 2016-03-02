@@ -3,10 +3,12 @@ package com.xfzj.getbook.common;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import cn.bmob.v3.BmobObject;
+
 /**
  * Created by zj on 2016/2/24.
  */
-public class BookInfo {
+public class BookInfo extends BmobObject{
     
     private String isbn;
     @Expose 

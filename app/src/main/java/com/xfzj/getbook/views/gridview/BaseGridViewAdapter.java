@@ -1,7 +1,8 @@
 package com.xfzj.getbook.views.gridview;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -21,7 +22,7 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
 
     private static final int LAST = 0;
     private static final int NORMAL = 1;
-    protected Drawable defaultImage;
+    protected Bitmap defaultImage;
     protected boolean IsGridViewIdle;
     protected ImageLoader imageLoader;
 
@@ -29,8 +30,8 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
     public BaseGridViewAdapter(Context c, List<T> paths) {
         mContext = c;
         this.paths = paths;
-        defaultImage = c.getDrawable(R.mipmap.image_default);
-        imageLoader = ImageLoader.build(c);
+        defaultImage = BitmapFactory.decodeResource(c.getResources(),R.mipmap.image_default);
+        imageLoader = ImageLoader.build(c, defaultImage);
     }
     @Override
     public int getCount() {

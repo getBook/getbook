@@ -2,7 +2,6 @@ package com.xfzj.getbook.recycleview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,19 +15,15 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
  */
 public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
     protected List<T> datas;
-    private Context context;
-    protected LayoutInflater layoutInflater;
-    protected int resource;
+    protected Context context;
     private OnRecycleViewItemClickListener onRecycleViewItemClickListener;
 
-    public BaseRecycleViewAdapter(List<T> datas, Context context, int resource) {
+    public BaseRecycleViewAdapter(List<T> datas, Context context) {
         this.datas = datas;
         this.context = context;
-        this.layoutInflater = LayoutInflater.from(context);
-        this.resource = resource;
     }
 
-    public void setOnRecycleViewItemClickListener(OnRecycleViewItemClickListener onRecycleViewItemClickListener) {
+    public void setOnRecycleViewItemClickListener(OnRecycleViewItemClickListener<T> onRecycleViewItemClickListener) {
         this.onRecycleViewItemClickListener = onRecycleViewItemClickListener;
     }
 
@@ -100,10 +95,12 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(resource, parent, false);
+       
 
-        return getViewHolder(view, 1);
+        return getViewHolder(getView(), 1);
     }
+
+    protected abstract View getView();
 
     protected abstract ViewHolder getViewHolder(View view, int viewType);
 
@@ -140,11 +137,11 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
         return null != datas && datas.size() > 0 ? datas.size() : 0;
     }
 
-    public interface OnRecycleViewItemClickListener {
-        void setOnRecycleViewItemClickListener(View view, Object tag);
+    public interface OnRecycleViewItemClickListener<T> {
+        void setOnRecycleViewItemClickListener(View view, T tag);
     }
 
-    protected abstract class BaseViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+    protected abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder implements OnClickListener {
         private View itemView;
         private T item;
         private int viewType;

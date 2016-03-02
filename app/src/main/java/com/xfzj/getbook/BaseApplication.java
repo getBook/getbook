@@ -39,7 +39,7 @@ public class BaseApplication extends Application {
         super.onCreate();
         Bmob.initialize(this, "953b4c2054c0d44e168d6725f8df4ff7");
         user = BmobUser.getCurrentUser(this, User.class);
-        BmobConfiguration config = new BmobConfiguration.Builder(getApplicationContext()).customExternalCacheDir("缓存").build();
+        BmobConfiguration config = new BmobConfiguration.Builder(getApplicationContext()).customExternalCacheDir("cache").build();
         BmobPro.getInstance(getApplicationContext()).initConfig(config);
     }
     

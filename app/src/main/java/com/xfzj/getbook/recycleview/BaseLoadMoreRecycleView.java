@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 public class BaseLoadMoreRecycleView extends RecyclerView {
     private BaseRecycleViewAdapter adapter;
 
-    private boolean isLoadingMore;//是否正处于加载中
+    private boolean isLoadingMore=false;//是否正处于加载中
 
     private LoadMoreListen loadMoreListen;//上拉加载更多的接口
     private int lastPosition;//最后一个可见的位置
@@ -94,6 +94,5 @@ public class BaseLoadMoreRecycleView extends RecyclerView {
      */
     public void LoadFinish() {
         setIsLoadingMore(false);
-
     }
 }

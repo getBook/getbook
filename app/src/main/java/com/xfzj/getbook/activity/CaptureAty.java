@@ -34,7 +34,7 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
         ButterKnife.bind(this);
         baseToolBar.initToolbar(this, getString(R.string.sao_yi_sao));
         toolbar = baseToolBar.getToolbar();
-//        toolbar.setOnMenuItemClickListener(this);
+        toolbar.setOnMenuItemClickListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
     }
@@ -46,7 +46,7 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        return true;
     }
     
     @Override

@@ -2,4 +2,5 @@
 <resources>
     <color name="devide_line">#CBCED2</color>
     <color name="blue_dark">#01579b</color>
+    <color name="white">#ffffff</color>
 </resources>

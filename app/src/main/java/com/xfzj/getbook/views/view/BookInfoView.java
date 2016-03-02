@@ -63,7 +63,7 @@ public class BookInfoView extends LinearLayout {
         if (null == bookInfo) {
             return;
         }
-        iv.setUrlImage(bookInfo.getImage());
+        iv.setUrlImage(bookInfo.getImage(), bookInfo.getIsbn());
         if (!TextUtils.isEmpty(bookInfo.getBookName())) {
             bookName.setText(bookInfo.getBookName());
         }
@@ -84,5 +84,10 @@ public class BookInfoView extends LinearLayout {
         if (!TextUtils.isEmpty(bookInfo.getOriginPrice())) {
             bookOriginPrice.setText(bookInfo.getOriginPrice());
         }
+    }
+    
+    
+    public String getBookName() {
+        return bookName.getText().toString();
     }
 }

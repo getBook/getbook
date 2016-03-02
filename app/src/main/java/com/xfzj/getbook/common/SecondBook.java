@@ -1,5 +1,7 @@
 package com.xfzj.getbook.common;
 
+import java.util.Arrays;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -7,7 +9,7 @@ import cn.bmob.v3.BmobObject;
  */
 public class SecondBook extends BmobObject {
     private User user;
-    private String isbn;
+    private BookInfo bookInfo;
     private String discount;
     private String newold;
     private Integer count;
@@ -15,22 +17,14 @@ public class SecondBook extends BmobObject {
     private String tips;
     private String telePhone;
 
-    public SecondBook(User user, String isbn, String discount, String newold, Integer count, String[] pictures, String tips, String telePhone) {
+    public SecondBook(User user, BookInfo bookInfo, String discount, String newold, Integer count, String[] pictures, String tips, String telePhone) {
         this.user = user;
-        this.isbn = isbn;
+        this.bookInfo = bookInfo;
         this.discount = discount;
         this.newold = newold;
         this.count = count;
         this.pictures = pictures;
         this.tips = tips;
-        this.telePhone = telePhone;
-    }
-
-    public String getTelePhone() {
-        return telePhone;
-    }
-
-    public void setTelePhone(String telePhone) {
         this.telePhone = telePhone;
     }
 
@@ -42,12 +36,12 @@ public class SecondBook extends BmobObject {
         this.user = user;
     }
 
-    public String getIsbn() {
-        return isbn;
+    public BookInfo getBookInfo() {
+        return bookInfo;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setBookInfo(BookInfo bookInfo) {
+        this.bookInfo = bookInfo;
     }
 
     public String getDiscount() {
@@ -90,15 +84,23 @@ public class SecondBook extends BmobObject {
         this.tips = tips;
     }
 
+    public String getTelePhone() {
+        return telePhone;
+    }
+
+    public void setTelePhone(String telePhone) {
+        this.telePhone = telePhone;
+    }
+
     @Override
     public String toString() {
         return "SecondBook{" +
                 "user=" + user +
-                ", isbn='" + isbn + '\'' +
+                ", bookInfo=" + bookInfo +
                 ", discount='" + discount + '\'' +
                 ", newold='" + newold + '\'' +
                 ", count=" + count +
-                ", pictures=" + pictures +
+                ", pictures=" + Arrays.toString(pictures) +
                 ", tips='" + tips + '\'' +
                 ", telePhone='" + telePhone + '\'' +
                 '}';

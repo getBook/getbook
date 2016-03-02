@@ -35,7 +35,7 @@ public class LoginAction extends BaseAction {
     private User newUser;
     private Context context;
     private BaseApplication baseApplication;
-
+    private String huaName;
     public LoginAction(Context context) {
         currUser = BmobUser.getCurrentUser(context, User.class);
         this.context = context;
@@ -47,6 +47,10 @@ public class LoginAction extends BaseAction {
         return newUser;
     }
 
+
+    public CallBack loginAll(String userName, String password, CallBack callBack) {
+        return loginAll(null, userName, password, callBack);
+    }
     /**
      * 登陆学校系统以及bmob
      *
@@ -54,7 +58,8 @@ public class LoginAction extends BaseAction {
      * @param password
      * @return
      */
-    public CallBack loginAll(String userName, String password, CallBack callBack) {
+    public CallBack loginAll(String huaName,String userName, String password, CallBack callBack) {
+        this.huaName = huaName;
         String msg = signIn(userName, password);
         if (TextUtils.isEmpty(msg)) {
             loginBmob(userName, password, callBack);
@@ -106,6 +111,10 @@ public class LoginAction extends BaseAction {
                 this.newUser.setPassword(password);
                 this.newUser.setUsername(account);
                 this.newUser.setMsg(msg);
+                if (!TextUtils.isEmpty(huaName)) {
+                    this.newUser.setHuaName(huaName);
+                }
+                
                 MyLog.print("sigin", newUser.toString());
                 return this.newUser.getMsg();
             }
@@ -149,7 +158,9 @@ public class LoginAction extends BaseAction {
      * 更新用户的msg字段
      */
     private void updateUserMsg(final CallBack callBack) {
-
+        newUser.setHeader(currUser.getHeader());
+        newUser.setEmail(currUser.getEmail());
+        
         newUser.update(context, currUser.getObjectId(), new UpdateListener() {
             @Override
             public void onSuccess() {
@@ -185,7 +196,7 @@ public class LoginAction extends BaseAction {
      * @param user
      */
     private void registerBmob(final User user, final CallBack callBack) {
-        user.setEmail("sendi@163.com");
+        user.setEmail(user.getSno()+user.getCardno()+"@163.com");
         user.signUp(context, new SaveListener() {
             @Override
             public void onSuccess() {
@@ -196,6 +207,7 @@ public class LoginAction extends BaseAction {
             @Override
             public void onFailure(int i, String s) {
                 //已经注册过了就进行登陆
+                MyLog.print("register", "onFailure");
                 if (i == 202) {
                     loginBmob(user, callBack);
                 }

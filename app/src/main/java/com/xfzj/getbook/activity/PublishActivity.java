@@ -19,9 +19,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
-import com.xfzj.getbook.action.UploadPicAction;
+import com.xfzj.getbook.action.UploadAction;
+import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
@@ -38,12 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.BmobUser;
 
 /**
  * Created by zj on 2016/2/8.
  */
-public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener {
+public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener, UploadAction.UploadListener {
 
     public static final String ISBN = "isbn";
     public static final String FROM = "from";
@@ -234,15 +234,6 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
     }
 
 
-    private List<Integer> add() {
-        List<Integer> lists = new ArrayList<>();
-        lists.add(R.mipmap.ic_launcher);
-        lists.add(R.mipmap.ic_launcher);
-        lists.add(R.mipmap.ic_launcher);
-        lists.add(R.mipmap.ic_launcher);
-        return lists;
-    }
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.action_publish) {
@@ -303,19 +294,20 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         switch (v.getId()) {
             case R.id.tvPublish:
                 if (canPublish()) {
-                    User user = ((BaseApplication) getApplication()).user;
+
+
                     List<String> lists = picAddView.getPath();
                     String[] str = (String[]) lists.toArray(new String[lists.size()]);
-                    
-                    SecondBook secondBook = new SecondBook(user, isbn, etPrice.getText().toString().trim(), etNewOld.getText().toString().trim(), plusMinusView.getText(), str, etDescribe.getText().toString(), etTele.getText().toString().trim());
-//                    UploadPicsAsync uploadPicsAsync = new UploadPicsAsync(PublishActivity.this, secondBook);
-//                    uploadPicsAsync.execute();
-//                    uploadPicsAsync.setSaveListener(new UploadListener());
-                    UploadPicAction uploadPicAction = new UploadPicAction(PublishActivity.this, secondBook);
-                    uploadPicAction.upload();
+                    BookInfo info = bif.getBookInfo();
+                    if (null == info) {
+                        MyToast.show(getApplicationContext(), "未获取到书本信息，请重新扫描");
+                        return;
+                    }
+
+                    SecondBook secondBook = new SecondBook(BmobUser.getCurrentUser(getApplicationContext(), User.class), info, etPrice.getText().toString().trim(), etNewOld.getText().toString().trim(), plusMinusView.getText(), str, etDescribe.getText().toString(), etTele.getText().toString().trim());
+                    UploadAction uploadPicAction = new UploadAction(PublishActivity.this, secondBook, bif.getBookInfo());
+                    uploadPicAction.upload(this);
                 }
-
-
                 break;
             case R.id.tvSelect:
                 if (null == psf) {
@@ -333,7 +325,6 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
 
 
     }
-
 
     private boolean canPublish() {
         if (TextUtils.isEmpty(etPrice.getText().toString().trim())) {
@@ -356,9 +347,7 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
             MyToast.show(getApplicationContext(), getString(R.string.please_to_selectPics));
             return false;
         }
-
         return true;
-
     }
 
     @Override
@@ -375,20 +364,15 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
             picAddView.addAll((List<PicPath>) data.getSerializableExtra(REMAIN_PATHS));
         }
     }
-    
-    private class UploadListener extends SaveListener {
 
-        @Override
-        public void onSuccess() {
-            MyToast.show(getApplicationContext(), "发布成功");
-        }
-
-        @Override
-        public void onFailure(int i, String s) {
-            MyToast.show(getApplicationContext(), "发布失败" + i + "   " + s);
-        }
+    @Override
+    public void onSuccess() {
+        MyToast.show(getApplicationContext(), "发布成功");
     }
-    
-    
+
+    @Override
+    public void onFail() {
+
+    }
 }
 

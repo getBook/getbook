@@ -1,6 +1,5 @@
 package com.xfzj.getbook;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -9,18 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.xfzj.getbook.action.LoginAction;
@@ -33,7 +29,6 @@ import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.fragment.MyFrag;
 import com.xfzj.getbook.fragment.SaleFrag;
 import com.xfzj.getbook.fragment.WantFrag;
-import com.xfzj.getbook.recycleview.LoadMoreRVAdapter;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
@@ -55,7 +50,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolbar;
     private Toolbar toolbar;
-    OkAdapter okAdapter;
+//    OkAdapter okAdapter;
     private boolean isRefresh;
     /**
      * 当前所处的菜单项
@@ -162,6 +157,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
            
             if (TextUtils.isEmpty(password)) {
                 MyToast.show(getApplicationContext(), "no password");
+                jump2Login(user.getSno());
                 return;
             }
             LoginAsync loginAsync = new LoginAsync(getApplicationContext(), user.getSno(), password);
@@ -176,7 +172,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 @Override
                 public void onFail() {
                     MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
-                    jump2Login(user.getName());
+                    jump2Login(user.getSno());
                 }
             });
         }
@@ -360,44 +356,44 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //        }
 //    }
 
-    private class OkAdapter extends LoadMoreRVAdapter<String> {
-        public OkAdapter(List<String> datas, Context context, int resourceNormal, int resourceHeader, int resourceFooter) {
-            super(datas, context, resourceNormal, resourceHeader, resourceFooter);
-        }
-
-        @Override
-        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
-            return new BaseViewHolder(view, viewType) {
-                @Override
-                protected void setContent(View itemView, String item, int viewType) {
-                    if (viewType == LoadMoreRVAdapter.HEADER) {
-//                        Button btnh = (Button) itemView.findViewById(R.id.btnh);
-//                        btnh.setOnClickListener(new View.OnClickListener() {
+//    private class OkAdapter extends LoadMoreRVAdapter<String> {
+//        public OkAdapter(List<String> datas, Context context, int resourceNormal, int resourceHeader, int resourceFooter) {
+//            super(datas, context, resourceNormal, resourceHeader, resourceFooter);
+//        }
+//
+//        @Override
+//        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
+//            return new BaseViewHolder(view, viewType) {
+//                @Override
+//                protected void setContent(View itemView, String item, int viewType) {
+//                    if (viewType == LoadMoreRVAdapter.HEADER) {
+////                        Button btnh = (Button) itemView.findViewById(R.id.btnh);
+////                        btnh.setOnClickListener(new View.OnClickListener() {
+////                            @Override
+////                            public void onClick(View v) {
+////                                Toast.makeText(getApplicationContext(), "click HEder", Toast.LENGTH_SHORT).show();
+////
+////                            }
+////                        });
+//
+//                    } else if (viewType == LoadMoreRVAdapter.NORMAL) {
+//                        TextView tv = (TextView) itemView.findViewById(R.id.tv);
+//                        tv.setText(item);
+//                    } else {
+//                        Button btnf = (Button) itemView.findViewById(R.id.btnf);
+//                        btnf.setOnClickListener(new View.OnClickListener() {
 //                            @Override
 //                            public void onClick(View v) {
-//                                Toast.makeText(getApplicationContext(), "click HEder", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), "click Footer", Toast.LENGTH_SHORT).show();
 //
 //                            }
 //                        });
-
-                    } else if (viewType == LoadMoreRVAdapter.NORMAL) {
-                        TextView tv = (TextView) itemView.findViewById(R.id.tv);
-                        tv.setText(item);
-                    } else {
-                        Button btnf = (Button) itemView.findViewById(R.id.btnf);
-                        btnf.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(), "click Footer", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-                    }
-                }
-            };
-        }
-
-    }
+//                    }
+//                }
+//            };
+//        }
+//
+//    }
 
 
     private class TestAdapter extends FragmentPagerAdapter {

@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 public abstract class BaseAsyncTask<K, V, T> extends AsyncTask<K, V, T> {
     private ProgressDialog pd;
     private Context context;
-
+    protected onTaskListener<T> onTaskListener;
     public BaseAsyncTask(Context context) {
         this.context = context;
     }
@@ -41,6 +41,10 @@ public abstract class BaseAsyncTask<K, V, T> extends AsyncTask<K, V, T> {
         }
         onPost(t);
         
+    }
+
+    public void setOnTaskListener(BaseAsyncTask.onTaskListener<T> onTaskListener) {
+        this.onTaskListener = onTaskListener;
     }
 
     /**
@@ -75,4 +79,10 @@ public abstract class BaseAsyncTask<K, V, T> extends AsyncTask<K, V, T> {
      */
     protected abstract T doExcute(K[] params);
 
+    
+    public interface  onTaskListener<T>{
+        void onSuccess(T t);
+
+        void onFail();
+    }
 }

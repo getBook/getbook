@@ -17,7 +17,6 @@ import com.xfzj.getbook.R;
 public class BaseLoadRecycleView extends LinearLayout {
     private SwipeRefreshLayout refresh;
     private BaseLoadMoreRecycleView rc;
-    private LoadMoreListen loadMoreListen;
     private RefreshListener refreshListener;
     private boolean isRefresh;
 
@@ -67,7 +66,6 @@ public class BaseLoadRecycleView extends LinearLayout {
     }
 
     public void setOnLoadMoreListen(LoadMoreListen loadMoreListen) {
-        this.loadMoreListen = loadMoreListen;
         rc.setLoadMoreListen(loadMoreListen);
     }
 
@@ -79,11 +77,14 @@ public class BaseLoadRecycleView extends LinearLayout {
         void onRefresh();
     }
     public void setRefreshFinish(){
-//        refresh.setRefreshing(false);
+        refresh.setRefreshing(false);
         isRefresh=false;
         rc.scrollToPosition(0);
     }
     public void setLoadMoreFinish(){
         rc.LoadFinish();
+    }
+    public void setIsLoadingMore(boolean isLoadingMore) {
+        rc.setIsLoadingMore(isLoadingMore);
     }
 }

@@ -82,16 +82,32 @@ public class ImageLoader {
             }
         }
     };
-
+    private Handler mMainHandler2 = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            LoaderResult2 result = (LoaderResult2) msg.obj;
+            if (null == result) {
+                return;
+            }
+            ImageView iv = result.iv;
+            String url = (String) iv.getTag(TAG_KEY_URI);
+            
+            if (url.equals(result.uri) && null != result.bitmap) {
+                iv.setImageBitmap(result.bitmap);
+            }else {
+                iv.setImageBitmap(defaultBitmap);
+            }
+        }
+    };
     private Context mContext;
     private ImageResizer mImageResizer = new ImageResizer();
     private LruCache<String, Bitmap> mMemoryCache;
     private DiskLruCache mDiskLruCache;
     private GridView gv;
 
-    private ImageLoader(Context context) {
+    private ImageLoader(Context context,Bitmap bitmap) {
         mContext = context.getApplicationContext();
-        defaultBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
+        defaultBitmap = bitmap;
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         int cacheSize = maxMemory / 4;
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
@@ -121,8 +137,9 @@ public class ImageLoader {
      * @param context
      * @return a new instance of ImageLoader
      */
-    public static ImageLoader build(Context context) {
-        return new ImageLoader(context);
+    public static ImageLoader build(Context context, Bitmap bitmap) {
+
+        return new ImageLoader(context, bitmap);
     }
 
     private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
@@ -148,7 +165,9 @@ public class ImageLoader {
     public void bindBitmap(final String uri, GridView gv, final ImageView imageView) {
         bindBitmap(uri, gv, imageView, 0, 0);
     }
-
+    public void bindBitmap(final String uri, final ImageView imageView) {
+        bindBitmap(uri,imageView, 0, 0);
+    }
     public void bindBitmap(final String uri, GridView gv, final ImageView imageView,
                            final int reqWidth, final int reqHeight) {
         this.gv = gv;
@@ -172,7 +191,28 @@ public class ImageLoader {
         };
         THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
     }
+    public void bindBitmap(final String uri, final ImageView imageView,
+                           final int reqWidth, final int reqHeight) {
+        imageView.setTag(TAG_KEY_URI,uri);
+        Bitmap bitmap = loadBitmapFromMemCache(uri);
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+            return;
+        }
 
+        Runnable loadBitmapTask = new Runnable() {
+
+            @Override
+            public void run() {
+                Bitmap bitmap = loadBitmap(uri, reqWidth, reqHeight);
+                if (bitmap != null) {
+                    LoaderResult2 result = new LoaderResult2(uri, imageView,bitmap);
+                    mMainHandler2.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
+                }
+            }
+        };
+        THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
+    }
     /**
      * load bitmap from memory cache or disk cache or network.
      *
@@ -391,6 +431,17 @@ public class ImageLoader {
         public LoaderResult(String uri, Bitmap bitmap) {
             this.uri = uri;
             this.bitmap = bitmap;
+        }
+    }
+    private static class LoaderResult2 {
+        public String uri;
+        public Bitmap bitmap;
+        public ImageView iv;
+
+        public LoaderResult2(String uri,ImageView iv, Bitmap bitmap) {
+            this.uri = uri;
+            this.bitmap = bitmap;
+            this.iv = iv;
         }
     }
 }

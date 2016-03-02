@@ -104,21 +104,15 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
 
     public void setCurrentItem(int index) {
         viewPager.setCurrentItem(index);
-        if (index == 0 && getPathsSize() != 0) {
-            tvMiddle.setText(getString(R.string.jifenzhiji, index + 1, getPathsSize()));
-        }
-
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        tvMiddle.setText(getString(R.string.jifenzhiji, position + 1, myAdapter.getCount()));
     }
 
     @Override
     public void onPageSelected(int position) {
-        tvMiddle.setText(getString(R.string.jifenzhiji, position + 1, getPathsSize()));
-
     }
 
     @Override
@@ -151,6 +145,7 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 paths.remove(index);
+                
                 ivs.remove(index);
                 myAdapter.notifyDataSetChanged();
                 if (getPathsSize() == 0) {

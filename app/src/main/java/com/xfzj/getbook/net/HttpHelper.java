@@ -9,7 +9,6 @@ import java.util.Map;
  */
 public class HttpHelper implements IHttpHelper {
     private IHttpHelper iHttpHelper;
-    private static HttpHelper httpHelper;
 
     public HttpHelper() {
         iHttpHelper = new HttpHelperImp();

@@ -17,14 +17,14 @@ public class User extends BmobUser {
      */
     private boolean gender;
 
- 
-
+    private String huaName;
+    private String header;
     /**
      * 学号
      */
     @SerializedName("sno")
     private String sno;
-    
+
     /**
      * 卡号
      */
@@ -37,6 +37,22 @@ public class User extends BmobUser {
      * 暂时不知道有什么用的id
      */
     private int id;
+
+    public String getHeader() {
+        return header;
+    }
+
+    public String getHuaName() {
+        return huaName;
+    }
+
+    public void setHuaName(String huaName) {
+        this.huaName = huaName;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
 
     public String getName() {
         return name;
@@ -53,7 +69,7 @@ public class User extends BmobUser {
     public void setGender(boolean gender) {
         this.gender = gender;
     }
-    
+
 
     public String getCardno() {
         return cardno;
@@ -78,6 +94,7 @@ public class User extends BmobUser {
     public void setId(int id) {
         this.id = id;
     }
+
     public String getSno() {
         return sno;
     }
@@ -103,9 +120,11 @@ public class User extends BmobUser {
 
     @Override
     public String toString() {
-        return super.toString()+"User{" +
+        return "User{" +
                 "name='" + name + '\'' +
                 ", gender=" + gender +
+                ", huaName='" + huaName + '\'' +
+                ", header='" + header + '\'' +
                 ", sno='" + sno + '\'' +
                 ", cardno='" + cardno + '\'' +
                 ", msg='" + msg + '\'' +

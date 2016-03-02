@@ -48,13 +48,21 @@
   </string-array>
     <!-- From: file:/G:/android/GetBook/Zxing/src/main/res/values/colors.xml -->
     <eat-comment/>
+    <color name="accent">#00BCD4</color>
     <color name="contents_text">#ff000000</color>
+    <color name="divider">#B6B6B6</color>
     <color name="encode_view">#ffffffff</color>
+    <color name="icons">#FFFFFF</color>
     <color name="possible_result_points">#c0ffbd21</color>
+    <color name="primary">#03A9F4</color>
+    <color name="primary_dark">#0288D1</color>
+    <color name="primary_light">#B3E5FC</color>
+    <color name="primary_text">#212121</color>
     <color name="result_minor_text">#ffc0c0c0</color>
     <color name="result_points">#c099cc00</color>
     <color name="result_text">#ffffffff</color>
     <color name="result_view">#b0000000</color>
+    <color name="secondary_text">#727272</color>
     <color name="status_text">#ffffffff</color>
     <color name="transparent">#00000000</color>
     <color name="viewfinder_laser">#ffcc0000</color>
@@ -124,7 +132,7 @@
     <string name="msg_default_format">格式</string>
     <string name="msg_default_meta">元数据</string>
     <string name="msg_default_mms_subject">Hi</string>
-    <string name="msg_default_status">请将条码置于取景框内扫描。  </string>
+    <string name="msg_default_status">请将书本后面的条形码置于取景框内扫描  </string>
     <string name="msg_default_time">时间</string>
     <string name="msg_default_type">类型</string>
     <string name="msg_encode_contents_failed">无法生成条码。</string>
@@ -199,6 +207,18 @@
     <string name="result_wifi">找到 Wi-Fi 配置</string>
     <string name="sbc_name">Google 图书搜索</string>
     <string name="wifi_changing_network">连接到 Wi-Fi \u2026</string>
+    <!-- From: file:/G:/android/GetBook/Zxing/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+        <item name="android:icon">@color/icons</item>
+        <item name="android:divider">@color/divider</item>
+    </style>
     <!-- From: file:/G:/android/GetBook/Zxing/src/main/res/values/themes.xml -->
     <eat-comment/>
     <style name="CaptureTheme" parent="android:Theme.Holo">

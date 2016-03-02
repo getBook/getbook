@@ -5,11 +5,13 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -74,5 +76,16 @@ public class MyUtils {
     public static void executeInThread(Runnable runnable) {
         new Thread(runnable).start();
     }
+    public static File getDiskCacheDir(Context context, String uniqueName) {
+        boolean externalStorageAvailable = Environment
+                .getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        final String cachePath;
+        if (externalStorageAvailable) {
+            cachePath = context.getExternalCacheDir().getPath();
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }
 
+        return new File(cachePath + File.separator + uniqueName);
+    }
 }

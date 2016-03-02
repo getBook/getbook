@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
+import com.xfzj.getbook.async.GetBookInfoAsync;
 import com.xfzj.getbook.common.BookInfo;
-import com.xfzj.getbook.net.BaseHttp;
-import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.BookInfoView;
 
@@ -33,7 +30,7 @@ public class BookInfoFrag extends Fragment {
 
     private String isbn;
 
-    private String url= BaseHttp.GetBookInfo;
+    private BookInfo bookInfo;
 
     BookInfoView bookInfoView;
     public BookInfoFrag() {
@@ -47,7 +44,6 @@ public class BookInfoFrag extends Fragment {
 
     public void setISbn(String isbn) {
         this.isbn = isbn;
-        this.url += isbn;
     }
 
     /**
@@ -89,40 +85,28 @@ public class BookInfoFrag extends Fragment {
     }
 
     public void update() {
-        new BaseAsyncTask<Void, Void, BookInfo>(getActivity()) {
+        GetBookInfoAsync getBookInfoAsync = new GetBookInfoAsync(getActivity());
+        getBookInfoAsync.execute(getIsbn());
+        getBookInfoAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<BookInfo>() {
             @Override
-            protected void onPost(BookInfo bookInfo) {
-                if (null != bookInfo) {
-                    bookInfoView.updateBookInfo(bookInfo);
-                }else {
-                    MyToast.show(getActivity(), getResources().getString(R.string.get_bookinfo_fail));
-                    
-                }
+            public void onSuccess(BookInfo bookInfo) {
+                BookInfoFrag.this.bookInfo = bookInfo;
+                bookInfoView.updateBookInfo(bookInfo);
             }
 
             @Override
-            protected BookInfo doExcute(Void[] params) {
-              
-                try {
-                    byte[] bytes=new HttpHelper().DoConnection(url);
-                    if (null==bytes) {
-                        return null;
-                    }else {
-                        String str = new String(bytes, "utf-8");
-                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-                        BookInfo bookInfo = gson.fromJson(str, BookInfo.class);
-                        bookInfo.setIsbn(getIsbn());
-                        return bookInfo;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
+            public void onFail() {
+                MyToast.show(getActivity(), getResources().getString(R.string.get_bookinfo_fail));
             }
-        }.execute();
-
-
+        });
     }
 
-
+    public String getBookName() {
+        return bookInfoView.getBookName();
+    }
+    
+    
+    public BookInfo getBookInfo() {
+        return bookInfo;
+    }
 }

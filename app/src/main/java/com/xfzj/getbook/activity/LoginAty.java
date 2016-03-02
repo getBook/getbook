@@ -1,18 +1,17 @@
 package com.xfzj.getbook.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.MainActivity;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.async.LoginAsync;
-import com.xfzj.getbook.async.UserHeadAsync;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.AryConversion;
 import com.xfzj.getbook.utils.MyToast;
@@ -44,20 +43,7 @@ public class LoginAty extends AppActivity {
 
     @Override
     public void onCreateView(Bundle savedInstanceState) {
-        UserHeadAsync userHeadAsync = new UserHeadAsync(getApplicationContext());
-        userHeadAsync.setCallBack(new UserHeadAsync.LoadBitmapCallBack() {
-            @Override
-            public void onSuccess(Bitmap bitmap) {
-                ivUserHead.setImageBitmap(bitmap);
-                
-            }
-
-            @Override
-            public void onFail() {
-
-            }
-        });
-        userHeadAsync.execute();
+ 
 
         String str = getIntent().getStringExtra(ACCOUNT);
         if (!TextUtils.isEmpty(str)) {
@@ -79,13 +65,14 @@ public class LoginAty extends AppActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LoginAsync loginAsync = new LoginAsync(LoginAty.this, userName, password, null, getString(R.string.logining));
+        LoginAsync loginAsync = new LoginAsync(LoginAty.this,"阿花", userName, password, null, getString(R.string.logining));
         loginAsync.setCallback(new LoginAction.CallBack() {
             @Override
             public void onSuccess() {
                 MyToast.show(getApplicationContext(), getString(R.string.login_success) + BmobUser.getCurrentUser(getApplicationContext(), User.class).toString());
                 
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startService(new Intent(getApplicationContext(), GetHeaderSerVice.class));
                 finish();
             }
             @Override
