@@ -28,7 +28,6 @@ public class HttpHelperImp implements IHttpHelper {
         HttpURLConnection urlConnection = getHttpURLConnection(new URL(strUrl));
         byte[] bytes = doConect(urlConnection, requestType, params);
         if (null == bytes) {
-            MyLog.print("url", strUrl);
             throw new Exception(IHttpHelper.NET_ERROR.toString());
         } else {
             return bytes;
