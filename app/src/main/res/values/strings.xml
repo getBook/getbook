@@ -43,5 +43,23 @@
     <string name="cancel">取消</string>
     <string name="ensure">确定</string>
     <string name="publishing">发布中...</string>
+    <string name="net_error">啊啊，似乎出了点问题...</string>
+    <string name="no_bookname">书名未知</string>
+    <string name="no_publisher">暂无出版社</string>
+    <string name="no_price">暂无价格</string>
+    <string name="no_author">佚名</string>
+    <string name="want_send">想要这本书？快给他发短信</string>
+    <string name="detail">详情</string>
+    <string name="error">出错了</string>
+    <string name="no_tele">该用户未设置手机号！</string>
+    <string name="send_message">你好，同学，我在%1$s上看到您出售的《%2$s》，请问还有吗？</string>
+    <string name="boo_pic">书本图片：</string>
+    <string name="book_des">书本描述：</string>
+    <string name="saleprice">售价:</string>
+    <string name="new_old">新旧:</string>
+    <string name="chengxin">成新</string>
+    <string name="couont">数量:</string>
+    <string name="telephone">手机:</string>
+    <string name="baseinfo">基本信息:</string>
 
 </resources>

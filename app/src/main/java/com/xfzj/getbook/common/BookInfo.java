@@ -3,6 +3,8 @@ package com.xfzj.getbook.common;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -83,6 +85,7 @@ public class BookInfo extends BmobObject{
                 ", publish='" + publish + '\'' +
                 ", originPrice='" + originPrice + '\'' +
                 ", image='" + image + '\'' +
+                ", author=" + Arrays.toString(author) +
                 '}';
     }
 }

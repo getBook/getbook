@@ -49,6 +49,11 @@ public class MyUtils {
         return dm;
     }
 
+
+    public static int getScreenWidth(Context context) {
+        return getScreenMetrics(context).widthPixels;
+    }
+
     public static float dp2px(Context context, float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());

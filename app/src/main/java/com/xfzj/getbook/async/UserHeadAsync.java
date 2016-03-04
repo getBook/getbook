@@ -2,6 +2,7 @@ package com.xfzj.getbook.async;
 
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
@@ -38,7 +39,7 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, String> {
 
     @Override
     protected void onPost(String str) {
-        if (null == str) {
+        if (TextUtils.isEmpty(str)) {
             if (null != callBack) {
                 callBack.onFail();
 

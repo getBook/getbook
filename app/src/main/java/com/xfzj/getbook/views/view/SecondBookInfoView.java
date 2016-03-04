@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,15 +26,14 @@ import java.util.Date;
  * Created by zj on 2016/2/29.
  */
 public class SecondBookInfoView extends FrameLayout implements View.OnClickListener {
-    private CircleImageView ivHeader;
-    private ImageView ivSex;
-    private TextView tvName, tvBookName, tvIsbn, tvBookAuthor, tvPublisher, tvPrice, tvOldPrice, tvNewold, tvDate, tvCount, tvYuan;
+    private TextView tvBookName, tvIsbn, tvBookAuthor, tvPublisher, tvPrice, tvOldPrice, tvNewold, tvDate, tvCount, tvYuan;
     private NetImageView ivBook;
     private LinearLayout llUserInfo, llSecondBookInfo;
     private Context context;
     private onClickListener onUserInfoClick, onSecondBookInfoClick;
     private SecondBook secondBook;
-    private ImageLoader imageLoader;
+    private SimpleUserView simpleUserView;
+
     public <T> void setOnUserInfoClick(onClickListener<T> onUserInfoClick) {
         this.onUserInfoClick = onUserInfoClick;
     }
@@ -65,9 +63,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
     private void init(Context context) {
         this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.secondbook_info, null);
-        ivHeader = (CircleImageView) view.findViewById(R.id.ivHeader);
-        ivSex = (ImageView) view.findViewById(R.id.ivSex);
-        tvName = (TextView) view.findViewById(R.id.tvName);
+        simpleUserView = (SimpleUserView) view.findViewById(R.id.simpleUserView);
         tvBookName = (TextView) view.findViewById(R.id.tvBookName);
         tvIsbn = (TextView) view.findViewById(R.id.tvIsbn);
         tvBookAuthor = (TextView) view.findViewById(R.id.tvBookAuthor);
@@ -83,63 +79,55 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
         tvYuan = (TextView) view.findViewById(R.id.tvYuan);
         llUserInfo.setOnClickListener(this);
         llSecondBookInfo.setOnClickListener(this);
-        imageLoader = ImageLoader.build(context,BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_user));
+
         addView(view);
     }
 
-    public void update(SecondBook secondBook) {
+    public void update(SecondBook secondBook, ImageLoader imageLoader) {
         if (null == secondBook) {
             return;
         }
         this.secondBook = secondBook;
         BookInfo bookInfo = secondBook.getBookInfo();
-        updateBookInfo(bookInfo);
 
 
         User user = secondBook.getUser();
-        if (null != user) {
-            ivHeader.setBmobImage(user.getHeader(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_user),imageLoader);
-            tvName.setText(user.getHuaName());
-            if (user.isGender()) {
-                ivSex.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.male));
-            } else {
-                ivSex.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.female));
-            }
-            if (!TextUtils.isEmpty(secondBook.getDiscount())) {
-                tvPrice.setText(secondBook.getDiscount());
-            }
-            if (!TextUtils.isEmpty(secondBook.getNewold())) {
-                tvNewold.setText(secondBook.getNewold() + "成新");
-            }
-
-            tvCount.setText(secondBook.getCount() + "");
-
-            String str = secondBook.getUpdatedAt();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = null;
-            try {
-                date = sdf.parse(str);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (null != date) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                tvDate.setText(calendar.get(Calendar.MONTH) + 1 + "-" + calendar.get(Calendar.DAY_OF_MONTH));
-            }
-
-
+        simpleUserView.update(user, imageLoader);
+        if (!TextUtils.isEmpty(secondBook.getDiscount())) {
+            tvPrice.setText(secondBook.getDiscount());
         }
+        if (!TextUtils.isEmpty(secondBook.getNewold())) {
+            tvNewold.setText(secondBook.getNewold() + "成新");
+        }
+
+        tvCount.setText(secondBook.getCount() + "");
+
+        String str = secondBook.getUpdatedAt();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (null != date) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            tvDate.setText(calendar.get(Calendar.MONTH) + 1 + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+        }
+
+
+        updateBookInfo(bookInfo, imageLoader);
 
     }
 
 
-    private void updateBookInfo(BookInfo bookInfo) {
+    private void updateBookInfo(BookInfo bookInfo, ImageLoader imageLoader) {
         if (null == bookInfo) {
             return;
         }
         tvIsbn.setText(bookInfo.getIsbn());
-        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book),imageLoader);
+        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), imageLoader,0,0);
         String[] a = bookInfo.getAuthor();
         if (null != a && a.length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -147,19 +135,26 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
                 sb.append(a[i]);
             }
             tvBookAuthor.setText(sb.toString());
+        } else {
+            tvBookAuthor.setText(R.string.no_author);
         }
 
         if (!TextUtils.isEmpty(bookInfo.getBookName())) {
             tvBookName.setText(bookInfo.getBookName());
+        } else {
+            tvBookName.setText(R.string.no_bookname);
         }
         if (!TextUtils.isEmpty(bookInfo.getPublish())) {
             tvPublisher.setText(bookInfo.getPublish());
+        } else {
+            tvPublisher.setText(R.string.no_publisher);
         }
         if (!TextUtils.isEmpty(bookInfo.getOriginPrice())) {
             tvOldPrice.setText(bookInfo.getOriginPrice());
-            tvOldPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            tvYuan.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            tvOldPrice.setText(R.string.no_price);
         }
+        tvOldPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
     }
 
@@ -181,6 +176,8 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 
 
     }
+
+  
 
     public interface onClickListener<T> {
         void onClick(T t);

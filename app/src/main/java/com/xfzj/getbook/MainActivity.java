@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import cn.bmob.v3.BmobUser;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
     public static final String FROM = "MainActivity.class";
@@ -151,10 +152,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         String str = i.getStringExtra(FROM);
         if (!TextUtils.isEmpty(str) && str.equals(FlashActivity.FROM)) {
             //需要登陆一次获得最新的cookie
-            BaseApplication baseApplication = (BaseApplication) getApplication();
-            final User user = baseApplication.user;
+
+            final User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
             String password = SharedPreferencesUtils.getUserPassword(getApplicationContext(), user.getSno());
-           
+
             if (TextUtils.isEmpty(password)) {
                 MyToast.show(getApplicationContext(), "no password");
                 jump2Login(user.getSno());
@@ -166,7 +167,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 @Override
                 public void onSuccess() {
                     MyToast.show(getApplicationContext(), "登陆成功");
-                    
+
                 }
 
                 @Override

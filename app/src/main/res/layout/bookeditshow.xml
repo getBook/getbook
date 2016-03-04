@@ -10,6 +10,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -29,17 +30,16 @@
                 android:text="@string/yuan"
                 android:textColor="@color/accent" />
 
-            <EditText
+            <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:inputType="number"
-                android:minWidth="50dp"
                 android:textColor="@color/accent" />
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -50,26 +50,19 @@
                 android:text="@string/new_old"
                 android:textColor="@color/secondary_text" />
 
-            <EditText
+            <TextView
                 android:id="@+id/newold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
-                android:inputType="number"
-                android:maxLength="2"
-                android:minWidth="30dp"
                 android:textColor="@color/accent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chengxin"
-                android:textColor="@color/secondary_text"
-                android:textSize="12sp" />
+
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -81,43 +74,16 @@
                 android:text="@string/couont"
                 android:textColor="@color/secondary_text" />
 
-            <com.xfzj.getbook.views.view.PlusMinusView
-                android:id="@+id/plusMinus"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:gravity="center"/>
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/telephone"
-                android:textColor="@color/secondary_text" />
-
-            <EditText
-                android:id="@+id/tele"
+                android:id="@+id/count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:gravity="left"
-                android:inputType="number"
-                android:maxLength="11"
-                android:minWidth="100dp"
+                android:gravity="center"
                 android:textColor="@color/accent" />
         </LinearLayout>
+
+
     </LinearLayout>
 
 

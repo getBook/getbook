@@ -6,11 +6,11 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.bmob.BmobProFile;
-import com.bmob.btp.callback.UploadListener;
 import com.xfzj.getbook.async.UserHeadAsync;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.MyLog;
 
+import java.io.File;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -18,6 +18,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * Created by zj on 2016/2/28.
@@ -72,13 +73,13 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
         if (TextUtils.isEmpty(str)) {
             return;
         }
-        
-        BmobProFile.getInstance(getApplicationContext()).upload(str, new UploadListener() {
+        final BmobFile bmobFile = new BmobFile(new File(str));
+        bmobFile.uploadblock(getApplicationContext(), new UploadFileListener() {
             @Override
-            public void onSuccess(String s, String s1, BmobFile bmobFile) {
+            public void onSuccess() {
 
-
-                user.setHeader(s);
+                user.setHeader(bmobFile.getFileUrl(getApplicationContext()));
+                MyLog.print("urlsdas",bmobFile.getFileUrl(getApplicationContext()));
                 user.update(getApplicationContext(), new UpdateListener() {
                     @Override
                     public void onSuccess() {
@@ -93,15 +94,28 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
             }
 
             @Override
-            public void onProgress(int i) {
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
+            public void onFailure(int i, String s) {
 
             }
         });
+        
+//        BmobProFile.getInstance(getApplicationContext()).upload(str, new UploadListener() {
+//            @Override
+//            public void onSuccess(String s, String s1, BmobFile bmobFile) {
+//
+//
+//            }
+//
+//            @Override
+//            public void onProgress(int i) {
+//
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//
+//            }
+//        });
 
     }
 

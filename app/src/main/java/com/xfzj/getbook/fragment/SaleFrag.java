@@ -2,17 +2,23 @@ package com.xfzj.getbook.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
+import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.recycleview.BaseLoadRecycleView;
 import com.xfzj.getbook.recycleview.BaseRecycleViewAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
@@ -28,7 +34,7 @@ import java.util.List;
  * Use the {@link SaleFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>, BaseLoadRecycleView.RefreshListener, LoadMoreListen {
+public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>, BaseLoadRecycleView.RefreshListener, LoadMoreListen, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,9 +50,15 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
     private int limit = 10;
 
     private BaseLoadRecycleView rc;
+    private LinearLayout llError;
+    private Button btn;
+    
+    
     private SaleAdapter saleAdapter;
     private QueryAction queryAction;
     private List<SecondBook> secondBooks = new ArrayList<>();
+
+    private ImageLoader imageLoader;
 
     /**
      * Use this factory method to create a new instance of
@@ -75,7 +87,7 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
 
-
+        imageLoader = ((BaseApplication) getActivity().getApplicationContext()).getImageLoader();
         queryAction = new QueryAction(getActivity().getApplicationContext());
         queryAction.querySaleInfo(8, limit, skip);
         queryAction.setOnQueryListener(this);
@@ -87,6 +99,9 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale, container, false);
         rc = (BaseLoadRecycleView) view.findViewById(R.id.recycleView);
+        llError = (LinearLayout) view.findViewById(R.id.llError);
+        btn = (Button) view.findViewById(R.id.btn);
+        btn.setOnClickListener(this);
         saleAdapter = new SaleAdapter(secondBooks, getActivity());
         rc.setAdapter(saleAdapter);
         rc.setOnrefreshListener(this);
@@ -107,10 +122,22 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
                 MyToast.show(getActivity(), "到头了~");
             }
         }
-        saleAdapter.addAll(lists);
-        for (SecondBook secondBook : lists) {
-            MyLog.print("书本信息", secondBook.toString());
+        if (null == lists || lists.size() == 0 && skip==0) {
+            
+            rc.setVisibility(View.GONE);
+            llError.setVisibility(View.VISIBLE);
+        } else {
+            rc.setVisibility(View.VISIBLE);
+            llError.setVisibility(View.GONE);
+            saleAdapter.addAll(lists);
+            for (SecondBook secondBook : lists) {
+                MyLog.print("书本信息", secondBook.toString());
+            }
         }
+        
+        
+        
+       
     }
 
     @Override
@@ -122,16 +149,18 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
     public void onRefresh() {
         skip = 0;
         queryAction.querySaleInfo(8, limit, skip);
-        queryAction.setOnQueryListener(this);
     }
 
     @Override
     public void onLoadMore() {
         queryAction.querySaleInfo(8, limit, ++skip);
-        queryAction.setOnQueryListener(this);
+       
     }
 
-    
+    @Override
+    public void onClick(View v) {
+        onRefresh();
+    }
 
 
     public class SaleAdapter extends BaseRecycleViewAdapter<SecondBook> {
@@ -158,8 +187,8 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
             return new BaseViewHolder<SecondBook>(view) {
                 @Override
                 protected void setContent(View itemView, SecondBook item, int viewType) {
-                    SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
-                    bookInfoView.update(item);
+                    final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
+                    bookInfoView.update(item,imageLoader);
                     
                     bookInfoView.setOnUserInfoClick(new SecondBookInfoView.onClickListener<User>() {
                         @Override
@@ -172,6 +201,9 @@ public class SaleFrag extends Fragment implements QueryAction.OnQueryListener<Se
                         @Override
                         public void onClick(SecondBook secondBook) {
                             MyLog.print("点击的书本", secondBook.toString());
+                            Intent intent = new Intent(getActivity(), SecondBookDetailAty.class);
+                            intent.putExtra(SecondBookDetailAty.DATA, secondBook);
+                            startActivity(intent);
                         }
                     });
                 }

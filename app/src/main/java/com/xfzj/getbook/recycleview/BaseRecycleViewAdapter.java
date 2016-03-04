@@ -69,7 +69,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
 
     public void addAll(List<T> lists) {
         datas.addAll(lists);
-        notifyItemInserted(getItemCount());
+        notifyDataSetChanged();
     }
 
     public void addFirst(List<T> lists) {

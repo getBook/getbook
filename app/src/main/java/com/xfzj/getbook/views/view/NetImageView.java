@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.bmob.BmobProFile;
-import com.bmob.btp.callback.GetAccessUrlListener;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.loader.ImageLoader;
@@ -17,8 +15,6 @@ import com.xfzj.getbook.utils.MyUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-
-import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by zj on 2016/2/24.
@@ -122,28 +118,28 @@ public class NetImageView extends ImageView {
         return cachePath.getPath();
     }
 
-    public void setBmobImage(final String name, final Bitmap defaultImage, final ImageLoader imageLoader) {
+    public void setBmobImage(final String name, final Bitmap defaultImage, final ImageLoader imageLoader,int width,int height) {
         if (TextUtils.isEmpty(name)) {
             setImageBitmap(defaultImage);
             return;
         }
-
-        BmobProFile.getInstance(context).getAccessURL(name, new GetAccessUrlListener() {
-            @Override
-            public void onSuccess(BmobFile bmobFile) {
-                String url = bmobFile.getUrl();
-                if (TextUtils.isEmpty(url)) {
-                    setImageBitmap(defaultImage);
-                } else {
-                    imageLoader.bindBitmap(url, NetImageView.this);
-                }
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                setImageBitmap(defaultImage);
-            }
-        });
+        imageLoader.bindBitmap(name, NetImageView.this,width,height);
+//        BmobProFile.getInstance(context).getAccessURL(name, new GetAccessUrlListener() {
+//            @Override
+//            public void onSuccess(BmobFile bmobFile) {
+//                String url = bmobFile.getUrl();
+//                if (TextUtils.isEmpty(url)) {
+//                    setImageBitmap(defaultImage);
+//                } else {
+//                    imageLoader.bindBitmap(url, NetImageView.this);
+//                }
+//            }
+//         
+//            @Override
+//            public void onError(int i, String s) {
+//                setImageBitmap(defaultImage);
+//            }
+//        });
 //        BmobProFile.getInstance(context).download(name, new DownloadListener() {
 //            @Override
 //            public void onSuccess(String s) {

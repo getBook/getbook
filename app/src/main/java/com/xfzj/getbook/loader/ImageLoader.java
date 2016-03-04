@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyUtils;
 
 import java.io.BufferedInputStream;
@@ -91,10 +92,10 @@ public class ImageLoader {
             }
             ImageView iv = result.iv;
             String url = (String) iv.getTag(TAG_KEY_URI);
-            
+            MyLog.print("url", url);
             if (url.equals(result.uri) && null != result.bitmap) {
                 iv.setImageBitmap(result.bitmap);
-            }else {
+            } else {
                 iv.setImageBitmap(defaultBitmap);
             }
         }
@@ -105,7 +106,7 @@ public class ImageLoader {
     private DiskLruCache mDiskLruCache;
     private GridView gv;
 
-    private ImageLoader(Context context,Bitmap bitmap) {
+    private ImageLoader(Context context, Bitmap bitmap) {
         mContext = context.getApplicationContext();
         defaultBitmap = bitmap;
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -144,7 +145,7 @@ public class ImageLoader {
 
     private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemCache(key) == null) {
-            if(TextUtils.isEmpty(key)||null==bitmap) {
+            if (TextUtils.isEmpty(key) || null == bitmap) {
                 return;
             }
             mMemoryCache.put(key, bitmap);
@@ -165,13 +166,19 @@ public class ImageLoader {
     public void bindBitmap(final String uri, GridView gv, final ImageView imageView) {
         bindBitmap(uri, gv, imageView, 0, 0);
     }
+
     public void bindBitmap(final String uri, final ImageView imageView) {
-        bindBitmap(uri,imageView, 0, 0);
+        bindBitmap(uri, imageView, 0, 0);
     }
-    public void bindBitmap(final String uri, GridView gv, final ImageView imageView,
-                           final int reqWidth, final int reqHeight) {
-        this.gv = gv;
-        imageView.setTag(uri);
+
+    public void bindBmobBitmap(final String uri, final ImageView imageView) {
+        bindBmobBitmap(uri, imageView, 0, 0);
+
+    }
+
+    private void bindBmobBitmap(final String uri, final ImageView imageView, final int reqWidth, final int reqHeight) {
+
+        imageView.setTag(TAG_KEY_URI, uri);
         Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
@@ -182,46 +189,20 @@ public class ImageLoader {
 
             @Override
             public void run() {
-                Bitmap bitmap = loadBitmap(uri, reqWidth, reqHeight);
+                Bitmap bitmap = loadBmobBitmap(uri, reqWidth, reqHeight);
                 if (bitmap != null) {
-                    LoaderResult result = new LoaderResult(uri, bitmap);
-                    mMainHandler.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
-                }
-            }
-        };
-        THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
-    }
-    public void bindBitmap(final String uri, final ImageView imageView,
-                           final int reqWidth, final int reqHeight) {
-        imageView.setTag(TAG_KEY_URI,uri);
-        Bitmap bitmap = loadBitmapFromMemCache(uri);
-        if (bitmap != null) {
-            imageView.setImageBitmap(bitmap);
-            return;
-        }
-
-        Runnable loadBitmapTask = new Runnable() {
-
-            @Override
-            public void run() {
-                Bitmap bitmap = loadBitmap(uri, reqWidth, reqHeight);
-                if (bitmap != null) {
-                    LoaderResult2 result = new LoaderResult2(uri, imageView,bitmap);
+                    LoaderResult2 result = new LoaderResult2(uri, imageView, bitmap);
                     mMainHandler2.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
                 }
             }
         };
         THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
+
+
     }
-    /**
-     * load bitmap from memory cache or disk cache or network.
-     *
-     * @param uri       http url
-     * @param reqWidth  the width ImageView desired
-     * @param reqHeight the height ImageView desired
-     * @return bitmap, maybe null.
-     */
-    public Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
+
+    private Bitmap loadBmobBitmap(String uri, int reqWidth, int reqHeight) {
+
         Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
             Log.d(TAG, "loadBitmapFromMemCache,url:" + uri);
@@ -248,6 +229,94 @@ public class ImageLoader {
             Log.w(TAG, "encounter error, DiskLruCache is not created.");
             bitmap = downloadBitmapFromUrl(uri);
         }
+
+        return bitmap;
+
+
+    }
+
+    public void bindBitmap(final String uri, GridView gv, final ImageView imageView,
+                           final int reqWidth, final int reqHeight) {
+        this.gv = gv;
+        imageView.setTag(uri);
+        Bitmap bitmap = loadBitmapFromMemCache(uri);
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+            return;
+        }
+
+        Runnable loadBitmapTask = new Runnable() {
+
+            @Override
+            public void run() {
+                Bitmap bitmap = loadBitmap(uri, reqWidth, reqHeight);
+                if (bitmap != null) {
+                    LoaderResult result = new LoaderResult(uri, bitmap);
+                    mMainHandler.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
+                }
+            }
+        };
+        THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
+    }
+
+    public void bindBitmap(final String uri, final ImageView imageView,
+                           final int reqWidth, final int reqHeight) {
+        imageView.setTag(TAG_KEY_URI, uri);
+        Bitmap bitmap = loadBitmapFromMemCache(uri);
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+            return;
+        }
+
+        Runnable loadBitmapTask = new Runnable() {
+
+            @Override
+            public void run() {
+                Bitmap bitmap = loadBitmap(uri, reqWidth, reqHeight);
+                if (bitmap != null) {
+                    LoaderResult2 result = new LoaderResult2(uri, imageView, bitmap);
+                    mMainHandler2.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
+                }
+            }
+        };
+        THREAD_POOL_EXECUTOR.execute(loadBitmapTask);
+    }
+
+    /**
+     * load bitmap from memory cache or disk cache or network.
+     *
+     * @param uri       http url
+     * @param reqWidth  the width ImageView desired
+     * @param reqHeight the height ImageView desired
+     * @return bitmap, maybe null.
+     */
+    public Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
+            Bitmap bitmap = loadBitmapFromMemCache(uri);
+            if (bitmap != null) {
+                Log.d(TAG, "loadBitmapFromMemCache,url:" + uri);
+                return bitmap;
+            }
+
+            try {
+                bitmap = loadBitmapFromDiskCache(uri, reqWidth, reqHeight);
+                if (bitmap != null) {
+                    Log.d(TAG, "loadBitmapFromDisk,url:" + uri);
+                    return bitmap;
+                }
+                if (uri.contains("http://") || uri.contains("https://")) {
+                    bitmap = loadBitmapFromHttp(uri, reqWidth, reqHeight);
+                } else {
+                    bitmap = loadBitmapFromLocal(uri, reqWidth, reqHeight);
+                }
+                Log.d(TAG, "loadBitmapFromHttp,url:" + uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (bitmap == null && !mIsDiskLruCacheCreated) {
+                Log.w(TAG, "encounter error, DiskLruCache is not created.");
+                bitmap = downloadBitmapFromUrl(uri);
+            }
 
         return bitmap;
     }
@@ -433,12 +502,13 @@ public class ImageLoader {
             this.bitmap = bitmap;
         }
     }
+
     private static class LoaderResult2 {
         public String uri;
         public Bitmap bitmap;
         public ImageView iv;
 
-        public LoaderResult2(String uri,ImageView iv, Bitmap bitmap) {
+        public LoaderResult2(String uri, ImageView iv, Bitmap bitmap) {
             this.uri = uri;
             this.bitmap = bitmap;
             this.iv = iv;

@@ -3,7 +3,6 @@ package com.xfzj.getbook.action;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -34,13 +33,10 @@ public class LoginAction extends BaseAction {
     private User currUser;
     private User newUser;
     private Context context;
-    private BaseApplication baseApplication;
     private String huaName;
     public LoginAction(Context context) {
         currUser = BmobUser.getCurrentUser(context, User.class);
         this.context = context;
-        baseApplication = (BaseApplication) context.getApplicationContext();
-
     }
 
     public User getNewUser() {
@@ -164,7 +160,6 @@ public class LoginAction extends BaseAction {
         newUser.update(context, currUser.getObjectId(), new UpdateListener() {
             @Override
             public void onSuccess() {
-                baseApplication.user = newUser;
                 if (null != callBack) {
                     callBack.onSuccess();
 
@@ -174,7 +169,7 @@ public class LoginAction extends BaseAction {
             @Override
             public void onFailure(int i, String s) {
                 if (null != callBack) {
-                    callBack.onSuccess();
+                    callBack.onFail();
 
                 }
             }
@@ -187,7 +182,6 @@ public class LoginAction extends BaseAction {
     public void logOutBmob() {
         BmobUser.logOut(context);
         currUser = BmobUser.getCurrentUser(context, User.class);
-        baseApplication.user = null;
     }
 
     /**
@@ -223,7 +217,6 @@ public class LoginAction extends BaseAction {
             @Override
             public void onSuccess() {
                 MyLog.print("loginBmob", "onSuccess");
-                baseApplication.user = user;
                 String password = getPassword(user);
                 if (!TextUtils.isEmpty(password)) {
                     SharedPreferencesUtils.saveUser(context, user.getSno(), password);

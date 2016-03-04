@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.MainActivity;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.User;
+
+import cn.bmob.v3.BmobUser;
 
 
 /**
@@ -17,7 +18,6 @@ import com.xfzj.getbook.common.User;
 public class FlashActivity extends AppActivity {
     public static final String FROM = "FlashActivity.class";
 
-    private BaseApplication baseApplication;
     private User user;
 
     private Handler handler = new Handler() {
@@ -35,8 +35,7 @@ public class FlashActivity extends AppActivity {
 
     @Override
     public void onCreateView(Bundle savedInstanceState) {
-        baseApplication = (BaseApplication) getApplication();
-        user = baseApplication.user;
+        user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
         if (null != user) {
             jump2MainAty();
         } else {
