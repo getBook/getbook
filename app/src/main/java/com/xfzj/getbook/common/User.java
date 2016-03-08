@@ -110,8 +110,7 @@ public class User extends BmobUser {
         }
         if (o instanceof User) {
             User oo = (User) o;
-            if (this.name.equals(oo.getName()) && this.gender == oo.isGender() && this.cardno.equals(oo.getCardno())
-                    && this.id == oo.getId() && this.sno.equals(oo.getUsername())) {
+            if ( this.sno.equals(oo.getSno())) {
                 return true;
             }
         }

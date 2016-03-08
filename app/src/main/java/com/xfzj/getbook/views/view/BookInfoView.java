@@ -100,7 +100,7 @@ public class BookInfoView extends LinearLayout {
         if (null == bookInfo) {
             return;
         }
-        iv.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), imageLoader,0,0);
+        iv.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), 0,0);
         if (!TextUtils.isEmpty(bookInfo.getBookName())) {
             bookName.setText(bookInfo.getBookName());
         }

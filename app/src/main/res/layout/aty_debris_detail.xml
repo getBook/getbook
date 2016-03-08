@@ -41,11 +41,16 @@
             android:layout_marginRight="15dp"
             android:orientation="vertical">
 
-            <com.xfzj.getbook.views.view.BookInfoView
-                android:id="@+id/bookInfoView"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/baseinfo"
+                android:id="@+id/tvTitle"
+                
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/primary_text" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="@string/book_des"
+                android:text="@string/debris_des"
                 android:textColor="@color/secondary_text" />
 
             <include
@@ -78,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="@string/boo_pic"
+                android:text="@string/debris_pic"
                 android:textColor="@color/secondary_text" />
 
             <android.support.v7.widget.CardView

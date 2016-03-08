@@ -1,13 +1,14 @@
 package com.xfzj.getbook;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -24,11 +25,13 @@ import com.xfzj.getbook.activity.BaseActivity;
 import com.xfzj.getbook.activity.CaptureAty;
 import com.xfzj.getbook.activity.FlashActivity;
 import com.xfzj.getbook.activity.LoginAty;
+import com.xfzj.getbook.activity.PublishDebrisActivity;
+import com.xfzj.getbook.activity.SearchAty;
 import com.xfzj.getbook.async.LoginAsync;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.fragment.DebrisFrag;
 import com.xfzj.getbook.fragment.MyFrag;
-import com.xfzj.getbook.fragment.SaleFrag;
-import com.xfzj.getbook.fragment.WantFrag;
+import com.xfzj.getbook.fragment.SecondBookFrag;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
@@ -51,18 +54,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolbar;
     private Toolbar toolbar;
-//    OkAdapter okAdapter;
-    private boolean isRefresh;
-    /**
-     * 当前所处的菜单项
-     */
-    private String currentIndex = SaleFrag.SALE;
 
-    private SaleFrag saleFrag;
-    private WantFrag wantFrag;
+    private SecondBookFrag saleFrag;
+    private DebrisFrag wantFrag;
     private MyFrag myFrag;
     private FragmentManager fm;
-    private TextView[] tvs;
 
 
     @Override
@@ -81,67 +77,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         fm = getSupportFragmentManager();
         init();
         isNeedLogin();
-//        List<String> lists = new ArrayList<>();
-//        lists.addAll(addData());
-//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-//        okAdapter = new OkAdapter(lists, getApplicationContext(), R.layout.tem, 0, 0);
-//
-//        okAdapter.setOnRecycleViewItemClickListener(new BaseRecycleViewAdapter.OnRecycleViewItemClickListener() {
-//            @Override
-//            public void setOnRecycleViewItemClickListener(View view, Object tag) {
-//                Toast.makeText(getApplicationContext(), (String) tag, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        okAdapter.notifyDataSetChanged();
-//        rc.setAdapter(okAdapter);
-//        rc.setOnrefreshListener(new BaseLoadRecycleView.RefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                Toast.makeText(getApplicationContext(), "refreshing", Toast.LENGTH_SHORT).show();
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            Thread.sleep(200);
-//                            List<String> lists = new ArrayList<>();
-//                            lists.add("111");
-//                            lists.add("222");
-//                            okAdapter.addFirst(lists);
-//
-//                            rc.setRefreshFinish();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    }
-//                }).start();
-//            }
-//        });
-//        rc.setOnLoadMoreListen(new LoadMoreListen() {
-//            @Override
-//            public void onLoadMore() {
-//                Toast.makeText(getApplicationContext(), "loading", Toast.LENGTH_SHORT).show();
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            Thread.sleep(2000);
-//                            List<String> lists = new ArrayList<>();
-//                            lists.add("qwe");
-//                            lists.add("asd");
-//                            okAdapter.addAll(lists);
-//                            rc.setLoadMoreFinish();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//
-//                    }
-//                }).start();
-//            }
-//        });
-
     }
 
     /**
@@ -248,17 +183,17 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void initSaleFrag() {
-        saleFrag = (SaleFrag) fm.findFragmentByTag(SaleFrag.SALE);
+        saleFrag = (SecondBookFrag) fm.findFragmentByTag(SecondBookFrag.FROMMAIN);
         if (null == saleFrag) {
-            saleFrag = SaleFrag.newInstance(SaleFrag.SALE);
+            saleFrag = SecondBookFrag.newInstance(SecondBookFrag.FROMMAIN);
         }
     }
 
     private void initWantFrag() {
-        wantFrag = (WantFrag) fm.findFragmentByTag(WantFrag.WANT);
+        wantFrag = (DebrisFrag) fm.findFragmentByTag(DebrisFrag.FROMMAIN);
 
         if (null == wantFrag) {
-            wantFrag = WantFrag.newInstance(WantFrag.WANT);
+            wantFrag = DebrisFrag.newInstance(DebrisFrag.FROMMAIN);
         }
     }
 
@@ -273,16 +208,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     protected void onStart() {
         super.onStart();
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-//                MyLog.print(getClass().getName(), HttpDemo.excute());
-
-                return null;
-            }
-        }.execute();
-
-
     }
 
     @Override
@@ -295,7 +220,29 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_scanner:
-                Intent intent = new Intent(this, CaptureAty.class);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("选择你想要发布的类目");
+                builder.setItems(new String[]{getString(R.string.secondbook), getString(R.string.drugstore)}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+
+                                Intent intent = new Intent(MainActivity.this, CaptureAty.class);
+                                startActivity(intent);
+                                break;
+                            case 1:
+                                Intent intent2 = new Intent(MainActivity.this, PublishDebrisActivity.class);
+                                startActivity(intent2);
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+          
+                break;
+            case R.id.action_search:
+                Intent intent = new Intent(MainActivity.this, SearchAty.class);
                 startActivity(intent);
                 break;
         }
@@ -399,7 +346,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private class TestAdapter extends FragmentPagerAdapter {
         private List<Fragment> lists;
-        private int[] tag = new int[]{R.string.sale, R.string.want, R.string.my};
+        private int[] tag = new int[]{R.string.secondbook, R.string.drugstore, R.string.my};
 
         public TestAdapter(FragmentManager manager, List<Fragment> lists) {
             super(manager);

@@ -101,13 +101,14 @@ public class ImageLoader {
         }
     };
     private Context mContext;
-    private ImageResizer mImageResizer = new ImageResizer();
+    private ImageResizer mImageResizer ;
     private LruCache<String, Bitmap> mMemoryCache;
     private DiskLruCache mDiskLruCache;
     private GridView gv;
 
     private ImageLoader(Context context, Bitmap bitmap) {
         mContext = context.getApplicationContext();
+        mImageResizer = new ImageResizer(mContext);
         defaultBitmap = bitmap;
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         int cacheSize = maxMemory / 4;

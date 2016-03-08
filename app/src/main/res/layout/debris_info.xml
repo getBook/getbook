@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="5dp"
+    android:orientation="vertical">
+
+    <com.xfzj.getbook.views.view.SimpleUserView
+        android:layout_width="match_parent"
+        android:id="@+id/simpleUserView"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:alpha="0.5"
+        android:background="@color/divider" />
+    
+    <com.xfzj.getbook.views.view.DebrisContentInfoView
+        android:id="@+id/debrisContentInfoView"
+        android:layout_width="match_parent"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_height="wrap_content"/>
+    
+</LinearLayout>

@@ -16,16 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.UploadAction;
-import com.xfzj.getbook.common.BookInfo;
+import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.PicPath;
-import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.fragment.BookInfoFrag;
 import com.xfzj.getbook.fragment.PicSelectFrag;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.gridview.PicAddView;
@@ -43,23 +42,21 @@ import cn.bmob.v3.BmobUser;
 /**
  * Created by zj on 2016/2/8.
  */
-public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener, UploadAction.UploadListener {
+public class PublishDebrisActivity extends AppActivity implements Toolbar.OnMenuItemClickListener, View.OnClickListener, UploadAction.UploadListener {
 
-    public static final String ISBN = "isbn";
+    public static final String DEBRIS = "debris";
     public static final String FROM = "from";
     private static final int IMAGE_FROM_CAPTURE = 123;
-    private static final int PHOTO_CLIP = 456;
     /**
      * 最多只能选择4张图片
      */
-    private static final int OPTIONS = 4;
+    private static final int OPTIONS = 10;
     public static final String REMAIN_PATHS = "remian_pic_paths";
     public static final int REMAIN_PATHS_CODE = 789;
     @Bind(R.id.addView)
     PicAddView picAddView;
     @Bind(R.id.picSelect)
     FrameLayout picSelectFram;
-    private BookInfoFrag bif;
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
     @Bind(R.id.price)
@@ -72,14 +69,17 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
     EditText etTele;
     @Bind(R.id.describe)
     EditText etDescribe;
-
-
+    @Bind(R.id.lloriginPrice)
+    LinearLayout lloriginPrice;
+    @Bind(R.id.originprice)
+    EditText originPrice;
+    @Bind(R.id.etTitle)
+    EditText etTitle;
     Toolbar toolbar;
+
     private PicSelectFrag psf;
     private TextView tvPublish, tvSelect;
     private boolean isFragView = false;
-    private String isbn;
-    private String from;
 
     private static File IMAGE_PATH;
 
@@ -87,10 +87,8 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
     @Override
 
     protected void onSetContentView() {
-        setContentView(R.layout.bookpublish);
+        setContentView(R.layout.debrispublish);
         initFrag();
-        showFrag(bif);
-
     }
 
     public File getDiskCacheDir(Context context, String uniqueName) {
@@ -106,20 +104,10 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         return new File(cachePath + File.separator + uniqueName);
     }
 
-    private void showFrag(BookInfoFrag bif) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.framBookInfo, bif).commit();
-        fm.executePendingTransactions();
-
-
-    }
+   
+    
 
     private void initFrag() {
-        bif = (BookInfoFrag) getSupportFragmentManager().findFragmentByTag(BookInfoFrag.ARG_PARAM1);
-        if (null == bif) {
-            bif = BookInfoFrag.newInstance(BookInfoFrag.ARG_PARAM1);
-        }
         psf = (PicSelectFrag) getSupportFragmentManager().findFragmentByTag(PicSelectFrag.ARG_PARAM1);
         if (null == psf) {
             psf = PicSelectFrag.newInstance(PicSelectFrag.ARG_PARAM1);
@@ -168,6 +156,8 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         toolbar = baseToolBar.getToolbar();
         tvPublish = baseToolBar.getTv1();
         tvSelect = baseToolBar.getTv2();
+        lloriginPrice.setVisibility(View.VISIBLE);
+
         tvPublish.setVisibility(View.VISIBLE);
         tvPublish.setText(R.string.publish);
         tvSelect.setText(R.string.select);
@@ -176,25 +166,19 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         toolbar.setOnMenuItemClickListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         plusMinusView.setText("1");
-        Intent i = getIntent();
-        isbn = i.getStringExtra(ISBN);
-        from = i.getStringExtra(FROM);
-
-        bif.setContent(isbn);
-
         picAddView.setOnItemClick(new PicAddView.OnItemClick() {
 
             @Override
             public void onAddClick(int position, int size, int maxPics) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PublishActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(PublishDebrisActivity.this);
                 builder.setTitle(getString(R.string.max_pics, OPTIONS));
 
-                builder.setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
+                builder.setItems(new String[]{getString(R.string.capture), getString(R.string.album)}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                IMAGE_PATH = getDiskCacheDir(getApplicationContext(), System.currentTimeMillis() + ".jpg");
+                                IMAGE_PATH = getDiskCacheDir(getApplicationContext(), System.currentTimeMillis() + getString(R.string.jpg));
                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(IMAGE_PATH));
                                 startActivityForResult(intent, IMAGE_FROM_CAPTURE);
@@ -216,9 +200,10 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
 
             @Override
             public void onPicClick(int position, String path) {
-                Intent intent = new Intent(PublishActivity.this, ViewPagerAty.class);
+                Intent intent = new Intent(PublishDebrisActivity.this, ViewPagerAty.class);
                 intent.putExtra(ViewPagerAty.PATH, (Serializable) picAddView.getPaths());
                 intent.putExtra(ViewPagerAty.INDEX, position);
+                intent.putExtra(ViewPagerAty.FROM, ViewPagerAty.EDIT);
                 startActivityForResult(intent, REMAIN_PATHS_CODE);
 
             }
@@ -245,16 +230,7 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
 
         return false;
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.publish, menu);
-//        menuPublish = menu.findItem(R.id.action_publish);
-//        menuSelect = menu.findItem(R.id.action_select);
-//        menuSelect.setVisible(false);
-//        return true;
-//    }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
@@ -294,19 +270,11 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         switch (v.getId()) {
             case R.id.tvPublish:
                 if (canPublish()) {
-
-
                     List<String> lists = picAddView.getPath();
                     String[] str = (String[]) lists.toArray(new String[lists.size()]);
-                    BookInfo info = bif.getBookInfo();
-                    if (null == info) {
-                        MyToast.show(getApplicationContext(), "未获取到书本信息，请重新扫描");
-                        return;
-                    }
-
-                    SecondBook secondBook = new SecondBook(BmobUser.getCurrentUser(getApplicationContext(), User.class), info, etPrice.getText().toString().trim(), etNewOld.getText().toString().trim(), plusMinusView.getText(), str, etDescribe.getText().toString(), etTele.getText().toString().trim());
-                    UploadAction uploadPicAction = new UploadAction(PublishActivity.this, secondBook, bif.getBookInfo());
-                    uploadPicAction.upload(this);
+                    Debris debris = new Debris(BmobUser.getCurrentUser(getApplicationContext(), User.class),etTitle.getText().toString(), etDescribe.getText().toString(),str, etPrice.getText().toString(), originPrice.getText().toString(), plusMinusView.getText(), etNewOld.getText().toString(), etTele.getText().toString());
+                    UploadAction uploadPicAction = new UploadAction(PublishDebrisActivity.this, debris);
+                    uploadPicAction.publishDebris(this);
                 }
                 break;
             case R.id.tvSelect:
@@ -327,8 +295,16 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
     }
 
     private boolean canPublish() {
+        if (TextUtils.isEmpty(etTitle.getText().toString().trim())) {
+            MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.title)));
+            return false;
+        }
         if (TextUtils.isEmpty(etPrice.getText().toString().trim())) {
             MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.price)));
+            return false;
+        }
+        if (TextUtils.isEmpty(originPrice.getText().toString().trim())) {
+            MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.originprice)));
             return false;
         }
         if (TextUtils.isEmpty(etNewOld.getText().toString().trim())) {
@@ -341,6 +317,10 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
         }
         if (TextUtils.isEmpty(etTele.getText().toString().trim())) {
             MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.tele)));
+            return false;
+        }
+        if (TextUtils.isEmpty(etDescribe.getText().toString().trim())) {
+            MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.describe)));
             return false;
         }
         if (picAddView.getPaths().size() == 0) {
@@ -367,7 +347,7 @@ public class PublishActivity extends AppActivity implements Toolbar.OnMenuItemCl
 
     @Override
     public void onSuccess() {
-        MyToast.show(getApplicationContext(), "发布成功");
+        MyToast.show(getApplicationContext(), getString(R.string.publish_success));
     }
 
     @Override

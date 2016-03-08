@@ -1,12 +1,13 @@
 package com.xfzj.getbook.views.gridview;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
-import com.xfzj.getbook.BaseApplication;
+import com.xfzj.getbook.R;
 import com.xfzj.getbook.loader.ImageLoader;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
     public BaseGridViewAdapter(Context c, List<T> paths) {
         mContext = c;
         this.paths = paths;
-        imageLoader = ((BaseApplication) mContext.getApplicationContext()).getImageLoader();
+        imageLoader = ImageLoader.build(mContext, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.image_default));
     }
     @Override
     public int getCount() {

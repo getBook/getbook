@@ -1,20 +1,27 @@
 package com.xfzj.getbook.loader;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.xfzj.getbook.utils.MyUtils;
+
 import java.io.FileDescriptor;
 
 public class ImageResizer {
     private static final String TAG = "ImageResizer";
+    private final Context context;
+    private int width;
 
-    public ImageResizer() {
+    public ImageResizer(Context context) {
+        this.context = context;
+        width = MyUtils.getScreenWidth(context);
     }
 
     public Bitmap decodeSampledBitmapFromResource(Resources res,
-            int resId, int reqWidth, int reqHeight) {
+                                                  int resId, int reqWidth, int reqHeight) {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -34,18 +41,21 @@ public class ImageResizer {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFileDescriptor(fd, null, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth,
-                reqHeight);
-
+        if (options.outWidth >= 4096 || options.outHeight >= 4096) {
+            options.inSampleSize = calculateInSampleSize(options, width,
+                    width);
+        } else {
+            // Calculate inSampleSize
+            options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                    reqHeight);
+        }
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFileDescriptor(fd, null, options);
     }
 
     public int calculateInSampleSize(BitmapFactory.Options options,
-            int reqWidth, int reqHeight) {
+                                     int reqWidth, int reqHeight) {
         if (reqWidth == 0 || reqHeight == 0) {
             return 1;
         }

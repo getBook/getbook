@@ -270,7 +270,7 @@ public class PicSelectFrag extends Fragment implements View.OnClickListener, Flo
             return;
         }
         picAdapter.deleteAll();
-        if (null != buckets && !buckets.containsKey(bucket) && "所有图片".equals(bucket)) {
+        if (null != buckets && !buckets.containsKey(bucket) && getActivity().getString(R.string.allPics).equals(bucket)) {
             picAdapter.addAll(allPaths);
         } else {
             picAdapter.addAll(buckets.get(bucket));

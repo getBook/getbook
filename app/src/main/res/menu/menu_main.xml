@@ -3,10 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:title="@string/search"
+        android:icon="@mipmap/search"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_scanner"
         android:orderInCategory="100"
         android:title="@string/sao_yi_sao"
-        android:icon="@mipmap/iconfonterweima"
-        
+        android:icon="@mipmap/fabu"
         app:showAsAction="ifRoom" />
 </menu>

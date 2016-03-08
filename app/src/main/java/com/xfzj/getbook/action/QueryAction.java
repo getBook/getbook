@@ -1,7 +1,10 @@
 package com.xfzj.getbook.action;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.xfzj.getbook.common.BookInfo;
+import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.utils.MyToast;
 
@@ -29,12 +32,12 @@ public class QueryAction extends BaseAction {
         this.context = context;
     }
 
-    public void query(BmobQuery<SecondBook> query, int limit, int skip) {
+    public void querySecondBook(BmobQuery<SecondBook> query, int limit, int skip) {
         query.include("user[huaName|header|gender|sno],bookInfo");
         query.order("-updatedAt,-createdAt");
         query.setLimit(limit);
         query.setSkip(skip * limit);
-        query.findObjects(context, new onFindListener<SecondBook>() {
+        query.findObjects(context, new FindListener<SecondBook>() {
             @Override
             public void onSuccess(List<SecondBook> list) {
                 if (null == list) {
@@ -61,7 +64,18 @@ public class QueryAction extends BaseAction {
      * @param limit 每次查询几个
      * @param skip  跳过几次
      */
-    public void querySaleInfo(int day, int limit, int skip) {
+    public void querySecondBookInfo(int day, int limit, int skip) {
+        querySecondBookInfo(day, limit, skip, null);
+    }
+
+    /**
+     * 查询几天前到今天的数据
+     *
+     * @param day   几天前
+     * @param limit 每次查询几个
+     * @param skip  跳过几次
+     */
+    public void querySecondBookInfo(int day, int limit, int skip, String name) {
 
         BmobQuery<SecondBook> query = new BmobQuery<>();
         List<BmobQuery<SecondBook>> and = new ArrayList<>();
@@ -76,20 +90,104 @@ public class QueryAction extends BaseAction {
         and.add(and1);
         and.add(and2);
         query.and(and);
-        query(query, limit, skip);
+        if (!TextUtils.isEmpty(name)) {
+            BmobQuery<BookInfo> bookInfoBmobQuery = new BmobQuery<>();
+            bookInfoBmobQuery.addWhereMatches("bookName", name);
+            query.addWhereMatchesQuery("bookInfo", "BookInfo", bookInfoBmobQuery);
+        }
+        querySecondBook(query, limit, skip);
+    }
+
+    private void queryDebris(BmobQuery<Debris> query, int limit, int skip) {
+        query.include("user[huaName|header|gender|sno]");
+        query.order("-updatedAt,-createdAt");
+        query.setLimit(limit);
+        query.setSkip(skip * limit);
+        query.findObjects(context, new FindListener<Debris>() {
+            @Override
+            public void onSuccess(List<Debris> list) {
+                if (null == list) {
+                    MyToast.show(context, "找不到");
+                }
+                if (null != onQueryListener) {
+                    onQueryListener.onSuccess(list);
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                if (null != onQueryListener) {
+                    onQueryListener.onFail();
+                }
+            }
+        });
     }
 
     /**
-     * 模糊查询书名中含有这个的关键词的
+     * 查询几天前到今天的数据
      *
-     * @param bookName
+     * @param day   几天前
+     * @param limit 每次查询几个
+     * @param skip  跳过几次
      */
-    public void queryMatchBookName(String bookName, int limit, int skip) {
-        BmobQuery<SecondBook> query = new BmobQuery<>();
-        query.addWhereMatches("bookName", bookName);
-        query(query, limit, skip);
+    public void queryDebrisInfo(int day, int limit, int skip) {
+        queryDebrisInfo(day, limit, skip, null);
     }
 
+    public void queryDebrisInfo(int day, int limit, int skip, String name) {
+
+        BmobQuery<Debris> query = new BmobQuery<>();
+        List<BmobQuery<Debris>> and = new ArrayList<>();
+
+        long now = System.currentTimeMillis();
+        Date dateNow = new Date(now);
+        Date dateBefore = new Date(now - day * 24 * 3600 * 1000);
+        BmobQuery<Debris> and1 = new BmobQuery<>();
+        and1.addWhereGreaterThanOrEqualTo("updatedAt", new BmobDate(dateBefore));
+        BmobQuery<Debris> and2 = new BmobQuery<>();
+        and2.addWhereLessThanOrEqualTo("updatedAt", new BmobDate(dateNow));
+        and.add(and1);
+        and.add(and2);
+        query.and(and);
+        if (!TextUtils.isEmpty(name)) {
+            query.addWhereMatches("title", name);
+        }
+        queryDebris(query, limit, skip);
+    }
+//
+//    /**
+//     * 搜索查询
+//     * 
+//     * @param key
+//     * @param count
+//     */
+//    public void associationQueryBookInfo(String key, int count) {
+//        BmobQuery<BookInfo> query = new BmobQuery<>();
+//        query.addWhereMatches("bookName", key);
+//        query.addQueryKeys("objectId,bookName");
+//        query.setLimit(count);
+//        queryBookInfo(query, count);
+//    }
+//
+//    private void queryBookInfo(BmobQuery<BookInfo> query, int count) {
+//        query.findObjects(context, new FindListener<BookInfo>() {
+//            @Override
+//            public void onSuccess(List<BookInfo> list) {
+//                if (null != onQueryListener) {
+//                    onQueryListener.onSuccess(list);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                if (null != onQueryListener) {
+//                    onQueryListener.onFail();
+//                }
+//            }
+//        });
+//
+//
+//    }
 
     public <T> void setOnQueryListener(OnQueryListener<T> onQueryListener) {
         this.onQueryListener = onQueryListener;
@@ -99,19 +197,6 @@ public class QueryAction extends BaseAction {
         void onSuccess(List<T> lists);
 
         void onFail();
-    }
-
-    private class onFindListener<T> extends FindListener<T> {
-
-        @Override
-        public void onSuccess(List<T> list) {
-
-        }
-
-        @Override
-        public void onError(int i, String s) {
-
-        }
     }
 
 

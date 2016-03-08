@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.loader.ImageLoader;
@@ -26,7 +27,8 @@ public class NetImageView extends ImageView {
     private Context context;
     private File cachePath;
     private String isbn;
-
+    private ImageLoader imageLoader;
+    
     public NetImageView(Context context) {
         this(context, null);
     }
@@ -38,11 +40,13 @@ public class NetImageView extends ImageView {
     public NetImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
+        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
     }
 
     public NetImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
+        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
     }
 
     public String getUrl() {
@@ -118,49 +122,16 @@ public class NetImageView extends ImageView {
         return cachePath.getPath();
     }
 
-    public void setBmobImage(final String name, final Bitmap defaultImage, final ImageLoader imageLoader,int width,int height) {
+    public void setBmobImage(final String name, final Bitmap defaultImage, int width,int height) {
         if (TextUtils.isEmpty(name)) {
             setImageBitmap(defaultImage);
             return;
         }
+        setImageBitmap(defaultImage);
         imageLoader.bindBitmap(name, NetImageView.this,width,height);
-//        BmobProFile.getInstance(context).getAccessURL(name, new GetAccessUrlListener() {
-//            @Override
-//            public void onSuccess(BmobFile bmobFile) {
-//                String url = bmobFile.getUrl();
-//                if (TextUtils.isEmpty(url)) {
-//                    setImageBitmap(defaultImage);
-//                } else {
-//                    imageLoader.bindBitmap(url, NetImageView.this);
-//                }
-//            }
-//         
-//            @Override
-//            public void onError(int i, String s) {
-//                setImageBitmap(defaultImage);
-//            }
-//        });
-//        BmobProFile.getInstance(context).download(name, new DownloadListener() {
-//            @Override
-//            public void onSuccess(String s) {
-//                Bitmap bp = BitmapFactory.decodeFile(s);
-//                if (null == bp) {
-//                    MyLog.print("解析不了", name + "    " + s);
-//                    setImageBitmap(defaultImage);
-//                } else {
-//                    setImageBitmap(bp);
-//                }
-//            }
-//
-//            @Override
-//            public void onProgress(String s, int i) {
-//                MyLog.print(s, i + "");
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//                setImageBitmap(defaultImage);
-//            }
-//        });
+    }
+
+    public void setBmobImage(final String name, final Bitmap defaultImage) {
+        setBmobImage(name, defaultImage, 0, 0);
     }
 }

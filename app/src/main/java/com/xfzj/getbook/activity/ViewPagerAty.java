@@ -2,7 +2,6 @@ package com.xfzj.getbook.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -17,9 +16,8 @@ import android.widget.TextView;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.PicPath;
-import com.xfzj.getbook.loader.ImageResizer;
-import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
+import com.xfzj.getbook.views.view.NetImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,6 +31,9 @@ import butterknife.Bind;
 public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String PATH = "picpaths";
     public static final String INDEX = "index";
+    public static final String FROM = "ViewPagerAty.class";
+    public static final String VIEW = "View";
+    public static final String EDIT = "Edit";
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
 
@@ -48,20 +49,12 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
     private List<PicPath> paths = new ArrayList<>();
     private MyAdapter myAdapter;
 
-    public void setPaths(List<PicPath> paths) {
+    public void setPicPaths(List<PicPath> paths) {
         this.paths = paths;
         ivs = new ArrayList<>();
         for (int i = 0; i < this.paths.size(); i++) {
-            ImageView iv = new ImageView(getApplicationContext());
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(this.paths.get(i).getPath(), options);
-            if (options.outWidth >= 4096 || options.outHeight >= 4096) {
-                options.inSampleSize = new ImageResizer().calculateInSampleSize(options, MyUtils.getScreenMetrics(getApplicationContext()).widthPixels, MyUtils.getScreenMetrics(getApplicationContext()).heightPixels);
-            }
-            options.inJustDecodeBounds = false;
-            Bitmap bitmap = BitmapFactory.decodeFile(this.paths.get(i).getPath(), options);
-            iv.setImageBitmap(bitmap);
+            NetImageView iv = new NetImageView(getApplicationContext());
+            iv.setBmobImage(this.paths.get(i).getPath(), BitmapFactory.decodeResource(getResources(), R.mipmap.image_default), 0, 0);
             ivs.add(iv);
         }
     }
@@ -76,23 +69,31 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
         baseToolBar.initToolbar(this, "");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tvMiddle = baseToolBar.getTv3();
-        tvDelete = baseToolBar.getTv2();
-        tvMiddle.setVisibility(View.VISIBLE);
-        tvDelete.setVisibility(View.VISIBLE);
-        tvDelete.setBackgroundResource(R.drawable.delete_select);
-        RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tvDelete.getLayoutParams();
-        p.height = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
-        p.width = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
+       String from= getIntent().getStringExtra(FROM);
+        if (from.equals(EDIT)) {
+            tvDelete = baseToolBar.getTv2();
+            tvDelete.setVisibility(View.VISIBLE);
+            tvDelete.setBackgroundResource(R.drawable.delete_select);
+            RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tvDelete.getLayoutParams();
+            p.height = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
+            p.width = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
+            tvDelete.setLayoutParams(p);
+            tvDelete.setOnClickListener(this);
+         
+        }
+
+        setPicPaths((List<PicPath>) getIntent().getSerializableExtra(PATH));
         
-        tvDelete.setLayoutParams(p);
-        setPaths((List<PicPath>) getIntent().getSerializableExtra(PATH));
+        tvMiddle.setVisibility(View.VISIBLE);
         myAdapter = new MyAdapter();
         viewPager.setAdapter(myAdapter);
         viewPager.addOnPageChangeListener(this);
         setCurrentItem(getIntent().getIntExtra(INDEX, 0));
-        tvDelete.setOnClickListener(this);
+      
 
     }
+
+
 
 
     private int getPathsSize() {
@@ -133,8 +134,8 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
 
     private void jump2back() {
         Intent i = new Intent();
-        i.putExtra(PublishActivity.REMAIN_PATHS, (Serializable) paths);
-        setResult(PublishActivity.REMAIN_PATHS_CODE, i);
+        i.putExtra(PublishSecondBookActivity.REMAIN_PATHS, (Serializable) paths);
+        setResult(PublishSecondBookActivity.REMAIN_PATHS_CODE, i);
         finish();
     }
 

@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.SecondBook;
@@ -33,7 +34,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
     private onClickListener onUserInfoClick, onSecondBookInfoClick;
     private SecondBook secondBook;
     private SimpleUserView simpleUserView;
-
+    private ImageLoader imageLoader;
     public <T> void setOnUserInfoClick(onClickListener<T> onUserInfoClick) {
         this.onUserInfoClick = onUserInfoClick;
     }
@@ -62,6 +63,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 
     private void init(Context context) {
         this.context = context;
+        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
         View view = LayoutInflater.from(context).inflate(R.layout.secondbook_info, null);
         simpleUserView = (SimpleUserView) view.findViewById(R.id.simpleUserView);
         tvBookName = (TextView) view.findViewById(R.id.tvBookName);
@@ -83,7 +85,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
         addView(view);
     }
 
-    public void update(SecondBook secondBook, ImageLoader imageLoader) {
+    public void update(SecondBook secondBook) {
         if (null == secondBook) {
             return;
         }
@@ -92,7 +94,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 
 
         User user = secondBook.getUser();
-        simpleUserView.update(user, imageLoader);
+        simpleUserView.update(user);
         if (!TextUtils.isEmpty(secondBook.getDiscount())) {
             tvPrice.setText(secondBook.getDiscount());
         }
@@ -117,17 +119,17 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
         }
 
 
-        updateBookInfo(bookInfo, imageLoader);
+        updateBookInfo(bookInfo);
 
     }
 
 
-    private void updateBookInfo(BookInfo bookInfo, ImageLoader imageLoader) {
+    private void updateBookInfo(BookInfo bookInfo) {
         if (null == bookInfo) {
             return;
         }
         tvIsbn.setText(bookInfo.getIsbn());
-        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), imageLoader,0,0);
+        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book),0,0);
         String[] a = bookInfo.getAuthor();
         if (null != a && a.length > 0) {
             StringBuilder sb = new StringBuilder();

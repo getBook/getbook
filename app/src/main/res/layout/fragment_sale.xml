@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.xfzj.getbook.fragment.SaleFrag">
+    tools:context=".fragment.SecondBookFrag">
 
     <com.xfzj.getbook.recycleview.BaseLoadRecycleView
         android:id="@+id/recycleView"
@@ -10,5 +10,8 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp" />
+
     <include layout="@layout/no_data" />
+
+    <include layout="@layout/no_data2" />
 </FrameLayout>

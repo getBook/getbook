@@ -81,6 +81,10 @@ public class BaseLoadRecycleView extends LinearLayout {
         isRefresh=false;
         rc.scrollToPosition(0);
     }
+    public void setRefreshing() {
+        refresh.setRefreshing(true);
+        
+    }
     public void setLoadMoreFinish(){
         rc.LoadFinish();
     }

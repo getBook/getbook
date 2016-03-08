@@ -11,14 +11,14 @@
     <string name="logining">正在登陆中</string>
     <string name="login_fail">登陆失败</string>
     <string name="login_success">登陆成功</string>
-    <string name="sale">出售</string>
-    <string name="want">求购</string>
+    <string name="secondbook">二手书</string>
+    <string name="drugstore">杂货铺</string>
     <string name="my">我的</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="note">备注</string>
-    <string name="add_note">添加该书的描述，帮它选择最合适的主人...</string>
+    <string name="add_note">添加描述，帮它选择最合适的主人...</string>
     <string name="yuan">\u00a5</string>
     <string name="get_bookinfo_fail">获取书籍信息失败</string>
     <string name="no_externalstorage">暂无外部存储</string>
@@ -48,7 +48,7 @@
     <string name="no_publisher">暂无出版社</string>
     <string name="no_price">暂无价格</string>
     <string name="no_author">佚名</string>
-    <string name="want_send">想要这本书？快给他发短信</string>
+    <string name="want_send">想要它？快给ta发短信</string>
     <string name="detail">详情</string>
     <string name="error">出错了</string>
     <string name="no_tele">该用户未设置手机号！</string>
@@ -56,10 +56,26 @@
     <string name="boo_pic">书本图片：</string>
     <string name="book_des">书本描述：</string>
     <string name="saleprice">售价:</string>
+    <string name="originprice">原价:</string>
     <string name="new_old">新旧:</string>
     <string name="chengxin">成新</string>
     <string name="couont">数量:</string>
     <string name="telephone">手机:</string>
     <string name="baseinfo">基本信息:</string>
+    <string name="zanwu">暂无</string>
+    <string name="search">搜索</string>
+    <string name="allPics">所有图片</string>
+    <string name="describe">描述</string>
+    <string name="publish_success">发布成功</string>
+    <string name="title">标题</string>
+    <string name="capture">拍照</string>
+    <string name="album">相册</string>
+    <string name="jpg">.jpg</string>
+    <string name="no_title">无标题</string>
+    <string name="no_describe">暂无描述</string>
+    <string name="no_date">0-0</string>
+    <string name="debris_des">杂货描述：</string>
+    <string name="debris_pic">杂货图片：</string>
+    <string name="no_search_result">搜索不到相关物品，要不换个词试试吧...</string>
 
 </resources>
