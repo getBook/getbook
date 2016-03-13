@@ -24,6 +24,20 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/tvRight1"
+
+        style="@style/toolbar_textview2"
+
+        android:layout_toLeftOf="@+id/tvRight2"
+        android:text="全选" />
+
+    <TextView
+        android:id="@+id/tvRight2"
+        style="@style/toolbar_textview2"
+        android:layout_alignParentRight="true"
+        android:text="删除" />
+
+    <TextView
         android:id="@+id/tvPublish"
         style="@style/toolbar_textview" />
 

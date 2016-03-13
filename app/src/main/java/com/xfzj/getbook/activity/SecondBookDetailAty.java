@@ -85,6 +85,11 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         secondBook = getIntentData();
         user = secondBook.getUser();
+        if (null == user) {
+            finish();
+            return;
+        }
+        
         bookInfo = secondBook.getBookInfo();
         imageLoader = ((BaseApplication) getApplicationContext()).getImageLoader();
 

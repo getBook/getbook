@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -13,8 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import cn.bmob.v3.BmobUser;
 
 /**
  * Created by zj on 2016/1/29.
@@ -33,7 +32,7 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, String> {
         super(context);
         this.context = context;
         this.key = sno;
-        user = BmobUser.getCurrentUser(context, User.class);
+        user = ((BaseApplication) (context.getApplicationContext())).getUser();
 
     }
 

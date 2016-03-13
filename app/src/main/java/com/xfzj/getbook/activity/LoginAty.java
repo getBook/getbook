@@ -3,9 +3,9 @@ package com.xfzj.getbook.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.MainActivity;
@@ -23,28 +23,29 @@ import cn.bmob.v3.BmobUser;
 /**
  * Created by zj on 2016/1/28.
  */
-public class LoginAty extends AppActivity {
-    public static final String ACCOUNT ="account" ;
+public class LoginAty extends AppActivity  {
+    public static final String ACCOUNT = "account";
     @Bind(R.id.edtUserName)
     EditText edtUserName;
     @Bind(R.id.edtPassword)
     EditText edtPassword;
     @Bind(R.id.btnLogin)
     Button btnLogin;
-    @Bind(R.id.ivUserHead)
-    ImageView ivUserHead;
+
     private String userName, password;
 
     @Override
     protected void onSetContentView() {
+        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        getWindow().setFlags(flag, flag);
+
+
         setContentView(R.layout.aty_login);
 
     }
 
     @Override
     public void onCreateView(Bundle savedInstanceState) {
- 
-
         String str = getIntent().getStringExtra(ACCOUNT);
         if (!TextUtils.isEmpty(str)) {
             edtUserName.setText(str);
@@ -65,23 +66,24 @@ public class LoginAty extends AppActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LoginAsync loginAsync = new LoginAsync(LoginAty.this,"阿花", userName, password, null, getString(R.string.logining));
+        LoginAsync loginAsync = new LoginAsync(LoginAty.this, null, userName, password, null, getString(R.string.logining));
         loginAsync.setCallback(new LoginAction.CallBack() {
             @Override
             public void onSuccess() {
                 MyToast.show(getApplicationContext(), getString(R.string.login_success) + BmobUser.getCurrentUser(getApplicationContext(), User.class).toString());
-                
+
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 startService(new Intent(getApplicationContext(), GetHeaderSerVice.class));
                 finish();
             }
+
             @Override
             public void onFail() {
                 MyToast.show(getApplicationContext(), getString(R.string.login_fail));
-                
+
             }
         });
         loginAsync.execute();
     }
-
+    
 }

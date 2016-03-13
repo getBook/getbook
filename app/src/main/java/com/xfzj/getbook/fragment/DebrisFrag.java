@@ -47,7 +47,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
     private int skip = 0;
     private int limit = 10;
-    private static final int MAX_NUM = 8;
+    private static final int MAX_NUM = 15;
     private BaseLoadRecycleView rc;
     private LinearLayout llError;
     private Button btn;
@@ -87,7 +87,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         }
         queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
-            queryAction.queryDebrisInfo(MAX_NUM, limit, skip,key);
+            queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
         }
         queryAction.setOnQueryListener(this);
     }
@@ -121,19 +121,20 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                 MyToast.show(getActivity(), "到头了~");
             }
         }
-        if (null == lists || lists.size() == 0 && skip == 0) {
-
-            rc.setVisibility(View.GONE);
-            if (mParam1.equals(FROMMAIN)) {
-                llError.setVisibility(View.VISIBLE);
-            } else if (mParam1.equals(FROMSEARCH)) {
-                llnodata.setVisibility(View.VISIBLE);
+        if (null == lists || lists.size() == 0) {
+            if (skip == 0) {
+                rc.setVisibility(View.GONE);
+                if (mParam1.equals(FROMMAIN)) {
+                    llError.setVisibility(View.VISIBLE);
+                } else if (mParam1.equals(FROMSEARCH)) {
+                    llnodata.setVisibility(View.VISIBLE);
+                }
             }
         } else {
             rc.setVisibility(View.VISIBLE);
-            if (mParam1.equals(FROMMAIN)) {
+            if (mParam1.equals(FROMMAIN) && null != llError) {
                 llError.setVisibility(View.GONE);
-            } else if (mParam1.equals(FROMSEARCH)) {
+            } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
                 llnodata.setVisibility(View.GONE);
             }
             debrisAdapter.addAll(lists);
@@ -145,10 +146,12 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
     @Override
     public void onFail() {
-        rc.setVisibility(View.GONE);
-        if (mParam1.equals(FROMMAIN)) {
+        if (null != rc) {
+            rc.setVisibility(View.GONE);
+        }
+        if (mParam1.equals(FROMMAIN) && null != llError) {
             llError.setVisibility(View.VISIBLE);
-        } else if (mParam1.equals(FROMSEARCH)) {
+        } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
             llnodata.setVisibility(View.VISIBLE);
         }
     }
@@ -161,12 +164,12 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         }
         skip = 0;
         rc.setRefreshing();
-        queryAction.queryDebrisInfo(MAX_NUM, limit, skip,key);
+        queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
     }
 
     @Override
     public void onLoadMore() {
-        queryAction.queryDebrisInfo(MAX_NUM, limit, ++skip,key);
+        queryAction.queryDebrisInfo(MAX_NUM, limit, ++skip, key);
 
     }
 
@@ -178,7 +181,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
     public void searchKey(String key) {
         this.key = key;
         onRefresh();
-        
+
 
     }
 

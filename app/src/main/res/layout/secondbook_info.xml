@@ -18,29 +18,29 @@
         <com.xfzj.getbook.views.view.SimpleUserView
             android:id="@+id/simpleUserView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:alpha="0.5"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
+        android:alpha="0.5"
         android:background="@color/divider" />
 
     <LinearLayout
         android:id="@+id/llSecondBookInfo"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:orientation="horizontal">
 
-        <include
-            layout="@layout/secondbookinfo_content"
+        <com.xfzj.getbook.views.view.SecondBookInfoItemView
+            android:id="@+id/itemView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

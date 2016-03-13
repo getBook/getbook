@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-        compile project(':Zxing')
+    compile project(':Zxing')
     //bmob-sdk ：Bmob的android sdk包
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile 'com.android.support:appcompat-v7:22.2.1'

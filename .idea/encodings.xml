@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/Zxing" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/xfzj/getbook/net/HttpHelperImp.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_btn.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_btn_press.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_et_bg.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_picture_bg.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/lbs_popup_bg.9.png" charset="GBK" />

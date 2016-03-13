@@ -12,9 +12,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
     public static final String FROM = "MainActivity.class";
@@ -59,8 +65,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private DebrisFrag wantFrag;
     private MyFrag myFrag;
     private FragmentManager fm;
-
-
+    private BaseApplication baseApplication;
+    private User user,serverUser;
     @Override
     protected void onSetContentView() {
         setContentView(R.layout.activity_main);
@@ -75,8 +81,81 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setTitleTextColor(Color.WHITE);
         fm = getSupportFragmentManager();
+        baseApplication = (BaseApplication) getApplication();
+        user = baseApplication.getUser();
+        isNeedHuaName();
         init();
         isNeedLogin();
+    }
+
+    private void isNeedHuaName() {
+
+        if (null != user) {
+            BmobQuery<User> query = new BmobQuery<>();
+            query.addWhereEqualTo("sno", user.getSno());
+            query.findObjects(getApplicationContext(), new FindListener<User>() {
+                @Override
+                public void onSuccess(List<User> list) {
+                    if (null != list && list.size() != 0) {
+                         serverUser = list.get(0);
+                        if (TextUtils.isEmpty(serverUser.getHuaName())) {
+                            showHuaNameDialog();
+                        }else {
+                            SharedPreferencesUtils.saveHuaName(getApplicationContext(), serverUser.getHuaName());
+                            user.setHuaName(serverUser.getHuaName());
+                            
+                        }
+                    } else {
+                        showHuaNameDialog();
+                    }
+                }
+
+                @Override
+                public void onError(int i, String s) {
+
+                }
+            });
+        }
+    }
+
+    private void showHuaNameDialog() {
+         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+      
+        final View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.huaname, null);
+        final AlertDialog ad = builder.setTitle("起个昵称吧").setView(view).setCancelable(false).create();
+        ad.show();
+        final EditText edtHuaName = (EditText) view.findViewById(R.id.edtHuaName);
+        Button btnEnsure = (Button) view.findViewById(R.id.btnEnsure);
+        btnEnsure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String huaName = edtHuaName.getText().toString();
+                if (TextUtils.isEmpty(huaName)) {
+                    MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.nicheng)));
+                } else {
+                    ad.dismiss();
+                    uploadHuaName(huaName);
+                }
+            }
+        });
+        
+
+
+    }
+
+    private void uploadHuaName(final String huaName) {
+        user.setHuaName(huaName);
+        user.update(getApplicationContext(), serverUser.getObjectId(), new UpdateListener() {
+            @Override
+            public void onSuccess() {
+                SharedPreferencesUtils.saveHuaName(getApplicationContext(), huaName);
+                user.setHuaName(huaName);
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+            }
+        });
     }
 
     /**
@@ -89,6 +168,11 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             //需要登陆一次获得最新的cookie
 
             final User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
+            if (null == user) {
+                jump2Login("");
+                return;
+            }
+
             String password = SharedPreferencesUtils.getUserPassword(getApplicationContext(), user.getSno());
 
             if (TextUtils.isEmpty(password)) {
@@ -101,8 +185,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             loginAsync.setCallback(new LoginAction.CallBack() {
                 @Override
                 public void onSuccess() {
-                    MyToast.show(getApplicationContext(), "登陆成功");
-
+                    MyToast.show(getApplicationContext(), getString(R.string.login_success));
                 }
 
                 @Override
@@ -115,12 +198,14 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
 
     }
+
     private void jump2Login(String str) {
         Intent i = new Intent(this, LoginAty.class);
         i.putExtra(LoginAty.ACCOUNT, str);
         startActivity(i);
         finish();
     }
+
     /**
      * 初始化菜单
      */
@@ -239,7 +324,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                     }
                 });
                 builder.create().show();
-          
+
                 break;
             case R.id.action_search:
                 Intent intent = new Intent(MainActivity.this, SearchAty.class);

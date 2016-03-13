@@ -13,7 +13,7 @@ public class BaseLoadMoreRecycleView extends RecyclerView {
     private BaseRecycleViewAdapter adapter;
 
     private boolean isLoadingMore=false;//是否正处于加载中
-
+    private boolean canLoadMore=true;
     private LoadMoreListen loadMoreListen;//上拉加载更多的接口
     private int lastPosition;//最后一个可见的位置
     private Context context;
@@ -25,6 +25,10 @@ public class BaseLoadMoreRecycleView extends RecyclerView {
     public BaseLoadMoreRecycleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
     }
 
     public void setLoadMoreAdapter(BaseRecycleViewAdapter adapter) {
@@ -67,7 +71,7 @@ public class BaseLoadMoreRecycleView extends RecyclerView {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (null != loadMoreListen && !getIsLoadingMore() && dy > 0) {
+                if (null != loadMoreListen && !getIsLoadingMore() && dy > 0&&canLoadMore) {
                     
                     int lastPos = getLastPosition();
                     if (lastPos + 1 == adapter.getItemCount()) {

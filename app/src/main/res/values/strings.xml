@@ -7,7 +7,7 @@
     <string name="login">登陆</string>
     <string name="login_tips">学号或密码不能为空！</string>
     <string name="account">学号</string>
-    <string name="password">密码</string>
+    <string name="password">密码，一卡通查询密码</string>
     <string name="logining">正在登陆中</string>
     <string name="login_fail">登陆失败</string>
     <string name="login_success">登陆成功</string>
@@ -77,5 +77,17 @@
     <string name="debris_des">杂货描述：</string>
     <string name="debris_pic">杂货图片：</string>
     <string name="no_search_result">搜索不到相关物品，要不换个词试试吧...</string>
-
+    <string name="schoollife">校园生活</string>
+    <string name="totheend">已经到达最底部了</string>
+    <string name="loading">加载中...</string>
+    <string name="all">全选</string>
+    <string name="delete">删除</string>
+    <string name="delete_cannot_find">删除后无法找回哦</string>
+    <string name="refersh_can_find">刷新后，又可以让大家看到我卖的东西啦</string>
+    <string name="nothing_to_publish">这里什么都没有，快去发布一些东西吧...</string>
+    <string name="nicheng_custom">昵称，可自定义</string>
+    <string name="nicheng">昵称</string>
+    <string name="operations">操作</string>
+    <string name="refresh">刷新</string>
+    <string name="delete_success">删除成功</string>
 </resources>

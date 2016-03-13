@@ -17,6 +17,10 @@ public class SecondBook extends BmobObject {
     private String tips;
     private String telePhone;
 
+
+    public SecondBook() {
+        
+    }
     public SecondBook(User user, BookInfo bookInfo, String discount, String newold, Integer count, String[] pictures, String tips, String telePhone) {
         this.user = user;
         this.bookInfo = bookInfo;

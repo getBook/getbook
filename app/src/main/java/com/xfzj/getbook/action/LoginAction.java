@@ -3,6 +3,7 @@ package com.xfzj.getbook.action;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -18,7 +19,6 @@ import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
-import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by zj on 2016/1/28.
@@ -34,9 +34,11 @@ public class LoginAction extends BaseAction {
     private User newUser;
     private Context context;
     private String huaName;
+    private BaseApplication baseApplication;
     public LoginAction(Context context) {
         currUser = BmobUser.getCurrentUser(context, User.class);
         this.context = context;
+        baseApplication = (BaseApplication) (context.getApplicationContext());
     }
 
     public User getNewUser() {
@@ -63,15 +65,21 @@ public class LoginAction extends BaseAction {
         }
         if (hasUser()) {
             if (isSameUser()) {
-                updateUserMsg(callBack);
+                SharedPreferencesUtils.updateMsg(context, msg);
+                loginBmob(userName, password, callBack);
                 return callBack;
             } else {
+                SharedPreferencesUtils.clearUser(context);
+                SharedPreferencesUtils.saveUser(context, this.newUser);
                 logOutBmob();
                 registerBmob(newUser, callBack);
                 return callBack;
             }
         } else {
+            SharedPreferencesUtils.clearUser(context);
+            SharedPreferencesUtils.saveUser(context, this.newUser);
             registerBmob(newUser, callBack);
+            
             return callBack;
         }
     }
@@ -102,6 +110,7 @@ public class LoginAction extends BaseAction {
             JSONObject jsonObject = new JSONObject(result);
             boolean isSucc = jsonObject.getBoolean("success");
             if (isSucc) {
+              
                 String msg = jsonObject.getString("msg");
                 this.newUser = gson.fromJson(jsonObject.getJSONObject("obj").toString(), User.class);
                 this.newUser.setPassword(password);
@@ -110,7 +119,7 @@ public class LoginAction extends BaseAction {
                 if (!TextUtils.isEmpty(huaName)) {
                     this.newUser.setHuaName(huaName);
                 }
-                
+            
                 MyLog.print("sigin", newUser.toString());
                 return this.newUser.getMsg();
             }
@@ -150,36 +159,43 @@ public class LoginAction extends BaseAction {
         return true;
     }
 
-    /**
-     * 更新用户的msg字段
-     */
-    private void updateUserMsg(final CallBack callBack) {
-        newUser.setHeader(currUser.getHeader());
-        newUser.setEmail(currUser.getEmail());
-        
-        newUser.update(context, currUser.getObjectId(), new UpdateListener() {
-            @Override
-            public void onSuccess() {
-                if (null != callBack) {
-                    callBack.onSuccess();
-
-                }
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                if (null != callBack) {
-                    callBack.onFail();
-
-                }
-            }
-        });
-    }
+//    /**
+//     * 更新用户的msg字段
+//     * @param user
+//     * @param callBack
+//     */
+//    private void updateUserMsg(final User user, final CallBack callBack) {
+//        newUser.setHeader(currUser.getHeader());
+//        newUser.setEmail(currUser.getEmail());
+//        
+//        newUser.update(context, currUser.getObjectId(), new UpdateListener() {
+//            @Override
+//            public void onSuccess() {
+//                String password = getPassword(user);
+//                if (!TextUtils.isEmpty(password)) {
+//                    SharedPreferencesUtils.saveUser(context, user.getSno(), password);
+//                }
+//                if (null != callBack) {
+//                    callBack.onSuccess();
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int i, String s) {
+//                if (null != callBack) {
+//                    callBack.onFail();
+//
+//                }
+//            }
+//        });
+//    }
 
     /**
      * 退出账户
      */
     public void logOutBmob() {
+     
         BmobUser.logOut(context);
         currUser = BmobUser.getCurrentUser(context, User.class);
     }
@@ -217,21 +233,23 @@ public class LoginAction extends BaseAction {
             @Override
             public void onSuccess() {
                 MyLog.print("loginBmob", "onSuccess");
-                String password = getPassword(user);
-                if (!TextUtils.isEmpty(password)) {
-                    SharedPreferencesUtils.saveUser(context, user.getSno(), password);
+//                String password = getPassword(user);
+//                if (!TextUtils.isEmpty(password)) {
+//                    SharedPreferencesUtils.saveUser(context, user.getSno(), password);
+//                }
+                User user1 = SharedPreferencesUtils.getUser(context);
+                MyLog.print("user",user1.toString());
+                if (null != user1) {
+                    baseApplication.setUser(user1);
                 }
                 if (null != callBack) {
                     callBack.onSuccess();
-
                 }
-
-
             }
 
             @Override
             public void onFailure(int i, String s) {
-                MyLog.print("loginBmob", "onFailure" + s);
+                MyLog.print("loginBmob", "onFailure" + s+i);
                 if (null != callBack) {
                     callBack.onFail();
 

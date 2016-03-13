@@ -3,9 +3,11 @@ package com.xfzj.getbook.action;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
+import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.MyToast;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobDate;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -33,15 +36,17 @@ public class QueryAction extends BaseAction {
     }
 
     public void querySecondBook(BmobQuery<SecondBook> query, int limit, int skip) {
-        query.include("user[huaName|header|gender|sno],bookInfo");
+
         query.order("-updatedAt,-createdAt");
-        query.setLimit(limit);
-        query.setSkip(skip * limit);
+        if (limit != 0) {
+            query.setLimit(limit);
+            query.setSkip(skip * limit);
+        }
         query.findObjects(context, new FindListener<SecondBook>() {
             @Override
             public void onSuccess(List<SecondBook> list) {
                 if (null == list) {
-                    MyToast.show(context, "找不到");
+                    MyToast.show(context, context.getString(R.string.net_error));
                 }
                 if (null != onQueryListener) {
                     onQueryListener.onSuccess(list);
@@ -58,6 +63,35 @@ public class QueryAction extends BaseAction {
     }
 
     /**
+     * 查询自己发布的二手书
+     *
+     * @param sno
+     */
+    public void querySelfSecondBook(String sno) {
+        BmobQuery<SecondBook> query = new BmobQuery<>();
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addWhereEqualTo("sno", sno);
+        query.addWhereMatchesQuery("user", "_User", userBmobQuery);
+        query.include("bookInfo");
+        querySecondBook(query, 0, 0);
+    }
+
+    /**
+     * 查询自己发布的杂货铺
+     *
+     * @param sno
+     * @param limit
+     * @param skip
+     */
+    public void querySelfDebris(String sno) {
+        BmobQuery<Debris> query = new BmobQuery<>();
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addWhereEqualTo("sno", sno);
+        query.addWhereMatchesQuery("user", "_User", userBmobQuery);
+        queryDebris(query, 0, 0);
+    }
+
+    /**
      * 查询几天前到今天的数据
      *
      * @param day   几天前
@@ -66,6 +100,34 @@ public class QueryAction extends BaseAction {
      */
     public void querySecondBookInfo(int day, int limit, int skip) {
         querySecondBookInfo(day, limit, skip, null);
+    }
+
+    /**
+     * 查询自己发布的二手书的数量
+     *
+     * @param sno
+     * @param countListener
+     */
+    public void querySelfSecondBookCount(String sno, CountListener countListener) {
+        BmobQuery<SecondBook> query = new BmobQuery<>();
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addWhereEqualTo("sno", sno);
+        query.addWhereMatchesQuery("user", "_User", userBmobQuery);
+        query.count(context, SecondBook.class, countListener);
+    }
+
+    /**
+     * 查询自己发布的杂货铺的数量
+     *
+     * @param sno
+     * @param countListener
+     */
+    public void querySelfDebrisCount(String sno, CountListener countListener) {
+        BmobQuery<Debris> query = new BmobQuery<>();
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addWhereEqualTo("sno", sno);
+        query.addWhereMatchesQuery("user", "_User", userBmobQuery);
+        query.count(context, Debris.class, countListener);
     }
 
     /**
@@ -95,19 +157,22 @@ public class QueryAction extends BaseAction {
             bookInfoBmobQuery.addWhereMatches("bookName", name);
             query.addWhereMatchesQuery("bookInfo", "BookInfo", bookInfoBmobQuery);
         }
+        query.include("user[huaName|header|gender|sno],bookInfo");
         querySecondBook(query, limit, skip);
     }
 
     private void queryDebris(BmobQuery<Debris> query, int limit, int skip) {
-        query.include("user[huaName|header|gender|sno]");
+
         query.order("-updatedAt,-createdAt");
-        query.setLimit(limit);
-        query.setSkip(skip * limit);
+        if (limit != 0) {
+            query.setLimit(limit);
+            query.setSkip(skip * limit);
+        }
         query.findObjects(context, new FindListener<Debris>() {
             @Override
             public void onSuccess(List<Debris> list) {
                 if (null == list) {
-                    MyToast.show(context, "找不到");
+                    MyToast.show(context, context.getString(R.string.net_error));
                 }
                 if (null != onQueryListener) {
                     onQueryListener.onSuccess(list);
@@ -152,6 +217,7 @@ public class QueryAction extends BaseAction {
         if (!TextUtils.isEmpty(name)) {
             query.addWhereMatches("title", name);
         }
+        query.include("user[huaName|header|gender|sno]");
         queryDebris(query, limit, skip);
     }
 //

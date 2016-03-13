@@ -8,13 +8,12 @@ import android.text.TextUtils;
 
 import com.xfzj.getbook.async.UserHeadAsync;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import java.io.File;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -37,35 +36,42 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
     @Override
     public void onCreate() {
         super.onCreate();
-        user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
+
     }
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        BmobQuery<User> userBmobQuery = new BmobQuery<>();
-        userBmobQuery.addWhereEqualTo("sno", user.getSno());
-        userBmobQuery.findObjects(getApplicationContext(), new FindListener<User>() {
-            @Override
-            public void onSuccess(List<User> list) {
-                User user = list.get(0);
-                String header = user.getHeader();
-                if (TextUtils.isEmpty(header) || !header.endsWith(".jpg")) {
-                    UserHeadAsync userHeadAsync = new UserHeadAsync(getApplicationContext(), user.getSno());
-                    userHeadAsync.execute();
-                    userHeadAsync.setCallBack(GetHeaderSerVice.this);
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+        user = ((BaseApplication) getApplication()).getUser();
+        if (null != user) {
+            BmobQuery<User> userBmobQuery = new BmobQuery<>();
+            userBmobQuery.addWhereEqualTo("sno", user.getSno());
+            userBmobQuery.findObjects(getApplicationContext(), new FindListener<User>() {
+                @Override
+                public void onSuccess(List<User> list) {
+                    User user = list.get(0);
+                    String header = user.getHeader();
+                    String localHeader = SharedPreferencesUtils.getUserHeader(getApplicationContext());
+                    if (TextUtils.isEmpty(header) || !header.endsWith(".jpg")) {
+                        UserHeadAsync userHeadAsync = new UserHeadAsync(getApplicationContext(), user.getSno());
+                        userHeadAsync.execute();
+                        userHeadAsync.setCallBack(GetHeaderSerVice.this);
+                    } else if (TextUtils.isEmpty(localHeader)) {
+                        saveHeader(header);
+                    }
                 }
 
-            }
+                @Override
+                public void onError(int i, String s) {
 
-            @Override
-            public void onError(int i, String s) {
-
-            }
-        });
-
-
+                }
+            });
+        }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void saveHeader(String header) {
+        SharedPreferencesUtils.saveUserHeader(getApplicationContext(), header);
     }
 
     @Override
@@ -79,7 +85,7 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
             public void onSuccess() {
 
                 user.setHeader(bmobFile.getFileUrl(getApplicationContext()));
-                MyLog.print("urlsdas",bmobFile.getFileUrl(getApplicationContext()));
+                saveHeader(bmobFile.getFileUrl(getApplicationContext()));
                 user.update(getApplicationContext(), new UpdateListener() {
                     @Override
                     public void onSuccess() {
@@ -98,7 +104,7 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
 
             }
         });
-        
+
 //        BmobProFile.getInstance(getApplicationContext()).upload(str, new UploadListener() {
 //            @Override
 //            public void onSuccess(String s, String s1, BmobFile bmobFile) {

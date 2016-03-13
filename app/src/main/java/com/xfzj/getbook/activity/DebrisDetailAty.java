@@ -84,6 +84,10 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
         }
         
         user = debris.getUser();
+        if (null == user) {
+            finish();
+            return;
+        }
         imageLoader = ((BaseApplication) getApplicationContext()).getImageLoader();
 
         simpleUserView.update(user);

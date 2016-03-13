@@ -15,7 +15,7 @@ import com.xfzj.getbook.R;
  * Created by zj on 2016/2/26.
  */
 public class BaseToolBar extends RelativeLayout {
-    private TextView tv1, tv2, tv3;
+    private TextView tv1, tv2, tv3, tvRight1, tvRight2;
 
 
     private Toolbar toolbar;
@@ -35,6 +35,14 @@ public class BaseToolBar extends RelativeLayout {
 
     public TextView getTv3() {
         return tv3;
+    }
+
+    public TextView getTvRight1() {
+        return tvRight1;
+    }
+
+    public TextView getTvRight2() {
+        return tvRight2;
     }
 
     public BaseToolBar(Context context) {
@@ -61,6 +69,9 @@ public class BaseToolBar extends RelativeLayout {
         tv1 = (TextView) v.findViewById(R.id.tvPublish);
         tv2 = (TextView) v.findViewById(R.id.tvSelect);
         tv3 = (TextView) v.findViewById(R.id.tvMiddle);
+        tvRight1 = (TextView) v.findViewById(R.id.tvRight1);
+        tvRight2 = (TextView) v.findViewById(R.id.tvRight2);
+
         this.context = context;
         addView(v);
     }

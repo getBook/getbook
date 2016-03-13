@@ -110,7 +110,7 @@ public class User extends BmobUser {
         }
         if (o instanceof User) {
             User oo = (User) o;
-            if ( this.sno.equals(oo.getSno())) {
+            if (this.sno.equals(oo.getSno())) {
                 return true;
             }
         }
@@ -129,5 +129,20 @@ public class User extends BmobUser {
                 ", msg='" + msg + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public User() {
+
+    }
+
+    public User(String name, boolean gender, String huaName, String sno, String cardno, String msg,int id) {
+        this.name = name;
+        this.gender = gender;
+        this.huaName = huaName;
+        this.sno = sno;
+        this.cardno = cardno;
+        this.msg = msg;
+        this.id = id;
+                
     }
 }

@@ -7,7 +7,9 @@ import android.view.Display;
 
 import com.bmob.BmobConfiguration;
 import com.bmob.BmobPro;
+import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.loader.ImageLoader;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import cn.bmob.v3.Bmob;
 
@@ -19,6 +21,7 @@ public class BaseApplication extends Application {
     private DisplayMetrics dm;
     private static BaseApplication baseApplication;
     private ImageLoader imageLoader;
+    private User user;
 
     public BaseApplication() {
 
@@ -42,6 +45,16 @@ public class BaseApplication extends Application {
         imageLoader = ImageLoader.build(getApplicationContext(), BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
     }
 
+    public User getUser() {
+        if (null == user) {
+            return SharedPreferencesUtils.getUser(getApplicationContext());
+        }
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public ImageLoader getImageLoader() {
         return imageLoader;

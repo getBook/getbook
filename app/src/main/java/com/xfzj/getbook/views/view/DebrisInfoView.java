@@ -13,7 +13,7 @@ import com.xfzj.getbook.common.User;
 /**
  * Created by zj on 2016/3/6.
  */
-public class DebrisInfoView extends LinearLayout implements View.OnClickListener {
+public class DebrisInfoView extends LinearLayout implements View.OnClickListener, DebrisContentInfoView.onCLickListener {
     private Context context;
 
     private SimpleUserView simpleUserView;
@@ -49,7 +49,7 @@ public class DebrisInfoView extends LinearLayout implements View.OnClickListener
         simpleUserView = (SimpleUserView) view.findViewById(R.id.simpleUserView);
         debrisContentInfoView = (DebrisContentInfoView) view.findViewById(R.id.debrisContentInfoView);
         simpleUserView.setOnClickListener(this);
-        debrisContentInfoView.setOnClickListener(this);
+        debrisContentInfoView.setOnCLickListener(this);
         addView(view);
     }
 
@@ -82,11 +82,13 @@ public class DebrisInfoView extends LinearLayout implements View.OnClickListener
                     onUserInfoClick.onClick(debris.getUser());
                 }
                 break;
-            case R.id.debrisContentInfoView:
-                if (null != onUserInfoClick && null != debris) {
-                    onDebrisInfoClick.onClick(debris);
-                }
-                break;
+        }
+    }
+
+    @Override
+    public void onClick(Debris debris) {
+        if (null != onUserInfoClick && null != debris) {
+            onDebrisInfoClick.onClick(debris);
         }
     }
 

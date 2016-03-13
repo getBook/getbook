@@ -37,7 +37,8 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final int MAX_NUM = 8;
+    private static int MAX_NUM = 15;
+    private static final String FROMMYSALE = "fromSearchtoBook";
 
 
     // TODO: Rename and change types of parameters
@@ -125,19 +126,20 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
                 MyToast.show(getActivity(), "到头了~");
             }
         }
-        if (null == lists || lists.size() == 0 && skip == 0) {
-            if (mParam1.equals(FROMMAIN)) {
-                llError.setVisibility(View.VISIBLE);
-            } else if (mParam1.equals(FROMSEARCH)) {
-                llnodata.setVisibility(View.VISIBLE);
+        if (null == lists || lists.size() == 0) {
+            if (skip == 0) {
+                if (mParam1.equals(FROMMAIN) && null != llError) {
+                    llError.setVisibility(View.VISIBLE);
+                } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
+                    llnodata.setVisibility(View.VISIBLE);
+                }
+                rc.setVisibility(View.GONE);
             }
-            rc.setVisibility(View.GONE);
-
         } else {
             rc.setVisibility(View.VISIBLE);
-            if (mParam1.equals(FROMMAIN)) {
+            if (mParam1.equals(FROMMAIN) && null != llError) {
                 llError.setVisibility(View.GONE);
-            } else if (mParam1.equals(FROMSEARCH)) {
+            } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
                 llnodata.setVisibility(View.GONE);
             }
             saleAdapter.addAll(lists);
@@ -152,10 +154,12 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
 
     @Override
     public void onFail() {
-        rc.setVisibility(View.GONE);
-        if (mParam1.equals(FROMMAIN)) {
+        if (null != rc) {
+            rc.setVisibility(View.GONE);
+        }
+        if (mParam1.equals(FROMMAIN) && null != llError) {
             llError.setVisibility(View.VISIBLE);
-        } else if (mParam1.equals(FROMSEARCH)) {
+        } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
             llnodata.setVisibility(View.VISIBLE);
         }
     }

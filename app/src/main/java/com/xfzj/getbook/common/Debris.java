@@ -26,7 +26,12 @@ public class Debris extends BmobObject {
 
     private String tele;
 
-    public Debris(User user,String title, String tips, String[] pics, String discount, String originPrice, int count, String newold, String tele) {
+
+    public Debris() {
+        
+    }
+
+    public Debris(User user, String title, String tips, String[] pics, String discount, String originPrice, int count, String newold, String tele) {
         this.user = user;
         this.title = title;
         this.tips = tips;

@@ -58,6 +58,7 @@ public class BaseLoadRecycleView extends LinearLayout {
 
             }
         });
+        
         addView(view);
     }
 
@@ -83,7 +84,19 @@ public class BaseLoadRecycleView extends LinearLayout {
     }
     public void setRefreshing() {
         refresh.setRefreshing(true);
+    }
+    public int getChileCount() {
+        return rc.getChildCount();
+    }
+
+    public View getChileViewAt(int position) {
         
+        return rc.getChildAt(position);
+    }
+    
+    public void setRefreshAndLoadMoreUnable() {
+        refresh.setRefreshing(false);
+        rc.setCanLoadMore(false);
     }
     public void setLoadMoreFinish(){
         rc.LoadFinish();

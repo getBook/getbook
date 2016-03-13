@@ -29,4 +29,6 @@ public abstract class BaseActivity extends AppActivity {
             }
         }, 2000);
     }
+    
+    
 }

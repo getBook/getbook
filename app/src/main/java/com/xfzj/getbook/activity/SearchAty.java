@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.xfzj.getbook.R;
@@ -99,13 +98,11 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {//设置打开关闭动作监听
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Toast.makeText(getApplicationContext(), "onExpand", Toast.LENGTH_LONG).show();
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Toast.makeText(getApplicationContext(), "Collapse", Toast.LENGTH_LONG).show();
                 finish();
                 return true;
             }
