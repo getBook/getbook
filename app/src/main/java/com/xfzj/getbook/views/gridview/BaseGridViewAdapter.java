@@ -82,6 +82,7 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
 
         public abstract void setData(T s);
 
+        
     }
 
     public void delete(int position) {

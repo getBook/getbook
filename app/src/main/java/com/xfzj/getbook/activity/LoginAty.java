@@ -38,10 +38,7 @@ public class LoginAty extends AppActivity  {
     protected void onSetContentView() {
         int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         getWindow().setFlags(flag, flag);
-
-
         setContentView(R.layout.aty_login);
-
     }
 
     @Override

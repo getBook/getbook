@@ -34,4 +34,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v4:22.2.1'
+    compile files('libs/jsoup-1.8.1.jar')
+    compile files('libs/jsoup-1.8.1-javadoc.jar')
 }

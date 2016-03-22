@@ -8,7 +8,11 @@
     android:layout_marginRight="15dp"
     android:layout_marginTop="10dp"
     android:elevation="5dp">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -95,7 +99,7 @@
             android:background="@color/divider" />
 
         <LinearLayout
-            android:id="@+id/llSchoollife"
+            android:id="@+id/llSchoolAnnounce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
@@ -107,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="15dp"
-                android:text="@string/schoollife"
+                android:text="@string/school_announce"
                 android:textSize="18sp" />
 
             <ImageView
@@ -118,5 +122,70 @@
                 android:src="@mipmap/arrow" />
 
         </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:id="@+id/llyikatong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:text="@string/yikatong"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:padding="5dp"
+                android:src="@mipmap/arrow" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:id="@+id/llquerygrades"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="15dp"
+                android:text="@string/querygrades"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:padding="5dp"
+                android:src="@mipmap/arrow" />
+
+        </LinearLayout>
+
     </LinearLayout>
+</ScrollView>
 </android.support.v7.widget.CardView>

@@ -9,6 +9,7 @@ import com.bmob.BmobConfiguration;
 import com.bmob.BmobPro;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.loader.ImageLoader;
+import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import cn.bmob.v3.Bmob;
@@ -43,7 +44,10 @@ public class BaseApplication extends Application {
         BmobConfiguration config = new BmobConfiguration.Builder(getApplicationContext()).customExternalCacheDir("cache").build();
         BmobPro.getInstance(getApplicationContext()).initConfig(config);
         imageLoader = ImageLoader.build(getApplicationContext(), BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+        FileUtils.createDownloadDir();
     }
+
+   
 
     public User getUser() {
         if (null == user) {

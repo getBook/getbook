@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.SecondBookDetailAty;
@@ -37,7 +38,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static int MAX_NUM = 15;
+    private static int MAX_NUM = Constants.day;
     private static final String FROMMYSALE = "fromSearchtoBook";
 
 
@@ -89,11 +90,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        queryAction = new QueryAction(getActivity().getApplicationContext());
-        if (mParam1.equals(FROMMAIN)) {
-            queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
-        }
-        queryAction.setOnQueryListener(this);
+
     }
 
     @Override
@@ -110,6 +107,13 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         rc.setAdapter(saleAdapter);
         rc.setOnrefreshListener(this);
         rc.setOnLoadMoreListen(this);
+
+        queryAction = new QueryAction(getActivity().getApplicationContext());
+        if (mParam1.equals(FROMMAIN)) {
+            rc.setRefreshing();
+            queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
+        }
+        queryAction.setOnQueryListener(this);
         return view;
     }
 
@@ -123,7 +127,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         } else {
             rc.setLoadMoreFinish();
             if (null != lists && lists.size() == 0) {
-                MyToast.show(getActivity(), "到头了~");
+                MyToast.show(getActivity(), getActivity().getString(R.string.end));
             }
         }
         if (null == lists || lists.size() == 0) {
@@ -143,9 +147,6 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
                 llnodata.setVisibility(View.GONE);
             }
             saleAdapter.addAll(lists);
-            for (SecondBook secondBook : lists) {
-                MyLog.print("书本信息", secondBook.toString());
-            }
         }
 
 

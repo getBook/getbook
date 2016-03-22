@@ -80,6 +80,7 @@
     <string name="schoollife">校园生活</string>
     <string name="totheend">已经到达最底部了</string>
     <string name="loading">加载中...</string>
+    <string name="querying">查询中...</string>
     <string name="all">全选</string>
     <string name="delete">删除</string>
     <string name="delete_cannot_find">删除后无法找回哦</string>
@@ -90,4 +91,19 @@
     <string name="operations">操作</string>
     <string name="refresh">刷新</string>
     <string name="delete_success">删除成功</string>
+    <string name="querygrades">查询成绩</string>
+    <string name="yikatong">一卡通</string>
+    <string name="unnormalstatus">你的校园卡当前状态为不正常!</string>
+    <string name="remain">余额:</string>
+    <string name="guoduremain">过渡余额:</string>
+    <string name="liushuichaxun">流水查询</string>
+    <string name="buzhu">补助流水</string>
+    <string name="xiugaimima">修改密码</string>
+    <string name="guashi">挂失</string>
+    <string name="grades">成绩</string>
+    <string name="school_announce">校园公告</string>
+    <string name="has_download">已下载过</string>
+    <string name="confirm_delete">确定要删除%1$s吗?</string>
+    <string name="no_download">您还未下载过任何文件...</string>
+    <string name="end">到头了~</string>
 </resources>

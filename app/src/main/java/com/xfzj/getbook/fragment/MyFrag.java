@@ -17,7 +17,10 @@ import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
+import com.xfzj.getbook.activity.CardAty;
 import com.xfzj.getbook.activity.MySaleAty;
+import com.xfzj.getbook.activity.NewsAty;
+import com.xfzj.getbook.activity.ScoreAty;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.CircleImageView;
@@ -41,7 +44,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
     public static final String MY = "my";
 
 
-    private LinearLayout llSecondBook, llDebris, llSchoollife;
+    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong,llSchoolAnnounce;
     private TextView tvSecondBookCount, tvDebrisCount, tvHuaName, tvName, tvUserName;
     private CircleImageView iv;
     private User user;
@@ -83,7 +86,9 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_my, container, false);
         llSecondBook = (LinearLayout) view.findViewById(R.id.llSecondBook);
         llDebris = (LinearLayout) view.findViewById(R.id.llDebris);
-        llSchoollife = (LinearLayout) view.findViewById(R.id.llSchoollife);
+        llquerygrades = (LinearLayout) view.findViewById(R.id.llquerygrades);
+        llSchoolAnnounce= (LinearLayout) view.findViewById(R.id.llSchoolAnnounce);
+        llyikatong = (LinearLayout) view.findViewById(R.id.llyikatong);
         tvSecondBookCount = (TextView) view.findViewById(R.id.tvSecondBookCount);
         tvDebrisCount = (TextView) view.findViewById(R.id.tvDebrisCount);
         tvName = (TextView) view.findViewById(R.id.tvName);
@@ -93,7 +98,9 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         iv = (CircleImageView) view.findViewById(R.id.iv);
         llSecondBook.setOnClickListener(this);
         llDebris.setOnClickListener(this);
-        llSchoollife.setOnClickListener(this);
+        llquerygrades.setOnClickListener(this);
+        llyikatong.setOnClickListener(this);
+        llSchoolAnnounce.setOnClickListener(this);
         setHeader();
         updateUserInfo();
         return view;
@@ -118,9 +125,20 @@ public class MyFrag extends Fragment implements View.OnClickListener {
                 intent1.putExtra(MySaleAty.FROM, getString(R.string.drugstore));
                 startActivityForResult(intent1, MySaleAty.RESULT);
                 break;
-            case R.id.llSchoollife:
+            case R.id.llquerygrades:
+                Intent intent4 = new Intent(getActivity(), ScoreAty.class);
+                startActivity(intent4);
                 break;
+            case R.id.llyikatong:
 
+                Intent intent3 = new Intent(getActivity(), CardAty.class);
+                startActivity(intent3);
+                break;
+            case R.id.llSchoolAnnounce:
+
+                Intent intent5 = new Intent(getActivity(), NewsAty.class);
+                startActivity(intent5);
+                break;
         }
     }
 
@@ -140,7 +158,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         if (null != baseApplication) {
             User user = baseApplication.getUser();
             if (null != user) {
-                this.user=user;
+                this.user = user;
                 setUserInfo(user);
             } else {
                 User user1 = SharedPreferencesUtils.getUser(getActivity());
@@ -154,7 +172,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==MySaleAty.RESULT) {
+        if (requestCode == MySaleAty.RESULT) {
             queryCount();
         }
 

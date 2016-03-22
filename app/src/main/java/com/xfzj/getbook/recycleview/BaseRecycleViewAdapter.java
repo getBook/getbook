@@ -51,6 +51,10 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
 
     }
 
+    public List<T> getAll() {
+        return datas;
+    }
+    
     public void remove(int position) {
         if (position == -1) {
             return;

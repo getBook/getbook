@@ -3,6 +3,7 @@ package com.xfzj.getbook.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.ButterKnife;
@@ -63,5 +64,13 @@ public abstract class AppActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (android.R.id.home == item.getItemId()) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

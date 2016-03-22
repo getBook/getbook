@@ -22,7 +22,6 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, String> {
     private User user;
 
 
-    private LoadBitmapCallBack callBack;
 
     private Context context;
     private String key;
@@ -39,13 +38,13 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, String> {
     @Override
     protected void onPost(String str) {
         if (TextUtils.isEmpty(str)) {
-            if (null != callBack) {
-                callBack.onFail();
+            if (null != onTaskListener) {
+                onTaskListener.onFail();
 
             }
         } else {
-            if (null != callBack) {
-                callBack.onSuccess(str);
+            if (null != onTaskListener) {
+                onTaskListener.onSuccess(str);
             }
         }
 
@@ -76,17 +75,6 @@ public class UserHeadAsync extends BaseAsyncTask<Integer, Integer, String> {
             return null;
         }
     }
-
-    public void setCallBack(LoadBitmapCallBack callBack) {
-        this.callBack = callBack;
-    }
-
-    public interface LoadBitmapCallBack {
-        void onSuccess(String str);
-
-        void onFail();
-    }
-
     public File getDiskCacheDir(String uniqueName) {
         boolean externalStorageAvailable = Environment
                 .getExternalStorageState().equals(Environment.MEDIA_MOUNTED);

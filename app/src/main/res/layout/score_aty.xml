@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.xfzj.getbook.views.view.BaseToolBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/baseToolbar"/>
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content"/>
+    </ScrollView>
+    <include layout="@layout/no_data" />
+    
+</LinearLayout>

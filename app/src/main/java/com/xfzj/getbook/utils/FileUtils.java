@@ -1,6 +1,7 @@
 package com.xfzj.getbook.utils;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +26,11 @@ public class FileUtils {
 
     public String write(String fileName, byte[] bytes) {
         try {
-            File file = new File(context.getFilesDir(), fileName);
+
+            File file = new File(context.getCacheDir(),fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(bytes);
             fos.flush();
@@ -64,5 +69,15 @@ public class FileUtils {
             return null;
         }
 
+    }
+    public static  void createDownloadDir() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File file=Environment.getExternalStorageDirectory();
+            File path = new File(file.getPath() + "/aaadownloads");
+            if (!path.exists()) {
+                path.mkdirs();
+            }
+
+        }
     }
 }

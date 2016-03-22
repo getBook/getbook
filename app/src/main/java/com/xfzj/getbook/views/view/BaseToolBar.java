@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,10 +17,14 @@ import com.xfzj.getbook.R;
  */
 public class BaseToolBar extends RelativeLayout {
     private TextView tv1, tv2, tv3, tvRight1, tvRight2;
-
+private ImageView iv;
 
     private Toolbar toolbar;
     private Context context;
+
+    public ImageView getIv() {
+        return iv;
+    }
 
     public TextView getTv1() {
         return tv1;
@@ -71,7 +76,7 @@ public class BaseToolBar extends RelativeLayout {
         tv3 = (TextView) v.findViewById(R.id.tvMiddle);
         tvRight1 = (TextView) v.findViewById(R.id.tvRight1);
         tvRight2 = (TextView) v.findViewById(R.id.tvRight2);
-
+        iv = (ImageView) v.findViewById(R.id.iv);
         this.context = context;
         addView(v);
     }

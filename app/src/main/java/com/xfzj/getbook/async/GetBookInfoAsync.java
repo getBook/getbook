@@ -2,8 +2,6 @@ package com.xfzj.getbook.async;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -45,7 +43,6 @@ public class GetBookInfoAsync extends BaseAsyncTask<String, Void, BookInfo> {
                 return null;
             } else {
                 String str = new String(bytes, "utf-8");
-                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
                 BookInfo bookInfo = gson.fromJson(str, BookInfo.class);
                 bookInfo.setIsbn(params[0]);
                 return bookInfo;

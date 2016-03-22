@@ -4,15 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
  * Created by zj on 2016/1/29.
  */
 public abstract class BaseAsyncTask<K, V, T> extends AsyncTask<K, V, T> {
     private ProgressDialog pd;
-    private Context context;
+    protected Context context;
     protected onTaskListener<T> onTaskListener;
+    protected Gson gson;
     public BaseAsyncTask(Context context) {
         this.context = context;
+        gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     }
     public void setProgressDialog(String title,String message) {
         setProgressDialog(title, message, false);

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xfzj.getbook.BaseApplication;
+import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.loader.ImageLoader;
@@ -174,7 +175,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         } else {
             long update = date.getTime();
             long now = System.currentTimeMillis();
-            if (now - update >= 15 * 24 * 60 * 60 * 1000) {
+            if (now - update >= Constants.day * 24 * 60 * 60 * 1000) {
                 handleInvalid();
             } else {
                 restartOnSale(debris);

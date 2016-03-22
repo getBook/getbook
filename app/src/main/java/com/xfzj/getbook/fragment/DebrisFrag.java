@@ -21,7 +21,6 @@ import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.recycleview.BaseLoadRecycleView;
 import com.xfzj.getbook.recycleview.BaseRecycleViewAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.DebrisInfoView;
 
@@ -85,11 +84,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        queryAction = new QueryAction(getActivity().getApplicationContext());
-        if (mParam1.equals(FROMMAIN)) {
-            queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
-        }
-        queryAction.setOnQueryListener(this);
+        
     }
 
     @Override
@@ -106,6 +101,12 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         rc.setAdapter(debrisAdapter);
         rc.setOnrefreshListener(this);
         rc.setOnLoadMoreListen(this);
+        queryAction = new QueryAction(getActivity().getApplicationContext());
+        if (mParam1.equals(FROMMAIN)) {
+            rc.setRefreshing();
+            queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
+        }
+        queryAction.setOnQueryListener(this);
         return view;
     }
 
@@ -118,7 +119,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         } else {
             rc.setLoadMoreFinish();
             if (null != lists && lists.size() == 0) {
-                MyToast.show(getActivity(), "到头了~");
+                MyToast.show(getActivity(),getActivity().getString(R.string.end));
             }
         }
         if (null == lists || lists.size() == 0) {
@@ -138,9 +139,9 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                 llnodata.setVisibility(View.GONE);
             }
             debrisAdapter.addAll(lists);
-            for (Debris secondBook : lists) {
-                MyLog.print("杂货信息", secondBook.toString());
-            }
+//            for (Debris secondBook : lists) {
+//                MyLog.print("杂货信息", secondBook.toString());
+//            }
         }
     }
 
@@ -214,14 +215,14 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                     debrisInfoView.setOnUserInfoClick(new DebrisInfoView.onClickListener<User>() {
                         @Override
                         public void onClick(User user) {
-                            MyLog.print("点击的人物", user.toString());
+//                            MyLog.print("点击的人物", user.toString());
                         }
                     });
 
                     debrisInfoView.setOnDebrisInfoClick(new DebrisInfoView.onClickListener<Debris>() {
                         @Override
                         public void onClick(Debris debris) {
-                            MyLog.print("点击的书本", debris.toString());
+//                            MyLog.print("点击的书本", debris.toString());
                             Intent intent = new Intent(getActivity(), DebrisDetailAty.class);
                             intent.putExtra(DebrisDetailAty.DATA, debris);
                             startActivity(intent);

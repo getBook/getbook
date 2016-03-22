@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.MyUtils;
 
 /**
  * Created by zj on 2016/1/26.
@@ -19,7 +20,7 @@ public class BaseLoadRecycleView extends LinearLayout {
     private BaseLoadMoreRecycleView rc;
     private RefreshListener refreshListener;
     private boolean isRefresh;
-
+private Context context;
     public BaseLoadRecycleView(Context context) {
         this(context, null);
     }
@@ -41,6 +42,7 @@ public class BaseLoadRecycleView extends LinearLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.baseloadrecycleview, null);
         refresh = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         rc = (BaseLoadMoreRecycleView) view.findViewById(R.id.rc);
@@ -58,7 +60,7 @@ public class BaseLoadRecycleView extends LinearLayout {
 
             }
         });
-        
+
         addView(view);
     }
 
@@ -83,6 +85,7 @@ public class BaseLoadRecycleView extends LinearLayout {
         rc.scrollToPosition(0);
     }
     public void setRefreshing() {
+        refresh.setProgressViewOffset(false, 0, (int)MyUtils.dp2px(context,24.0f));
         refresh.setRefreshing(true);
     }
     public int getChileCount() {

@@ -35,6 +35,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import cn.bmob.v3.BmobUser;
@@ -348,6 +350,12 @@ public class PublishDebrisActivity extends AppActivity implements Toolbar.OnMenu
     @Override
     public void onSuccess() {
         MyToast.show(getApplicationContext(), getString(R.string.publish_success));
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
     }
 
     @Override

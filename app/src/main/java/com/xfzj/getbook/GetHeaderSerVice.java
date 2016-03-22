@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.UserHeadAsync;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
@@ -22,7 +23,7 @@ import cn.bmob.v3.listener.UploadFileListener;
 /**
  * Created by zj on 2016/2/28.
  */
-public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitmapCallBack {
+public class GetHeaderSerVice extends Service implements BaseAsyncTask.onTaskListener<String> {
     private UserHeadAsync userHeadAsync;
     private User user;
 
@@ -55,7 +56,7 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
                     if (TextUtils.isEmpty(header) || !header.endsWith(".jpg")) {
                         UserHeadAsync userHeadAsync = new UserHeadAsync(getApplicationContext(), user.getSno());
                         userHeadAsync.execute();
-                        userHeadAsync.setCallBack(GetHeaderSerVice.this);
+                        userHeadAsync.setOnTaskListener(GetHeaderSerVice.this);
                     } else if (TextUtils.isEmpty(localHeader)) {
                         saveHeader(header);
                     }
@@ -104,25 +105,6 @@ public class GetHeaderSerVice extends Service implements UserHeadAsync.LoadBitma
 
             }
         });
-
-//        BmobProFile.getInstance(getApplicationContext()).upload(str, new UploadListener() {
-//            @Override
-//            public void onSuccess(String s, String s1, BmobFile bmobFile) {
-//
-//
-//            }
-//
-//            @Override
-//            public void onProgress(int i) {
-//
-//            }
-//
-//            @Override
-//            public void onError(int i, String s) {
-//
-//            }
-//        });
-
     }
 
     @Override

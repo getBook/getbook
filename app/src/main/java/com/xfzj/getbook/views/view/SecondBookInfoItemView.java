@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xfzj.getbook.BaseApplication;
+import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.SecondBook;
@@ -203,7 +204,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
         } else {
             long update = date.getTime();
             long now = System.currentTimeMillis();
-            if (now - update >= 15 * 24 * 60 * 60 *1000) {
+            if (now - update >= Constants.day * 24 * 60 * 60 *1000) {
                 handleInvalid();
             }else {
                 restartOnSale(secondBook);

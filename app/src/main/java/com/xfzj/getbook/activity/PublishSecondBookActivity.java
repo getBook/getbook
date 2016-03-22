@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import cn.bmob.v3.BmobUser;
@@ -326,7 +328,7 @@ public class PublishSecondBookActivity extends AppActivity implements Toolbar.On
 
     }
 
-    private boolean  canPublish() {
+    private boolean canPublish() {
         if (TextUtils.isEmpty(etPrice.getText().toString().trim())) {
             MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.price)));
             return false;
@@ -367,7 +369,14 @@ public class PublishSecondBookActivity extends AppActivity implements Toolbar.On
 
     @Override
     public void onSuccess() {
-        MyToast.show(getApplicationContext(), "发布成功");
+        MyToast.show(getApplicationContext(), getString(R.string.publish_success));
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 1000);
+
     }
 
     @Override

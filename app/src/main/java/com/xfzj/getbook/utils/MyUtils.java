@@ -118,4 +118,47 @@ public class MyUtils {
         c.drawBitmap(bmpOriginal, 0, 0, paint);
         return bmpGrayscale;
     }
+
+    public static  String getFlag(String uri) {
+        return uri.substring(uri.lastIndexOf("."), uri.length());
+    }
+
+
+    public static boolean isPicture(String uri) {
+        String flag=getFlag(uri);
+        String[] str = new String[]{".jpg", ".png", ".jpeg"};
+        for (int i = 0; i < str.length; i++) {
+            if (str[0].contains(flag.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isFile(String uri) {
+        String flag=getFlag(uri);
+        String[] str = new String[]{".doc", ".xls", ".ppt",".docx","xlsx",".pdf",".pptx"};
+        for (int i = 0; i < str.length; i++) {
+            if (str[0].contains(flag.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isWord(String uri) {
+        String flag=getFlag(uri);
+        if(flag.toLowerCase().contains(".doc")||flag.toLowerCase().contains(".docx")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isExcel(String uri) {
+        String flag=getFlag(uri);
+        if(flag.toLowerCase().contains(".xls")||flag.toLowerCase().contains(".xlsx")) {
+            return true;
+        }
+        return false;
+    }
 }

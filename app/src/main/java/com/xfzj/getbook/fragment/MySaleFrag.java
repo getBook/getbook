@@ -16,6 +16,7 @@ import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.DeleteAction;
 import com.xfzj.getbook.action.QueryAction;
+import com.xfzj.getbook.action.RefreshAction;
 import com.xfzj.getbook.activity.MySaleAty;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
@@ -228,15 +229,18 @@ public class MySaleFrag extends Fragment implements QueryAction.OnQueryListener<
                         }
                     }
                 }
+                RefreshAction refreshAction = new RefreshAction(getActivity());
                 if (mParam1.equals(COLUMNSECONDBOOK)) {
                     for (WrapSecondBookInfoItemView w : wraps) {
                         w.refresh();
                     }
+                    refreshAction.refresh(lists, SecondBook.class);
                 } else if (mParam1.equals(COLUMNDEBRIS)) {
                     for (WrapDebrisInfoItemView w : wrapDebris) {
                         w.refresh();
 
                     }
+                    refreshAction.refresh(lists, Debris.class);
                 }
             }
         }).setNegativeButton(getString(R.string.cancel), null).create().show();
