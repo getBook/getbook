@@ -106,4 +106,25 @@
     <string name="confirm_delete">确定要删除%1$s吗?</string>
     <string name="no_download">您还未下载过任何文件...</string>
     <string name="end">到头了~</string>
+    <string name="min_max_money">单笔金额最小0.01元，最大100元</string>
+    <string name="pwd">密码</string>
+    <string name="money">金额</string>
+    <string name="chongzhizhong">充值中...</string>
+    <string name="modifying">修改中...</string>
+    <string name="jiaoyi_fail_tryagain">交易失败，请重试</string>
+    <string name="modify_fail_tryagain">修改密码失败，请重试</string>
+    <string name="please_ensure_chongzhi_success">请检查卡上余额，确保充值成功</string>
+    <string name="please_ensure_modify_success">请重启应用，查看密码是否修改成功</string>
+    <string name="success">成功</string>
+    <string name="fail">失败</string>
+    <string name="chongzhi_tips">向校园卡转账成功后，所转金额都会先是在过渡余额中，在餐厅等处的卡机上进行刷卡操作后，过渡余额即会转入校园卡</string>
+    <string name="oldpassword">旧密码</string>
+    <string name="newpassword">新密码</string>
+    <string name="twice_password_not_equal">两次密码输入不一致</string>
+    <string name="query_password_error">查询密码错误</string>
+    <string name="password_change_success_login_again">密码修改成功，请重新登录</string>
+    <string name="password_change_error">密码修改失败</string>
+    <string name="change_password_tips">如果您修改了一卡通查询密码，请修改该APP的密码，否则请确认密码输入正确，重新登录</string>
+    <string name="change_password">修改密码</string>
+    <string name="relogin">重新登录</string>
 </resources>

@@ -187,10 +187,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 public void onSuccess() {
                     MyToast.show(getApplicationContext(), getString(R.string.login_success));
                 }
-
                 @Override
                 public void onFail() {
                     MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
+                    jump2Login(user.getSno());
+                }
+                @Override
+                public void onModify() {
                     jump2Login(user.getSno());
                 }
             });

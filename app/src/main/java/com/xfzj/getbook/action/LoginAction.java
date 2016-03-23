@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xfzj.getbook.BaseApplication;
+import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -60,13 +61,18 @@ public class LoginAction extends BaseAction {
         this.huaName = huaName;
         String msg = signIn(userName, password);
         if (TextUtils.isEmpty(msg)) {
-            loginBmob(userName, password, callBack);
+            loginBmob(userName, password, callBack,false);
+            return callBack;
+        } else if(context.getString(R.string.query_password_error).equals(msg)){
+            if (null != callBack) {
+                callBack.onModify();
+            }
             return callBack;
         }
         if (hasUser()) {
             if (isSameUser()) {
                 SharedPreferencesUtils.updateMsg(context, msg);
-                loginBmob(userName, password, callBack);
+                loginBmob(userName, password, callBack,true);
                 return callBack;
             } else {
                 SharedPreferencesUtils.clearUser(context);
@@ -84,11 +90,11 @@ public class LoginAction extends BaseAction {
         }
     }
 
-    public void loginBmob(String userName, String password, CallBack callBack) {
+    public void loginBmob(String userName, String password, CallBack callBack,boolean isModify) {
         User user = new User();
         user.setUsername(userName);
         user.setPassword(password);
-        loginBmob(user, callBack);
+        loginBmob(user, callBack, isModify);
     }
 
     /**
@@ -109,9 +115,9 @@ public class LoginAction extends BaseAction {
             MyLog.print("sigin", result);
             JSONObject jsonObject = new JSONObject(result);
             boolean isSucc = jsonObject.getBoolean("success");
+            String msg = jsonObject.getString("msg");
             if (isSucc) {
               
-                String msg = jsonObject.getString("msg");
                 this.newUser = gson.fromJson(jsonObject.getJSONObject("obj").toString(), User.class);
                 this.newUser.setPassword(password);
                 this.newUser.setUsername(account);
@@ -123,7 +129,7 @@ public class LoginAction extends BaseAction {
                 MyLog.print("sigin", newUser.toString());
                 return this.newUser.getMsg();
             }
-            return null;
+            return msg;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -211,7 +217,7 @@ public class LoginAction extends BaseAction {
             @Override
             public void onSuccess() {
                 MyLog.print("register", "onsuccess");
-                loginBmob(user, callBack);
+                loginBmob(user, callBack, true);
             }
 
             @Override
@@ -219,7 +225,7 @@ public class LoginAction extends BaseAction {
                 //已经注册过了就进行登陆
                 MyLog.print("register", "onFailure");
                 if (i == 202) {
-                    loginBmob(user, callBack);
+                    loginBmob(user, callBack, true);
                 }
             }
         });
@@ -228,7 +234,7 @@ public class LoginAction extends BaseAction {
     /**
      * 登陆bmob
      */
-    private void loginBmob(final User user, final CallBack callBack) {
+    private void loginBmob(final User user, final CallBack callBack, final boolean isModify) {
         user.login(context, new SaveListener() {
             @Override
             public void onSuccess() {
@@ -250,9 +256,16 @@ public class LoginAction extends BaseAction {
             @Override
             public void onFailure(int i, String s) {
                 MyLog.print("loginBmob", "onFailure" + s+i);
-                if (null != callBack) {
-                    callBack.onFail();
+                if (isModify && i == 101) {
+                    if (null != callBack) {
+                        callBack.onModify();
+                    }
 
+                }else {
+                    if (null != callBack) {
+                        callBack.onFail();
+
+                    }
                 }
             }
         });
@@ -275,5 +288,7 @@ public class LoginAction extends BaseAction {
         void onSuccess();
 
         void onFail();
+
+        void onModify();
     }
 }

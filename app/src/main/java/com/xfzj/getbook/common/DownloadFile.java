@@ -3,7 +3,13 @@ package com.xfzj.getbook.common;
 public class DownloadFile {
 	public String path;
 	public String name;
-	
+	/**
+	 * 0 word
+	 * 1 xls
+	 * 2 ppt
+	 * 3 pic
+	 * 4 other
+	 */
 	public int image;
 
 	/**
@@ -22,5 +28,7 @@ public class DownloadFile {
  */
 	public DownloadFile() {
 	}
+
+	
 
 }

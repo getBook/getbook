@@ -14,7 +14,7 @@ import java.util.Map;
 public abstract class UcardAsyncTask<K, V, T> extends BaseAsyncTask<K, V, T> {
     protected User user;
     protected Map<String, String> param;
-
+    protected OnUcardTaskListener<T> onUcardTaskListener;
     public UcardAsyncTask(Context context) {
         super(context);
     }
@@ -36,4 +36,15 @@ public abstract class UcardAsyncTask<K, V, T> extends BaseAsyncTask<K, V, T> {
     }
 
     protected abstract T excute(K[] params);
+
+    public void setOnUcardTaskListener(UcardAsyncTask.OnUcardTaskListener<T> onUcardTaskListener) {
+        this.onUcardTaskListener = onUcardTaskListener;
+    }
+
+    public interface OnUcardTaskListener<T>{
+        void onSuccess(T t);
+
+        void onFail(String s);
+    }
+    
 }

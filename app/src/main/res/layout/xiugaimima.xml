@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etOld"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="旧的一卡通密码"
+        android:inputType="numberPassword"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etNew1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="新的一卡通密码"
+        android:inputType="numberPassword"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etNew2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="再次输入一卡通密码"
+        android:inputType="numberPassword"
+        android:maxLines="1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_chongzhi_selector"
+            android:text="@string/ensure"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

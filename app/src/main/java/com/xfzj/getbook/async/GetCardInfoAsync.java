@@ -7,7 +7,6 @@ import com.xfzj.getbook.common.Card;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.net.IHttpHelper;
-import com.xfzj.getbook.utils.MyLog;
 
 import org.json.JSONObject;
 
@@ -33,9 +32,6 @@ public class GetCardInfoAsync extends UcardAsyncTask<Void, Void, Card> {
             if ("true".equals(feed)) {
                 card = gson.fromJson(jsonObject.getString("msg"), Card.class);
             }
-            
-            MyLog.print("card", card.toString());
-
             return card;
 
         } catch (Exception e) {

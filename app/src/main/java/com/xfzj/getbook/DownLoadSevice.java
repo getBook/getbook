@@ -55,19 +55,19 @@ public class DownLoadSevice extends Service {
                     MyToast.show(getApplicationContext(), "下载完成");
                     if (uri.contains("doc")||uri.contains("docx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                                R.mipmap.word);
+                               0);
                     } else if (uri.contains("xls")||uri.contains("xlsx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                                R.mipmap.excel);
+                                1);
                     } else if (uri.contains("ppt")||uri.contains("pptx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                                R.mipmap.powerpoint);
+                                2);
                     } else if(uri.contains("jpg")||uri.contains("png")||uri.contains("jpeg")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                                R.mipmap.picture);
+                                3);
                     }else{
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                                R.mipmap.office);
+                               4);
                     }
                     DownLoadFileManager downLoadFileManager = new DownLoadFileManager(
                             getApplicationContext());

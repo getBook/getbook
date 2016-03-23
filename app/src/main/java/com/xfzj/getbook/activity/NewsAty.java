@@ -34,8 +34,6 @@ public class NewsAty extends AppActivity implements NewsShowFrag.OnNewsClick, Vi
 
     @Bind(R.id.fram2)
     FrameLayout fram2;
-    private String param;
-
     private ImageView iv;
 
     @Override
@@ -80,8 +78,6 @@ public class NewsAty extends AppActivity implements NewsShowFrag.OnNewsClick, Vi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("a", param);
-
     }
 
     @Override

@@ -12,6 +12,8 @@ public class BaseHttp {
     public static final String GETNEWS="http://jwc.nuist.edu.cn/Show.aspx?CI=1";
     public static final String GETNEWSITEM="http://jwc.nuist.edu.cn/Show";
     public static final String DOWNLOADHOST="http://jwc.nuist.edu.cn";
+    public static final String BANKTRANSFER=" http://ucard.nuist.edu.cn:8070/Api/Card/BankTransfer";
+    public static final String CHANGEQUERYPWD = "http://ucard.nuist.edu.cn:8070/Api/Card/ChangeQueryPwd";
     public BaseHttp() {
 
     }

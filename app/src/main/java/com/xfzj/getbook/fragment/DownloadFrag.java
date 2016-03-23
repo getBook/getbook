@@ -3,7 +3,6 @@ package com.xfzj.getbook.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -172,7 +171,25 @@ public class DownloadFrag extends Fragment implements LoaderManager.LoaderCallba
 
                 @Override
                 public void setData(DownloadFile downloadFile) {
-                    iv.setImageBitmap(BitmapFactory.decodeResource(getResources(), downloadFile.image));
+                    int id;
+                    switch (downloadFile.image) {
+                        case 0:
+                            id = R.mipmap.msword;
+                            break;
+                        case 1:
+                            id = R.mipmap.excel;
+                            break;
+                        case 2:
+                            id = R.mipmap.powerpoint;
+                            break;
+                        case 3:
+                            id = R.mipmap.picture;
+                            break;
+                        default:
+                            id = R.mipmap.office;
+                            break;
+                    }
+                    iv.setImageResource(id);
                     tvTitle.setText(downloadFile.name);
                 }
             };
