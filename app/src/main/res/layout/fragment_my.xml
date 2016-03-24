@@ -43,7 +43,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
+                <TextView 
                     android:id="@+id/tvName"
                     android:textColor="@color/secondary_text"
                     android:layout_width="wrap_content"

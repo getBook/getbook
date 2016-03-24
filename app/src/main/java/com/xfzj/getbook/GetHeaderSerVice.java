@@ -73,6 +73,8 @@ public class GetHeaderSerVice extends Service implements BaseAsyncTask.onTaskLis
 
     private void saveHeader(String header) {
         SharedPreferencesUtils.saveUserHeader(getApplicationContext(), header);
+        sendBroadcast(new Intent("com.xfzj.getbook.receiveHeader"));
+        
     }
 
     @Override

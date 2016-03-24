@@ -24,10 +24,13 @@ import com.xfzj.getbook.async.GetCardInfoAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.async.XiuGaiMiMaAsync;
 import com.xfzj.getbook.common.Card;
+import com.xfzj.getbook.utils.AryConversion;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
 import butterknife.Bind;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by zj on 2016/3/14.
@@ -133,12 +136,12 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String old = etOld.getText().toString();
+                final String old = etOld.getText().toString();
                 if (TextUtils.isEmpty(old)) {
                     MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
                     return;
                 }
-                String new1 = etNew1.getText().toString();
+                final String new1 = etNew1.getText().toString();
                 String new2 = etNew2.getText().toString();
                 if (TextUtils.isEmpty(new1) || TextUtils.isEmpty(new2)) {
                     MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.newpassword)));
@@ -156,6 +159,22 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                     @Override
                     public void onSuccess(String s) {
                         dialog.dismiss();
+                        try {
+                            String oldp = AryConversion.binary2Hex(old).toUpperCase();
+                            String newp = AryConversion.binary2Hex(new1).toUpperCase();
+                        
+                            BmobUser.updateCurrentUserPassword(getApplicationContext(), oldp, newp, new UpdateListener() {
+                                @Override
+                                public void onSuccess() {
+                                }
+
+                                @Override
+                                public void onFailure(int i, String s) {
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.success)).setMessage(s).create().show();
                     }
 
@@ -164,7 +183,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.fail)).setMessage(s).create().show();
                     }
                 });
-                
+
 
             }
         });

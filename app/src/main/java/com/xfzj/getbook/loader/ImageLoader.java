@@ -92,7 +92,7 @@ public class ImageLoader {
             }
             ImageView iv = result.iv;
             String url = (String) iv.getTag(TAG_KEY_URI);
-            MyLog.print("url", url);
+//            MyLog.print("url", url);
             if (url.equals(result.uri) && null != result.bitmap) {
                 iv.setImageBitmap(result.bitmap);
             } else {
@@ -206,14 +206,14 @@ public class ImageLoader {
 
         Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
-            Log.d(TAG, "loadBitmapFromMemCache,url:" + uri);
+           MyLog.print(TAG, "loadBitmapFromMemCache,url:" + uri);
             return bitmap;
         }
 
         try {
             bitmap = loadBitmapFromDiskCache(uri, reqWidth, reqHeight);
             if (bitmap != null) {
-                Log.d(TAG, "loadBitmapFromDisk,url:" + uri);
+                MyLog.print(TAG, "loadBitmapFromDisk,url:" + uri);
                 return bitmap;
             }
             if (uri.contains("http://") || uri.contains("https://")) {
@@ -221,13 +221,13 @@ public class ImageLoader {
             } else {
                 bitmap = loadBitmapFromLocal(uri, reqWidth, reqHeight);
             }
-            Log.d(TAG, "loadBitmapFromHttp,url:" + uri);
+            MyLog.print(TAG, "loadBitmapFromHttp,url:" + uri);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (bitmap == null && !mIsDiskLruCacheCreated) {
-            Log.w(TAG, "encounter error, DiskLruCache is not created.");
+            MyLog.print(TAG, "encounter error, DiskLruCache is not created.");
             bitmap = downloadBitmapFromUrl(uri);
         }
 

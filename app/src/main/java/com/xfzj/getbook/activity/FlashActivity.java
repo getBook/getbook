@@ -30,8 +30,6 @@ public class FlashActivity extends AppActivity {
 
     @Override
     protected void onSetContentView() {
-//        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
-//        getWindow().setFlags(flag, flag);
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;

@@ -44,7 +44,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
     public static final String MY = "my";
 
 
-    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong,llSchoolAnnounce;
+    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong, llSchoolAnnounce;
     private TextView tvSecondBookCount, tvDebrisCount, tvHuaName, tvName, tvUserName;
     private CircleImageView iv;
     private User user;
@@ -87,7 +87,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         llSecondBook = (LinearLayout) view.findViewById(R.id.llSecondBook);
         llDebris = (LinearLayout) view.findViewById(R.id.llDebris);
         llquerygrades = (LinearLayout) view.findViewById(R.id.llquerygrades);
-        llSchoolAnnounce= (LinearLayout) view.findViewById(R.id.llSchoolAnnounce);
+        llSchoolAnnounce = (LinearLayout) view.findViewById(R.id.llSchoolAnnounce);
         llyikatong = (LinearLayout) view.findViewById(R.id.llyikatong);
         tvSecondBookCount = (TextView) view.findViewById(R.id.tvSecondBookCount);
         tvDebrisCount = (TextView) view.findViewById(R.id.tvDebrisCount);
@@ -142,7 +142,8 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void setHeader() {
+    public void setHeader() {
+    
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header)) {
             iv.setBmobImage(header, BitmapFactory.decodeResource(getResources(), R.mipmap.default_user));
@@ -153,7 +154,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void updateUserInfo() {
+    public void updateUserInfo() {
         baseApplication = (BaseApplication) (getActivity().getApplicationContext());
         if (null != baseApplication) {
             User user = baseApplication.getUser();
@@ -222,8 +223,10 @@ public class MyFrag extends Fragment implements View.OnClickListener {
 //
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
-//            if (intent.getAction().equals("receive header")) {
+//            MyLog.print("onreceive","kaishi receive");
+//            if (intent.getAction().equals("com.xfzj.getbook.receiveHeader")) {
 //                setHeader();
+//                MyLog.print("onreceive","onreceive");
 //            }
 //        }
 //    }

@@ -66,7 +66,12 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private MyFrag myFrag;
     private FragmentManager fm;
     private BaseApplication baseApplication;
-    private User user,serverUser;
+    private User user, serverUser;
+    /**
+     * 从哪个activity进入
+     */
+    private String from;
+
     @Override
     protected void onSetContentView() {
         setContentView(R.layout.activity_main);
@@ -97,13 +102,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 @Override
                 public void onSuccess(List<User> list) {
                     if (null != list && list.size() != 0) {
-                         serverUser = list.get(0);
+                        serverUser = list.get(0);
                         if (TextUtils.isEmpty(serverUser.getHuaName())) {
                             showHuaNameDialog();
-                        }else {
+                        } else {
                             SharedPreferencesUtils.saveHuaName(getApplicationContext(), serverUser.getHuaName());
                             user.setHuaName(serverUser.getHuaName());
-                            
+
                         }
                     } else {
                         showHuaNameDialog();
@@ -119,8 +124,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void showHuaNameDialog() {
-         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-      
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
         final View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.huaname, null);
         final AlertDialog ad = builder.setTitle("起个昵称吧").setView(view).setCancelable(false).create();
         ad.show();
@@ -138,7 +143,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 }
             }
         });
-        
 
 
     }
@@ -163,8 +167,8 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
      */
     private void isNeedLogin() {
         Intent i = getIntent();
-        String str = i.getStringExtra(FROM);
-        if (!TextUtils.isEmpty(str) && str.equals(FlashActivity.FROM)) {
+        from = i.getStringExtra(FROM);
+        if (!TextUtils.isEmpty(from) && from.equals(FlashActivity.FROM)) {
             //需要登陆一次获得最新的cookie
 
             final User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
@@ -187,11 +191,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 public void onSuccess() {
                     MyToast.show(getApplicationContext(), getString(R.string.login_success));
                 }
+
                 @Override
                 public void onFail() {
                     MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
                     jump2Login(user.getSno());
                 }
+
                 @Override
                 public void onModify() {
                     jump2Login(user.getSno());
@@ -221,6 +227,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         lists.add(wantFrag);
         lists.add(myFrag);
         pager.setAdapter(new TestAdapter(getSupportFragmentManager(), lists));
+        pager.setOffscreenPageLimit(3);
         slidingTabStrip.setViewPager(pager);
         slidingTabStrip.setOnPageChangeListener(this);
         initTabsValue();
@@ -345,6 +352,10 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public void onPageSelected(int position) {
         setSelectedTextColor(position);
+        if (2 == position &&TextUtils.isEmpty(from)) {
+            myFrag.setHeader();
+            myFrag.updateUserInfo();
+        }
     }
 
     private void setSelectedTextColor(int position) {

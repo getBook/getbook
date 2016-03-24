@@ -84,6 +84,7 @@ public class GetNewsListLoader extends BaseAsyncLoader<List<News>> {
                 href = href.substring(5);
                 String title = e.text();
                 Element ele = element.getElementsByTag("td").get(2);
+//                MyLog.print("new",title);
                 news.add(new News(title, ele.text(), href));
             }
 
