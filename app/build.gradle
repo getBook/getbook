@@ -24,6 +24,8 @@ dependencies {
     compile project(':Zxing')
     //bmob-sdk ：Bmob的android sdk包
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
+    compile files('libs/jsoup-1.8.1.jar')
+    compile files('libs/jsoup-1.8.1-javadoc.jar')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.2.1'
@@ -34,6 +36,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v4:22.2.1'
-    compile files('libs/jsoup-1.8.1.jar')
-    compile files('libs/jsoup-1.8.1-javadoc.jar')
+    compile 'com.android.support:design:22.2.1'
 }

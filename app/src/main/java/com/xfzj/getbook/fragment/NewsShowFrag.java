@@ -16,9 +16,9 @@ import android.widget.LinearLayout;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetNewsListLoader;
 import com.xfzj.getbook.common.News;
-import com.xfzj.getbook.recycleview.BaseLoadRecycleView;
-import com.xfzj.getbook.recycleview.BaseRecycleViewAdapter;
+import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
+import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.NewsShowView;
 
@@ -29,18 +29,19 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/16.
  */
-public class NewsShowFrag extends Fragment implements BaseLoadRecycleView.RefreshListener, LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>> {
+public class NewsShowFrag extends Fragment implements LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>>, LoadMoreView.RefreshListener {
     public static final String PARAM = "newsshowfrag";
     private static final String NEWSLIST = "newslists";
     private String param;
-    private BaseLoadRecycleView rc;
+    private LoadMoreView loadMoreView;
     private LinearLayout llError;
     private Button btn;
     private List<News> lists = new ArrayList<>();
     private boolean isRefresh = true;
     private NewsShowAdapter newsShowAdapter;
-private GetNewsListLoader getNewsListLoader;
+    private GetNewsListLoader getNewsListLoader;
     private OnNewsClick onNewsClick;
+
     public NewsShowFrag() {
 
     }
@@ -66,8 +67,8 @@ private GetNewsListLoader getNewsListLoader;
             param = getArguments().getString(PARAM);
         }
         if (null != savedInstanceState) {
-           lists= (List<News>) savedInstanceState.getSerializable(NEWSLIST);
-           
+            lists = (List<News>) savedInstanceState.getSerializable(NEWSLIST);
+
         }
     }
 
@@ -75,13 +76,13 @@ private GetNewsListLoader getNewsListLoader;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newsshow, null);
-        rc = (BaseLoadRecycleView) view.findViewById(R.id.recycleView);
+        loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);
         newsShowAdapter = new NewsShowAdapter(lists, getActivity());
-        rc.setAdapter(newsShowAdapter);
-        rc.setOnrefreshListener(this);
-        rc.setOnLoadMoreListen(this);
+        loadMoreView.setAdapter(newsShowAdapter);
+        loadMoreView.setOnrefreshListener(this);
+        loadMoreView.setOnLoadMoreListen(this);
         btn.setOnClickListener(this);
         onRefresh();
         return view;
@@ -90,9 +91,9 @@ private GetNewsListLoader getNewsListLoader;
 
     @Override
     public void onRefresh() {
-        rc.setRefreshing();
+        loadMoreView.setRefreshing();
         isRefresh = true;
-        getNewsListLoader = (GetNewsListLoader) getLoaderManager().restartLoader(0,null,this);
+        getNewsListLoader = (GetNewsListLoader) getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -101,6 +102,7 @@ private GetNewsListLoader getNewsListLoader;
         getNewsListLoader.forceLoad();
 
     }
+
     @Override
     public void onClick(View v) {
         if (R.id.btn == v.getId()) {
@@ -123,20 +125,20 @@ private GetNewsListLoader getNewsListLoader;
     public void onLoadFinished(Loader<List<News>> loader, List<News> data) {
         if (null == data || data.size() == 0) {
             if (isRefresh) {
-                rc.setVisibility(View.GONE);
+                loadMoreView.setVisibility(View.GONE);
                 llError.setVisibility(View.VISIBLE);
             } else {
                 MyToast.show(getActivity(), getActivity().getString(R.string.end));
             }
         } else {
-            rc.setVisibility(View.VISIBLE);
+            loadMoreView.setVisibility(View.VISIBLE);
             llError.setVisibility(View.GONE);
             //上拉刷新需要清楚之前的数据
             if (isRefresh) {
-                rc.setRefreshFinish();
+                loadMoreView.setRefreshFinish();
                 newsShowAdapter.clear();
             } else {
-                rc.setLoadMoreFinish();
+                loadMoreView.setLoadMoreFinish();
             }
             newsShowAdapter.addAll(data);
 
@@ -147,25 +149,26 @@ private GetNewsListLoader getNewsListLoader;
     public void onLoaderReset(Loader<List<News>> loader) {
     }
 
-    private class NewsShowAdapter extends BaseRecycleViewAdapter<News> {
+    private class NewsShowAdapter extends FooterLoadMoreRVAdapter<News> {
 
         public NewsShowAdapter(List<News> datas, Context context) {
             super(datas, context);
         }
 
+
         @Override
-        protected View getView() {
+        protected View getNormalView() {
             return new NewsShowView(getActivity());
         }
 
+
         @Override
-        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
+        protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
 
-
-            return new BaseViewHolder<News>(view) {
+            return new NormalViewHolder<News>(view, viewType) {
 
                 @Override
-                protected void setContent(View itemView, News news, int viewType) {
+                protected void setNormalContent(View itemView, News news, int viewType) {
                     if (itemView instanceof NewsShowView) {
                         NewsShowView newsShowView = (NewsShowView) itemView;
                         newsShowView.update(news);

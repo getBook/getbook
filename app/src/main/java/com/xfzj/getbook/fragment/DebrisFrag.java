@@ -18,10 +18,9 @@ import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.recycleview.BaseLoadRecycleView;
-import com.xfzj.getbook.recycleview.BaseRecycleViewAdapter;
+import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.DebrisInfoView;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.List;
  * Use the {@link DebrisFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, BaseLoadRecycleView.RefreshListener, LoadMoreListen {
+public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,7 +46,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
     private int skip = 0;
     private int limit = 10;
     private static final int MAX_NUM = 15;
-    private BaseLoadRecycleView rc;
+    private LoadMoreView loadMoreView;
     private LinearLayout llError;
     private Button btn;
 
@@ -92,18 +91,18 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_want, container, false);
-        rc = (BaseLoadRecycleView) view.findViewById(R.id.recycleView);
+        loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         llnodata = (LinearLayout) view.findViewById(R.id.llnodata);
         btn = (Button) view.findViewById(R.id.btn);
         btn.setOnClickListener(this);
         debrisAdapter = new DebrisAdapter(debrises, getActivity());
-        rc.setAdapter(debrisAdapter);
-        rc.setOnrefreshListener(this);
-        rc.setOnLoadMoreListen(this);
+        loadMoreView.setAdapter(debrisAdapter);
+        loadMoreView.setOnrefreshListener(this);
+        loadMoreView.setOnLoadMoreListen(this);
         queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
-            rc.setRefreshing();
+            loadMoreView.setRefreshing();
             queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
         }
         queryAction.setOnQueryListener(this);
@@ -114,17 +113,14 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
     public void onSuccess(List<Debris> lists) {
         //上拉刷新需要清楚之前的数据
         if (skip == 0) {
-            rc.setRefreshFinish();
+            loadMoreView.setRefreshFinish();
             debrisAdapter.clear();
         } else {
-            rc.setLoadMoreFinish();
-            if (null != lists && lists.size() == 0) {
-                MyToast.show(getActivity(),getActivity().getString(R.string.end));
-            }
+            loadMoreView.setLoadMoreFinish();
         }
         if (null == lists || lists.size() == 0) {
             if (skip == 0) {
-                rc.setVisibility(View.GONE);
+                loadMoreView.setVisibility(View.GONE);
                 if (mParam1.equals(FROMMAIN)) {
                     llError.setVisibility(View.VISIBLE);
                 } else if (mParam1.equals(FROMSEARCH)) {
@@ -132,7 +128,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                 }
             }
         } else {
-            rc.setVisibility(View.VISIBLE);
+            loadMoreView.setVisibility(View.VISIBLE);
             if (mParam1.equals(FROMMAIN) && null != llError) {
                 llError.setVisibility(View.GONE);
             } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
@@ -147,8 +143,8 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
     @Override
     public void onFail() {
-        if (null != rc) {
-            rc.setVisibility(View.GONE);
+        if (null != loadMoreView) {
+            loadMoreView.setVisibility(View.GONE);
         }
         if (mParam1.equals(FROMMAIN) && null != llError) {
             llError.setVisibility(View.VISIBLE);
@@ -160,11 +156,11 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
     @Override
     public void onRefresh() {
         if (FROMSEARCH.equals(mParam1) && TextUtils.isEmpty(key)) {
-            rc.setRefreshFinish();
+            loadMoreView.setRefreshFinish();
             return;
         }
         skip = 0;
-        rc.setRefreshing();
+        loadMoreView.setRefreshing();
         queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
     }
 
@@ -186,15 +182,15 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
     }
 
-    private class DebrisAdapter extends BaseRecycleViewAdapter<Debris> {
+    private class DebrisAdapter extends FooterLoadMoreRVAdapter<Debris> {
         private DebrisInfoView debrisInfoView;
 
         public DebrisAdapter(List<Debris> datas, Context context) {
             super(datas, context);
         }
-
+        
         @Override
-        protected View getView() {
+        protected View getNormalView() {
             View view = LayoutInflater.from(context).inflate(R.layout.wrap_debrisinfo, null);
 
             debrisInfoView = (DebrisInfoView) view.findViewById(R.id.debrisInfoView);
@@ -203,12 +199,13 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
             return view;
         }
+        
 
         @Override
-        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
-            return new BaseViewHolder<Debris>(view) {
+        protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
+            return new NormalViewHolder<Debris>(view,viewType) {
                 @Override
-                protected void setContent(View itemView, Debris item, int viewType) {
+                protected void setNormalContent(View itemView, Debris item, int viewType) {
                     final DebrisInfoView debrisInfoView = ((DebrisInfoView) itemView.getTag());
                     debrisInfoView.update(item);
 

@@ -1,0 +1,108 @@
+package com.xfzj.getbook.recycleview;
+
+import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.MyUtils;
+
+/**
+ * Created by zj on 2016/3/24.
+ */
+public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnRefreshListener, LoadMoreListen {
+    private Context context;
+    private LoadMoreLayout loadMoreLayout;
+    private RecyclerView recyclerView;
+    private RefreshListener refreshListener;
+    private boolean isRefresh;
+    private LoadMoreListen loadMoreListen;
+   
+    public LoadMoreView(Context context) {
+        this(context, null);
+    }
+
+    public LoadMoreView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public LoadMoreView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    public LoadMoreView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context);
+    }
+
+    private void init(Context context) {
+        this.context = context;
+        View view = LayoutInflater.from(context).inflate(R.layout.loadmorelayout, null);
+        loadMoreLayout = (LoadMoreLayout) view.findViewById(R.id.loadMoreLayout);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycleView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        loadMoreLayout.setColorSchemeColors(R.color.primary);
+        loadMoreLayout.setOnRefreshListener(this);
+        loadMoreLayout.setLoadMoreListen(this);
+        addView(view);
+    }
+
+    public void setAdapter(BaseRecycleViewAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        loadMoreLayout.setAdapter(adapter);
+    }
+
+    public void setOnrefreshListener(RefreshListener refreshListener) {
+        this.refreshListener = refreshListener;
+    }
+
+    public void setOnLoadMoreListen(LoadMoreListen loadMoreListen) {
+        this.loadMoreListen = loadMoreListen;
+    }
+
+    @Override
+    public void onRefresh() {
+        if (isRefresh) {
+            return;
+        }
+        isRefresh = true;
+        if (null != refreshListener) {
+            refreshListener.onRefresh();
+        }
+    }
+
+    @Override
+    public void onLoadMore() {
+        if (null != loadMoreListen) {
+            loadMoreListen.onLoadMore();
+        }
+    }
+
+    public void setRefreshing() {
+        loadMoreLayout.setProgressViewOffset(false, 0, (int) MyUtils.dp2px(context, 24.0f));
+        loadMoreLayout.setRefreshing(true);
+    }
+
+    public interface RefreshListener {
+        void onRefresh();
+    }
+
+
+    public void setRefreshFinish() {
+        loadMoreLayout.setRefreshing(false);
+        isRefresh = false;
+        recyclerView.scrollToPosition(0);
+    }
+    public void setLoadMoreFinish() {
+        loadMoreLayout.setLoading(false);
+        
+    }
+}

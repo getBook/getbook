@@ -54,21 +54,14 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
     public List<T> getAll() {
         return datas;
     }
-    
+
     public void remove(int position) {
         if (position == -1) {
             return;
         }
         datas.remove(position);
-        if (this instanceof LoadMoreRVAdapter) {
-            if (((LoadMoreRVAdapter) this).hasHeader()) {
-                notifyItemRemoved(position + 1);
-            }else{
-                notifyItemRemoved(position);
-            }
-        } else {
-            notifyItemRemoved(position);
-        }
+        notifyItemRemoved(position);
+        
     }
 
     public void addAll(List<T> lists) {
@@ -99,7 +92,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-       
+
 
         return getViewHolder(getView(), 1);
     }
@@ -110,30 +103,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (this instanceof LoadMoreRVAdapter) {
-            int headFlag = 0, footFlag = 0;
-            if (((LoadMoreRVAdapter) this).hasHeader()) {
-                headFlag++;
-            }
-            if (((LoadMoreRVAdapter) this).hasFooter()) {
-                footFlag++;
-            }
-            //有头
-            if (headFlag > 0 && position >= headFlag && position < datas.size()+headFlag) {
-                ((BaseViewHolder) holder).setItem(datas.get(position - 1));
-
-            }
-            //有尾
-            else if (footFlag > 0 && headFlag == 0 && position >= headFlag && position < datas.size()) {
-                ((BaseViewHolder) holder).setItem(datas.get(position));
-
-            } else {
-                ((BaseViewHolder) holder).setItem(datas.get(position));
-            }
-        } else {
-            ((BaseViewHolder) holder).setItem(datas.get(position));
-        }
-
+        ((BaseViewHolder) holder).setItem(datas.get(position));
     }
 
     @Override
@@ -177,7 +147,6 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter {
                 onRecycleViewItemClickListener.setOnRecycleViewItemClickListener(itemView, item);
             }
         }
-
     }
 
 }

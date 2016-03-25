@@ -4,17 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-  
 
     <android.support.v7.widget.CardView
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp">
 
-        <com.xfzj.getbook.recycleview.BaseLoadRecycleView
-            android:id="@+id/recycleView"
+        <com.xfzj.getbook.recycleview.LoadMoreView
+            android:id="@+id/loadMoreView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"

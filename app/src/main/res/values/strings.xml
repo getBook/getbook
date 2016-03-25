@@ -127,4 +127,5 @@
     <string name="change_password_tips">如果您修改了一卡通查询密码，请修改该APP的密码，否则请确认密码输入正确，重新登录\nPs:如果您修改了一卡通查询密码，并且当前设备的登陆账号不是您，您可能需要先将一卡通查询密码修改为以前的密码再进行登陆，登陆成功后再重新修改密码</string>
     <string name="change_password">修改密码</string>
     <string name="relogin">重新登录</string>
+    <string name="title_activity_load_more_view_demo_aty">LoadMoreViewDemoAty</string>
 </resources>

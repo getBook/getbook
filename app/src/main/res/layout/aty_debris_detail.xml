@@ -10,24 +10,22 @@
         android:layout_height="wrap_content" />
 
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
     <com.xfzj.getbook.views.view.SimpleUserView
         android:id="@+id/simpleUserView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="10dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="15dp"
-
-        android:layout_marginRight="15dp"
-        android:background="@color/divider" />
-
+    </android.support.v7.widget.CardView>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,15 +40,16 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="@string/baseinfo"
-                android:id="@+id/tvTitle"
-                
-                android:textStyle="bold"
+
+                android:textColor="@color/primary_text"
                 android:textSize="16sp"
-                android:textColor="@color/primary_text" />
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,34 +100,6 @@
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/llSendSms"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_weight="0"
-        android:background="@drawable/top_line"
-        android:gravity="bottom"
-        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:padding="16dp"
-            android:text="@string/want_send"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:textColor="@color/primary"
-            android:textSize="14sp" />
-
-        <ImageButton
-            android:id="@+id/ibSend"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="15dp"
-            android:layout_weight="0"
-            android:background="@drawable/send_ib_selector" />
-    </LinearLayout>
+    <include layout="@layout/sendsms" />
 </LinearLayout>

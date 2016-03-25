@@ -12,65 +12,87 @@ import java.util.List;
  */
 public abstract class LoadMoreRVAdapter<T>
         extends BaseRecycleViewAdapter<T> {
-    public static final int HEADER = 0;
     public static final int NORMAL = 1;
     public static final int FOOTER = 2;
-    private int resourceHeader, resourceFooter;
     private View headerView, footerView;
-    public LoadMoreRVAdapter(List<T> datas, Context context, int resourceNormal, int resourceHeader, int resourceFooter) {
+
+    private BaseFooterViewHolder<T> tBaseFooterViewHolder;
+    public LoadMoreRVAdapter(List<T> datas, Context context) {
         super(datas, context);
-            this.resourceHeader = resourceHeader;
-            this.resourceFooter = resourceFooter;
+
     }
 
     @Override
     public int getItemViewType(int position) {
         int last = datas.size();
-        if (position == 0&&resourceHeader!=0) {
-            last++;
-            return HEADER;
-        } else if (position == last&&resourceFooter!=0) {
+        if (position == last) {
             return FOOTER;
         } else {
             return NORMAL;
         }
     }
 
+    public BaseFooterViewHolder<T> gettBaseFooterViewHolder() {
+        return tBaseFooterViewHolder;
+    }
+
     @Override
     public int getItemCount() {
-        int count=0;
-        if (resourceHeader != 0) {
-            count++;
-        }
-        if (resourceFooter != 0) {
-            count++;
-        }
-        return super.getItemCount() + count;
+        return super.getItemCount() + 1;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        if (viewType == HEADER&&resourceHeader!=0) {
-//            headerView = layoutInflater.inflate(resourceHeader, parent, false);
-//            return getViewHolder(headerView, viewType);
-//        } else if (viewType == FOOTER&&resourceFooter!=0) {
-//            footerView = layoutInflater.inflate(resourceFooter, parent, false);
-//            return getViewHolder(footerView, viewType);
-//        } else if(viewType == NORMAL&&resource!=0){
-//            View view = layoutInflater.inflate(resource, parent, false);
-//            return getViewHolder(view, viewType);
-//        }else{
-//            return null;
-//        }
+        if (viewType == FOOTER) {
+            return getViewHolder(getFooterView(), viewType);
+        } else if (viewType == NORMAL) {
+            return getViewHolder(getView(), viewType);
+        }
         return null;
     }
 
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        //有尾
+        this.tBaseFooterViewHolder = (BaseFooterViewHolder<T>) holder;
+        
+        if (position == datas.size()) {
+            ((BaseFooterViewHolder) holder).handlefooter();
+
+        } else {
+            ((BaseFooterViewHolder) holder).setItem(datas.get(position));
+        }
+    }
+
+    protected abstract View getFooterView();
+
     protected abstract RecyclerView.ViewHolder getViewHolder(View view, int viewType);
-    
-    public boolean hasHeader() {
-        return resourceHeader != 0;
+
+    public View getViewHolder() {
+        return null;
     }
-    public boolean hasFooter() {
-        return resourceFooter != 0;
+
+    protected abstract class BaseFooterViewHolder<T> extends BaseViewHolder<T> {
+        private View footerView;
+
+        public BaseFooterViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        public BaseFooterViewHolder(View itemView, int viewType) {
+            super(itemView, viewType);
+            if (viewType == FOOTER) {
+                footerView = itemView;
+            }
+            
+        }
+
+        public View getFooterView() {
+            return footerView;
+        }
+
+        public abstract void handlefooter();
+
     }
+
 }

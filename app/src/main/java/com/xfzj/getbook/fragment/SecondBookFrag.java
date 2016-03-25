@@ -19,9 +19,9 @@ import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.recycleview.BaseLoadRecycleView;
-import com.xfzj.getbook.recycleview.BaseRecycleViewAdapter;
+import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
+import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.SecondBookInfoView;
@@ -34,7 +34,7 @@ import java.util.List;
  * Use the {@link SecondBookFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>, BaseLoadRecycleView.RefreshListener, LoadMoreListen, View.OnClickListener {
+public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>,  LoadMoreListen, View.OnClickListener, LoadMoreView.RefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -52,7 +52,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
     private int limit = 10;
 
 
-    private BaseLoadRecycleView rc;
+    private LoadMoreView loadMoreView;
     private LinearLayout llError;
     private LinearLayout llnodata;
     private Button btn;
@@ -98,19 +98,19 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sale, container, false);
-        rc = (BaseLoadRecycleView) view.findViewById(R.id.recycleView);
+        loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         llnodata = (LinearLayout) view.findViewById(R.id.llnodata);
         btn = (Button) view.findViewById(R.id.btn);
         btn.setOnClickListener(this);
         saleAdapter = new SaleAdapter(secondBooks, getActivity());
-        rc.setAdapter(saleAdapter);
-        rc.setOnrefreshListener(this);
-        rc.setOnLoadMoreListen(this);
+        loadMoreView.setAdapter(saleAdapter);
+        loadMoreView.setOnrefreshListener(this);
+        loadMoreView.setOnLoadMoreListen(this);
 
         queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
-            rc.setRefreshing();
+            loadMoreView.setRefreshing();
             queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
         }
         queryAction.setOnQueryListener(this);
@@ -122,10 +122,10 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
 
         //上拉刷新需要清楚之前的数据
         if (skip == 0) {
-            rc.setRefreshFinish();
+            loadMoreView.setRefreshFinish();
             saleAdapter.clear();
         } else {
-            rc.setLoadMoreFinish();
+            loadMoreView.setLoadMoreFinish();
             if (null != lists && lists.size() == 0) {
                 MyToast.show(getActivity(), getActivity().getString(R.string.end));
             }
@@ -137,10 +137,10 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
                 } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
                     llnodata.setVisibility(View.VISIBLE);
                 }
-                rc.setVisibility(View.GONE);
+                loadMoreView.setVisibility(View.GONE);
             }
         } else {
-            rc.setVisibility(View.VISIBLE);
+            loadMoreView.setVisibility(View.VISIBLE);
             if (mParam1.equals(FROMMAIN) && null != llError) {
                 llError.setVisibility(View.GONE);
             } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
@@ -155,8 +155,8 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
 
     @Override
     public void onFail() {
-        if (null != rc) {
-            rc.setVisibility(View.GONE);
+        if (null != loadMoreView) {
+            loadMoreView.setVisibility(View.GONE);
         }
         if (mParam1.equals(FROMMAIN) && null != llError) {
             llError.setVisibility(View.VISIBLE);
@@ -168,11 +168,11 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
     @Override
     public void onRefresh() {
         if (FROMSEARCH.equals(mParam1) && TextUtils.isEmpty(key)) {
-            rc.setRefreshFinish();
+            loadMoreView.setRefreshFinish();
             return;
         }
         skip = 0;
-        rc.setRefreshing();
+        loadMoreView.setRefreshing();
 
         queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
     }
@@ -192,16 +192,16 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         onRefresh();
     }
 
-    public class SaleAdapter extends BaseRecycleViewAdapter<SecondBook> {
+    public class SaleAdapter extends FooterLoadMoreRVAdapter<SecondBook> {
 
         private SecondBookInfoView secondBookInfoView;
 
         public SaleAdapter(List<SecondBook> datas, Context context) {
             super(datas, context);
         }
-
+        
         @Override
-        protected View getView() {
+        protected View getNormalView() {
             View view = LayoutInflater.from(context).inflate(R.layout.wrap_secondbookinfo, null);
 
             secondBookInfoView = (SecondBookInfoView) view.findViewById(R.id.secondbookinfoview);
@@ -211,11 +211,39 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
             return view;
         }
 
+//        @Override
+//        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
+//            return new BaseViewHolder<SecondBook>(view) {
+//                @Override
+//                protected void setContent(View itemView, SecondBook item, int viewType) {
+//                    final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
+//                    bookInfoView.update(item);
+//
+//                    bookInfoView.setOnUserInfoClick(new SecondBookInfoView.onClickListener<User>() {
+//                        @Override
+//                        public void onClick(User user) {
+//                            MyLog.print("点击的人物", user.toString());
+//                        }
+//                    });
+//
+//                    bookInfoView.setOnSecondBookInfoClick(new SecondBookInfoView.onClickListener<SecondBook>() {
+//                        @Override
+//                        public void onClick(SecondBook secondBook) {
+//                            MyLog.print("点击的书本", secondBook.toString());
+//                            Intent intent = new Intent(getActivity(), SecondBookDetailAty.class);
+//                            intent.putExtra(SecondBookDetailAty.DATA, secondBook);
+//                            startActivity(intent);
+//                        }
+//                    });
+//                }
+//            };
+//        }
+
         @Override
-        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
-            return new BaseViewHolder<SecondBook>(view) {
+        protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
+            return new NormalViewHolder<SecondBook>(view,viewType) {
                 @Override
-                protected void setContent(View itemView, SecondBook item, int viewType) {
+                protected void setNormalContent(View itemView, SecondBook item, int viewType) {
                     final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
                     bookInfoView.update(item);
 
