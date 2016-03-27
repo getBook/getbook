@@ -31,6 +31,7 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
 
     private boolean isLoading = false;
     private Context context;
+    private OnScrollCallBack onScrollCallBack;
 
     public void setLoadMoreListen(LoadMoreListen loadMoreListen) {
         this.loadMoreListen = loadMoreListen;
@@ -44,6 +45,10 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
 
     public LoadMoreLayout(Context context) {
         this(context, null);
+    }
+
+    public void setOnScrollCallBack(OnScrollCallBack onScrollCallBack) {
+        this.onScrollCallBack = onScrollCallBack;
     }
 
     @Override
@@ -69,7 +74,9 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
 
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
+                        if (null != onScrollCallBack) {
+                            onScrollCallBack.onScroll(isPullUp());
+                        }
                         if (canLoad()) {
                             loadData();
                         }
@@ -104,7 +111,7 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
     }
 
     private boolean canLoad() {
-        return isBottom() && !isLoading && isPullUp();
+        return isBottom() && !isLoading && isPullUp() && loadMoreRVAdapter.getItemCount() > 1;
     }
 
     private boolean isPullUp() {
@@ -150,4 +157,9 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
     public void setAdapter(BaseRecycleViewAdapter adapter) {
         this.loadMoreRVAdapter = (LoadMoreRVAdapter) adapter;
     }
+
+    public interface OnScrollCallBack {
+        void onScroll(boolean b);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -108,9 +109,15 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 chongzhi();
                 break;
             case R.id.tvLiuShui:
-
+                Intent intent = new Intent(this, LiuShuiAty.class);
+                intent.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMLIUSHUI);
+                startActivity(intent);
+                
                 break;
             case R.id.tvBuZhu:
+                Intent intent1 = new Intent(this, LiuShuiAty.class);
+                intent1.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMBUZHU);
+                startActivity(intent1);
                 break;
             case R.id.tvXiuGaiMiMa:
                 xiugaiMiMa();

@@ -5,4 +5,12 @@
         <attr name="lastSrc" format="reference" />
         <attr name="defaultSrc" format="reference" />
     </declare-styleable>
+    
+    <declare-styleable name="FloatingBUtton">
+
+        <attr name="src" format="reference" />
+        <attr name="itemTitle" format="reference"/>
+        
+        
+    </declare-styleable>
 </resources>

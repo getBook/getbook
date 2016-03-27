@@ -15,6 +15,9 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +89,7 @@ public class MyUtils {
     public static void executeInThread(Runnable runnable) {
         new Thread(runnable).start();
     }
+
     public static File getDiskCacheDir(Context context, String uniqueName) {
         boolean externalStorageAvailable = Environment
                 .getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
@@ -98,8 +102,10 @@ public class MyUtils {
 
         return new File(cachePath + File.separator + uniqueName);
     }
-    /***//**
+    /***/
+    /**
      * 图片去色,返回灰度图片
+     *
      * @param bmpOriginal 传入的图片
      * @return 去色后的图片
      */
@@ -119,13 +125,13 @@ public class MyUtils {
         return bmpGrayscale;
     }
 
-    public static  String getFlag(String uri) {
+    public static String getFlag(String uri) {
         return uri.substring(uri.lastIndexOf("."), uri.length());
     }
 
 
     public static boolean isPicture(String uri) {
-        String flag=getFlag(uri);
+        String flag = getFlag(uri);
         String[] str = new String[]{".jpg", ".png", ".jpeg"};
         for (int i = 0; i < str.length; i++) {
             if (str[0].contains(flag.toLowerCase())) {
@@ -136,8 +142,8 @@ public class MyUtils {
     }
 
     public static boolean isFile(String uri) {
-        String flag=getFlag(uri);
-        String[] str = new String[]{".doc", ".xls", ".ppt",".docx","xlsx",".pdf",".pptx"};
+        String flag = getFlag(uri);
+        String[] str = new String[]{".doc", ".xls", ".ppt", ".docx", "xlsx", ".pdf", ".pptx"};
         for (int i = 0; i < str.length; i++) {
             if (str[0].contains(flag.toLowerCase())) {
                 return true;
@@ -147,17 +153,29 @@ public class MyUtils {
     }
 
     public static boolean isWord(String uri) {
-        String flag=getFlag(uri);
-        if(flag.toLowerCase().contains(".doc")||flag.toLowerCase().contains(".docx")) {
+        String flag = getFlag(uri);
+        if (flag.toLowerCase().contains(".doc") || flag.toLowerCase().contains(".docx")) {
             return true;
         }
         return false;
     }
 
     public static boolean isExcel(String uri) {
-        String flag=getFlag(uri);
-        if(flag.toLowerCase().contains(".xls")||flag.toLowerCase().contains(".xlsx")) {
+        String flag = getFlag(uri);
+        if (flag.toLowerCase().contains(".xls") || flag.toLowerCase().contains(".xlsx")) {
             return true;
+        }
+        return false;
+    }
+
+    public static boolean isSuccess(JSONObject jsonObject) {
+
+        try {
+        
+            return jsonObject.getBoolean("success");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return false;
     }

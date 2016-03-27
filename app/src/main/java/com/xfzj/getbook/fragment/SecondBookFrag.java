@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
@@ -20,6 +21,7 @@ import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.utils.MyLog;
@@ -34,7 +36,7 @@ import java.util.List;
  * Use the {@link SecondBookFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>,  LoadMoreListen, View.OnClickListener, LoadMoreView.RefreshListener {
+public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>, LoadMoreListen, View.OnClickListener, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,6 +65,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
     private List<SecondBook> secondBooks = new ArrayList<>();
 
     private String key;
+    private FloatingActionsMenu fab;
 
     /**
      * Use this factory method to create a new instance of
@@ -107,7 +110,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         loadMoreView.setAdapter(saleAdapter);
         loadMoreView.setOnrefreshListener(this);
         loadMoreView.setOnLoadMoreListen(this);
-
+        loadMoreView.setOnScrollCallBack(this);
         queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
             loadMoreView.setRefreshing();
@@ -192,6 +195,23 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         onRefresh();
     }
 
+    @Override
+    public void onScroll(boolean b) {
+        if (null == fab) {
+            return ;
+        }
+        if (b) {
+            fab.collapseImmediately();
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setFloatingBUtton(FloatingActionsMenu fab) {
+        this.fab = fab;
+    }
+
     public class SaleAdapter extends FooterLoadMoreRVAdapter<SecondBook> {
 
         private SecondBookInfoView secondBookInfoView;
@@ -199,7 +219,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         public SaleAdapter(List<SecondBook> datas, Context context) {
             super(datas, context);
         }
-        
+
         @Override
         protected View getNormalView() {
             View view = LayoutInflater.from(context).inflate(R.layout.wrap_secondbookinfo, null);
@@ -241,7 +261,7 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
 
         @Override
         protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
-            return new NormalViewHolder<SecondBook>(view,viewType) {
+            return new NormalViewHolder<SecondBook>(view, viewType) {
                 @Override
                 protected void setNormalContent(View itemView, SecondBook item, int viewType) {
                     final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());

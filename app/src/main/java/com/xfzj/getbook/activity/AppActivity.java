@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -16,7 +17,7 @@ public abstract class AppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-   
+
         onSetContentView();
         ButterKnife.bind(this);
         onCreateView(savedInstanceState);
@@ -25,7 +26,6 @@ public abstract class AppActivity extends AppCompatActivity {
 
     /**
      * 只用来做{@link #setContentView(View)}
-     *
      */
     protected abstract void onSetContentView();
 
@@ -65,6 +65,7 @@ public abstract class AppActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
@@ -72,5 +73,18 @@ public abstract class AppActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void exitApp() {
+        Intent i = new Intent(this, FlashActivity.class);
+        i.putExtra(FlashActivity.FROM, FlashActivity.EXITAPP);
+        startActivity(i);
+        finish();
+    }
+    protected void exitAccount() {
+        Intent i = new Intent(this, FlashActivity.class);
+        i.putExtra(FlashActivity.FROM, FlashActivity.EXITACCOUNT);
+        startActivity(i);
+        finish();
     }
 }

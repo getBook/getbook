@@ -92,7 +92,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.search_badge);//在菜单中找到对应控件的item
         searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-        searchView.setQueryHint("请输入关键词");
+        searchView.setQueryHint(getString(R.string.please_input_keywords));
         searchView.setOnQueryTextListener(this);
         MenuItemCompat.expandActionView(menuItem);
         MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {//设置打开关闭动作监听

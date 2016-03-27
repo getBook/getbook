@@ -20,7 +20,7 @@ public abstract class BaseActivity extends AppActivity {
             isFirstClick = false;
             MyToast.show(getApplicationContext(), getString(R.string.exit_app_tips));
         } else if (nowtime - pretime <= 2000000) {
-            finish();
+            exitApp();
         }
         new Timer().schedule(new TimerTask() {
             @Override
@@ -29,6 +29,6 @@ public abstract class BaseActivity extends AppActivity {
             }
         }, 2000);
     }
-    
+   
     
 }

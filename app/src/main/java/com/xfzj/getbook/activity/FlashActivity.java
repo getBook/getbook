@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.xfzj.getbook.MainActivity;
@@ -18,7 +19,8 @@ import cn.bmob.v3.BmobUser;
  */
 public class FlashActivity extends AppActivity {
     public static final String FROM = "FlashActivity.class";
-
+    public static final String EXITACCOUNT = "exitaccount";
+    public static final String EXITAPP = "exitapp";
     private User user;
 
     private Handler handler = new Handler() {
@@ -34,13 +36,17 @@ public class FlashActivity extends AppActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-        
+
+
         setContentView(R.layout.flash);
 
     }
 
     @Override
     public void onCreateView(Bundle savedInstanceState) {
+        if (handleIntent()) {
+            return;
+        }
         user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
         if (null != user) {
             jump2MainAty();
@@ -50,12 +56,32 @@ public class FlashActivity extends AppActivity {
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent();
+    }
+
+    private boolean handleIntent() {
+        String from = getIntent().getStringExtra(FROM);
+        if (!TextUtils.isEmpty(from)) {
+            if (EXITACCOUNT.equals(from)) {
+                jump2Login();
+            } else if (EXITAPP.equals(from)) {
+                finish();
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     private void jump2Login() {
 
         Intent i = new Intent(this, LoginAty.class);
         startActivity(i);
-        finish();
+//        finish();
     }
 
 
@@ -65,6 +91,7 @@ public class FlashActivity extends AppActivity {
         startActivity(i);
         finish();
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

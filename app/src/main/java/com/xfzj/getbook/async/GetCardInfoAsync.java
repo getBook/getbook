@@ -2,7 +2,6 @@ package com.xfzj.getbook.async;
 
 import android.content.Context;
 
-import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Card;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 public class GetCardInfoAsync extends UcardAsyncTask<Void, Void, Card> {
     public GetCardInfoAsync(Context context) {
         super(context);
-        setProgressDialog(null, context.getString(R.string.querying));
     }
 
     @Override

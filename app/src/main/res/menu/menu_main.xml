@@ -10,9 +10,15 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_scanner"
+        android:id="@+id/setting"
         android:orderInCategory="100"
-        android:title="@string/sao_yi_sao"
+        android:title="@string/setting"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="100"
+        android:title="@string/about"
         android:icon="@mipmap/fabu"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

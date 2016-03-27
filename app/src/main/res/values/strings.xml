@@ -75,6 +75,8 @@
     <string name="no_describe">暂无描述</string>
     <string name="no_date">0-0</string>
     <string name="debris_des">杂货描述：</string>
+    <string name="debris">杂货</string>
+
     <string name="debris_pic">杂货图片：</string>
     <string name="no_search_result">搜索不到相关物品，要不换个词试试吧...</string>
     <string name="schoollife">校园生活</string>
@@ -128,4 +130,23 @@
     <string name="change_password">修改密码</string>
     <string name="relogin">重新登录</string>
     <string name="title_activity_load_more_view_demo_aty">LoadMoreViewDemoAty</string>
+    <string name="historyQuery">历史查询</string>
+    <string name="todayquery">当日查询</string>
+    <string name="please_input_keywords">请输入关键词</string>
+    <string name="starttime">开始时间</string>
+    <string name="endtime">结束时间</string>
+    <string name="deal_time">交易时间</string>
+    <string name="shop_name">商户名称</string>
+    <string name="deal_name">交易名称</string>
+    <string name="deal_money">交易金额</string>
+    <string name="deal_remain">交易后卡余额</string>
+    <string name="title_activity_demoaty">Demoaty</string>
+    <string name="setting">设置</string>
+    <string name="about">关于</string>
+    <string name="start_downloading">开始下载</string>
+    <string name="create_file_fail">创建文件失败</string>
+    <string name="write_file_fail">写入文件失败</string>
+    <string name="no_sdcard_fail">未发现存储卡，下载失败</string>
+    <string name="downoad_complete">下载完成</string>
+    <string name="download_fail">下载失败</string>
 </resources>

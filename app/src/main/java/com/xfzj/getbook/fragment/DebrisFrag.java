@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.DebrisInfoView;
@@ -31,7 +33,7 @@ import java.util.List;
  * Use the {@link DebrisFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener {
+public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -56,6 +58,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
     private List<Debris> debrises = new ArrayList<>();
     private String key;
     private LinearLayout llnodata;
+    private FloatingActionsMenu fab;
 
     /**
      * Use this factory method to create a new instance of
@@ -83,7 +86,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        
+
     }
 
     @Override
@@ -100,6 +103,7 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         loadMoreView.setAdapter(debrisAdapter);
         loadMoreView.setOnrefreshListener(this);
         loadMoreView.setOnLoadMoreListen(this);
+        loadMoreView.setOnScrollCallBack(this);
         queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
             loadMoreView.setRefreshing();
@@ -182,13 +186,30 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
     }
 
+    public void setFloatingBUtton(FloatingActionsMenu fab) {
+        this.fab = fab;
+    }
+
+    @Override
+    public void onScroll(boolean b) {
+        if (null == fab) {
+            return ;
+        }
+        if (b) {
+            fab.collapseImmediately();
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
+
     private class DebrisAdapter extends FooterLoadMoreRVAdapter<Debris> {
         private DebrisInfoView debrisInfoView;
 
         public DebrisAdapter(List<Debris> datas, Context context) {
             super(datas, context);
         }
-        
+
         @Override
         protected View getNormalView() {
             View view = LayoutInflater.from(context).inflate(R.layout.wrap_debrisinfo, null);
@@ -199,11 +220,11 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
 
             return view;
         }
-        
+
 
         @Override
         protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
-            return new NormalViewHolder<Debris>(view,viewType) {
+            return new NormalViewHolder<Debris>(view, viewType) {
                 @Override
                 protected void setNormalContent(View itemView, Debris item, int viewType) {
                     final DebrisInfoView debrisInfoView = ((DebrisInfoView) itemView.getTag());

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="@color/primary"
+        fab:fab_addButtonColorPressed="@color/primary_dark"
+        fab:fab_addButtonPlusIconColor="@color/white"
+        fab:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_size="mini"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@mipmap/secondbook"
+            fab:fab_title="@string/secondbook" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_size="mini"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@mipmap/debris"
+            fab:fab_title="@string/debris" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+</RelativeLayout>

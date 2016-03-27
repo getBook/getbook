@@ -60,7 +60,6 @@ public class LoginAty extends AppActivity {
                                     MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
                                     return;
                                 }
-
                                 if (TextUtils.isEmpty(newp)) {
                                     MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.newpassword)));
                                     return;
@@ -148,4 +147,9 @@ public class LoginAty extends AppActivity {
         loginAsync.execute();
     }
 
+    @Override
+    public void onBackPressed() {
+        exitApp();
+    }
+    
 }

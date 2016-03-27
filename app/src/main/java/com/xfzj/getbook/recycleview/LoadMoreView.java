@@ -15,14 +15,14 @@ import com.xfzj.getbook.utils.MyUtils;
 /**
  * Created by zj on 2016/3/24.
  */
-public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnRefreshListener, LoadMoreListen {
+public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnRefreshListener, LoadMoreListen, LoadMoreLayout.OnScrollCallBack {
     private Context context;
     private LoadMoreLayout loadMoreLayout;
     private RecyclerView recyclerView;
     private RefreshListener refreshListener;
     private boolean isRefresh;
     private LoadMoreListen loadMoreListen;
-   
+    private LoadMoreLayout.OnScrollCallBack onScrollCallBack;
     public LoadMoreView(Context context) {
         this(context, null);
     }
@@ -41,6 +41,10 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
         init(context);
     }
 
+    public void setOnScrollCallBack(LoadMoreLayout.OnScrollCallBack onScrollCallBack) {
+        this.onScrollCallBack = onScrollCallBack;
+    }
+
     private void init(Context context) {
         this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.loadmorelayout, null);
@@ -52,6 +56,7 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
         loadMoreLayout.setColorSchemeColors(R.color.primary);
         loadMoreLayout.setOnRefreshListener(this);
         loadMoreLayout.setLoadMoreListen(this);
+        loadMoreLayout.setOnScrollCallBack(this);
         addView(view);
     }
 
@@ -87,8 +92,19 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
     }
 
     public void setRefreshing() {
-        loadMoreLayout.setProgressViewOffset(false, 0, (int) MyUtils.dp2px(context, 24.0f));
+        loadMoreLayout.setProgressViewOffset(false, 0, (int) MyUtils.dp2px(context, 26f));
         loadMoreLayout.setRefreshing(true);
+    }
+
+    public RecyclerView getRecycleView() {
+        return recyclerView;
+    }
+
+    @Override
+    public void onScroll(boolean b) {
+        if (null != onScrollCallBack) {
+            onScrollCallBack.onScroll(b);
+        }
     }
 
     public interface RefreshListener {
@@ -105,4 +121,6 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
         loadMoreLayout.setLoading(false);
         
     }
+    
+    
 }

@@ -1,6 +1,5 @@
 package com.xfzj.getbook;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,9 +19,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.activity.BaseActivity;
 import com.xfzj.getbook.activity.CaptureAty;
@@ -48,7 +50,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String FROM = "MainActivity.class";
 
     @Bind(R.id.fram)
@@ -59,6 +61,14 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     PagerSlidingTabStrip slidingTabStrip;
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolbar;
+    @Bind(R.id.rl)
+    RelativeLayout rl;
+    @Bind(R.id.fab)
+    FloatingActionsMenu fab;
+    @Bind(R.id.fab1)
+    FloatingActionButton fab1;
+    @Bind(R.id.fab2)
+    FloatingActionButton fab2;
     private Toolbar toolbar;
 
     private SecondBookFrag saleFrag;
@@ -83,6 +93,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     public void onCreateView(Bundle savedInstanceState) {
         baseToolbar.initToolbar(this, getResources().getString(R.string.app_name));
         toolbar = baseToolbar.getToolbar();
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        rl.setVisibility(View.VISIBLE);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setTitleTextColor(Color.WHITE);
         fm = getSupportFragmentManager();
@@ -281,7 +294,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         saleFrag = (SecondBookFrag) fm.findFragmentByTag(SecondBookFrag.FROMMAIN);
         if (null == saleFrag) {
             saleFrag = SecondBookFrag.newInstance(SecondBookFrag.FROMMAIN);
+            saleFrag.setFloatingBUtton(fab);
         }
+
     }
 
     private void initWantFrag() {
@@ -289,7 +304,9 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
         if (null == wantFrag) {
             wantFrag = DebrisFrag.newInstance(DebrisFrag.FROMMAIN);
+            wantFrag.setFloatingBUtton(fab);
         }
+
     }
 
     private void initMyFrag() {
@@ -314,31 +331,34 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_scanner:
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("选择你想要发布的类目");
-                builder.setItems(new String[]{getString(R.string.secondbook), getString(R.string.drugstore)}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-
-                                Intent intent = new Intent(MainActivity.this, CaptureAty.class);
-                                startActivity(intent);
-                                break;
-                            case 1:
-                                Intent intent2 = new Intent(MainActivity.this, PublishDebrisActivity.class);
-                                startActivity(intent2);
-                                break;
-                        }
-                    }
-                });
-                builder.create().show();
-
-                break;
+//            case R.id.action_scanner:
+//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setTitle("选择你想要发布的类目");
+//                builder.setItems(new String[]{getString(R.string.secondbook), getString(R.string.drugstore)}, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        switch (which) {
+//                            case 0:
+//
+//                                Intent intent = new Intent(MainActivity.this, CaptureAty.class);
+//                                startActivity(intent);
+//                                break;
+//                            case 1:
+//                                Intent intent2 = new Intent(MainActivity.this, PublishDebrisActivity.class);
+//                                startActivity(intent2);
+//                                break;
+//                        }
+//                    }
+//                });
+//                builder.create().show();
+//
+//                break;
             case R.id.action_search:
                 Intent intent = new Intent(MainActivity.this, SearchAty.class);
                 startActivity(intent);
+                break;
+            case R.id.setting:
+                exitAccount();
                 break;
         }
         return false;
@@ -352,9 +372,21 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public void onPageSelected(int position) {
         setSelectedTextColor(position);
-        if (2 == position &&TextUtils.isEmpty(from)) {
-            myFrag.setHeader();
-            myFrag.updateUserInfo();
+        if (2 == position) {
+            if (null != fab) {
+                fab.collapseImmediately();
+                fab.setVisibility(View.GONE);
+            }
+            if (TextUtils.isEmpty(from)) {
+                if (null != myFrag) {
+                    myFrag.setHeader();
+                    myFrag.updateUserInfo();
+                }
+            }
+        } else {
+            if (null != fab) {
+                fab.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -379,6 +411,22 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab1:
+                fab.collapseImmediately();
+                Intent intent = new Intent(MainActivity.this, CaptureAty.class);
+                startActivity(intent);
+                break;
+            case R.id.fab2:
+                fab.collapseImmediately();
+                Intent intent2 = new Intent(MainActivity.this, PublishDebrisActivity.class);
+                startActivity(intent2);
+                break;
+        }
     }
 
 

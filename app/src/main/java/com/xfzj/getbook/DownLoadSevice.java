@@ -52,22 +52,22 @@ public class DownLoadSevice extends Service {
                     notification.contentView.setProgressBar(R.id.pb, 100, 100,
                             false);
                     manager.notify(0, notification);
-                    MyToast.show(getApplicationContext(), "下载完成");
-                    if (uri.contains("doc")||uri.contains("docx")) {
+                    MyToast.show(getApplicationContext(), getString(R.string.downoad_complete));
+                    if (uri.contains("doc") || uri.contains("docx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                               0);
-                    } else if (uri.contains("xls")||uri.contains("xlsx")) {
+                                0);
+                    } else if (uri.contains("xls") || uri.contains("xlsx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
                                 1);
-                    } else if (uri.contains("ppt")||uri.contains("pptx")) {
+                    } else if (uri.contains("ppt") || uri.contains("pptx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
                                 2);
-                    } else if(uri.contains("jpg")||uri.contains("png")||uri.contains("jpeg")) {
+                    } else if (uri.contains("jpg") || uri.contains("png") || uri.contains("jpeg")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
                                 3);
-                    }else{
+                    } else {
                         downloadFile = new DownloadFile(file.getPath(), filename,
-                               4);
+                                4);
                     }
                     DownLoadFileManager downLoadFileManager = new DownLoadFileManager(
                             getApplicationContext());
@@ -79,10 +79,11 @@ public class DownLoadSevice extends Service {
 
                     break;
                 case DOWNLOADFAILED:
-                    MyToast.show(getApplicationContext(), "下载失败");
+                    MyToast.show(getApplicationContext(), getString(R.string.download_fail));
                     break;
                 case NO_FILE:
-                    MyToast.show(getApplicationContext(), "未发现存储卡，下载失败");
+                    MyToast.show(getApplicationContext(), getString(R.string.no_sdcard_fail));
+                    
                     break;
             }
         }
@@ -114,15 +115,15 @@ public class DownLoadSevice extends Service {
             if (!uri.contains("http")) {
                 uri = BaseHttp.DOWNLOADHOST + uri;
             }
-            int first=uri.lastIndexOf("/")+1;
-            int last=uri.lastIndexOf(".");
-            String str=uri.substring(first, last);
+            int first = uri.lastIndexOf("/") + 1;
+            int last = uri.lastIndexOf(".");
+            String str = uri.substring(first, last);
             Pattern pattern = Pattern.compile("[\\u4e00-\\u9faf]\\S+[\\u4e00-\\u9faf]");
             Matcher matcher = pattern.matcher(str);
 
             if (matcher.find()) {
-                str=URLEncoder.encode(str, "utf-8");
-                uri=uri.substring(0, first)+str+uri.substring(last, uri.length());
+                str = URLEncoder.encode(str, "utf-8");
+                uri = uri.substring(0, first) + str + uri.substring(last, uri.length());
                 uri = uri.replaceAll("\\+", "%20");
             }
             filename = intent.getStringExtra(DOWNLOADFILENAME);
@@ -132,6 +133,10 @@ public class DownLoadSevice extends Service {
 
                 @Override
                 protected Void doInBackground(Void... params) {
+
+                    if (isCancelled()) {
+                        return null;
+                    }
                     try {
                         byte[] bytes = new HttpHelper().DoConnection(uri);
                         fos.write(bytes);
@@ -157,15 +162,20 @@ public class DownLoadSevice extends Service {
                     super.onPreExecute();
                     if (Environment.getExternalStorageState().equals(
                             Environment.MEDIA_MOUNTED)) {
-
                         try {
                             file = getDownloadFile();
                             fos = new FileOutputStream(file);
                             Intent intent = new Intent("android.intent.action.VIEW");
-                            if(MyUtils.isPicture(uri)){
+                            if (MyUtils.isPicture(uri)) {
                                 intent.setDataAndType(Uri.fromFile(file),
                                         "image/*");
-                            }else{
+                            } else if (MyUtils.isWord(uri)) {
+                                intent.setDataAndType(Uri.fromFile(file),
+                                        "application/msword");
+                            } else if (MyUtils.isExcel(uri)) {
+                                intent.setDataAndType(Uri.fromFile(file),
+                                        "application/vnd.ms-excel");
+                            } else {
                                 intent.setDataAndType(Uri.fromFile(file),
                                         "application/*");
                             }
@@ -176,21 +186,24 @@ public class DownLoadSevice extends Service {
                             notification.contentView = new RemoteViews(
                                     getPackageName(), R.layout.notification);
                             notification.icon = R.mipmap.ic_launcher;
-                            notification.tickerText = "开始下载";
+                            notification.tickerText = getString(R.string.start_downloading);
                             notification.contentIntent = PIntent;
                             notification.contentView.setTextViewText(
                                     R.id.tvFileName, filename);
                             manager.notify(0, notification);
                         } catch (FileNotFoundException e) {
-                            MyToast.show(getApplicationContext(), "创建文件失败");
+                            MyToast.show(getApplicationContext(), getString(R.string.create_file_fail));
+                            cancel(true);
                             e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
-                            MyToast.show(getApplicationContext(), "写入文件失败");
+                            cancel(true);
+                            MyToast.show(getApplicationContext(), getString(R.string.write_file_fail));
                         }
 
                     } else {
-                        MyToast.show(getApplicationContext(), "未发现存储卡，下载失败");
+                        MyToast.show(getApplicationContext(), getString(R.string.no_sdcard_fail));
+                        cancel(true);
                     }
 
                 }
@@ -223,17 +236,17 @@ public class DownLoadSevice extends Service {
     }
 
 
-    public  File getDownloadFile() throws IOException {
+    public File getDownloadFile() throws IOException {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File file=Environment.getExternalStorageDirectory();
+            File file = Environment.getExternalStorageDirectory();
             File file1 = new File(file.getPath() + "/getBookdownloads");
 
             if (!file1.exists()) {
                 file1.mkdirs();
             }
 
-            String flag= MyUtils.getFlag(uri);
-            File file2 = new File(file1, filename+flag);
+            String flag = MyUtils.getFlag(uri);
+            File file2 = new File(file1, filename + flag);
             if (!file2.exists()) {
                 file2.createNewFile();
             }

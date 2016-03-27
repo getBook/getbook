@@ -19,11 +19,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
-        android:maxLines="2"
-        android:ellipsize="end"
         android:layout_toLeftOf="@+id/tvProgress"
         android:layout_toRightOf="@id/iv"
-      
+        android:ellipsize="end"
+        android:maxLines="2"
+
         android:textColor="@color/primary_text" />
 
     <TextView
@@ -33,6 +33,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="5dp"
         android:paddingRight="20dip"
+        android:text="0%"
         android:textColor="@color/secondary_text" />
 
     <ProgressBar

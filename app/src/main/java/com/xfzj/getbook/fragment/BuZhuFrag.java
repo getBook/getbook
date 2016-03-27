@@ -20,7 +20,7 @@ public class BuZhuFrag extends Fragment {
     }
 
 
-    public static BuZhuFrag newINstance(String param) {
+    public static BuZhuFrag newInstance(String param) {
         BuZhuFrag buZhuFrag = new BuZhuFrag();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM, param);

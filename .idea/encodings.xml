@@ -3,6 +3,7 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/Zxing" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/xfzj/getbook/net/HttpHelperImp.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/fab_label_background.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_btn.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_btn_press.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_et_bg.xml" charset="GBK" />
