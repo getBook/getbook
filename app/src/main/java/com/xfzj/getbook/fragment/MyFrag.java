@@ -18,6 +18,7 @@ import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.CardAty;
+import com.xfzj.getbook.activity.Libraryaty;
 import com.xfzj.getbook.activity.MySaleAty;
 import com.xfzj.getbook.activity.NewsAty;
 import com.xfzj.getbook.activity.ScoreAty;
@@ -44,7 +45,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
     public static final String MY = "my";
 
 
-    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong, llSchoolAnnounce;
+    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong, llSchoolAnnounce, lllibrary;
     private TextView tvSecondBookCount, tvDebrisCount, tvHuaName, tvName, tvUserName;
     private CircleImageView iv;
     private User user;
@@ -86,6 +87,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_my, container, false);
         llSecondBook = (LinearLayout) view.findViewById(R.id.llSecondBook);
         llDebris = (LinearLayout) view.findViewById(R.id.llDebris);
+        lllibrary = (LinearLayout) view.findViewById(R.id.lllibrary);
         llquerygrades = (LinearLayout) view.findViewById(R.id.llquerygrades);
         llSchoolAnnounce = (LinearLayout) view.findViewById(R.id.llSchoolAnnounce);
         llyikatong = (LinearLayout) view.findViewById(R.id.llyikatong);
@@ -101,6 +103,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
         llquerygrades.setOnClickListener(this);
         llyikatong.setOnClickListener(this);
         llSchoolAnnounce.setOnClickListener(this);
+        lllibrary.setOnClickListener(this);
         setHeader();
         updateUserInfo();
         return view;
@@ -134,6 +137,10 @@ public class MyFrag extends Fragment implements View.OnClickListener {
                 Intent intent3 = new Intent(getActivity(), CardAty.class);
                 startActivity(intent3);
                 break;
+            case R.id.lllibrary:
+                Intent intent6 = new Intent(getActivity(), Libraryaty.class);
+                startActivity(intent6);
+                break;
             case R.id.llSchoolAnnounce:
 
                 Intent intent5 = new Intent(getActivity(), NewsAty.class);
@@ -141,9 +148,9 @@ public class MyFrag extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
-    public void setHeader() {
     
+    public void setHeader() {
+
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header)) {
             iv.setBmobImage(header, BitmapFactory.decodeResource(getResources(), R.mipmap.default_user));

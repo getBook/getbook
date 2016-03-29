@@ -12,9 +12,12 @@ public interface IHttpHelper {
     byte[] SYS_ERROR = "系统异常，请重试".getBytes();//系统异常错误
     byte[] DoConnection(String url) throws NetException, Exception;
 
+    byte[] DoConnection(String url, String cookie)throws NetException, Exception;
 
+    void setCookie(String cookie);
 
     byte[] DoConnection(String url,int requestType, Map<String, String> params) throws NetException, Exception;
-    
 
+    String getCookie();
+    
 }

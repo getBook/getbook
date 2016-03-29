@@ -89,6 +89,8 @@ public class LoginAty extends AppActivity {
                 }).setNegativeButton(getString(R.string.relogin), null).create().show();
 
 
+            }else if (msg.what == 1) {
+                MyToast.show(getApplicationContext(), getString(R.string.login_fail));
             }
         }
     };
@@ -135,8 +137,8 @@ public class LoginAty extends AppActivity {
 
             @Override
             public void onFail() {
-                MyToast.show(getApplicationContext(), getString(R.string.login_fail));
-
+           
+                handler.sendEmptyMessage(1);
             }
 
             @Override

@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.MyUtils;
+import com.xfzj.getbook.views.view.DatePickerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +27,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/24.
  */
-public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListener {
+public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String PARAM = "LiuShuiFrag.class";
 
     private String param;
@@ -30,8 +35,11 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
     private ViewPager pager;
     private PagerSlidingTabStrip slidingTabStrip;
     private FragmentManager fm;
-    private LiuShuiQueryFragment todayFrag;
-    private LiuShuiHistoryQueryFragment historyFrag;
+    private PayInfoFrag shopGroupFrag;
+    private LiuShuiQueryFragment historyFrag;
+    private PayInfoFrag dealTypeFrag;
+    private FloatingActionButton fab;
+    private String startTime, endTime;
 
     public LiuShuiFrag() {
 
@@ -63,34 +71,51 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
         View view = inflater.inflate(R.layout.fragment_liushui, null);
         pager = (ViewPager) view.findViewById(R.id.pager);
         slidingTabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
         init();
         return view;
     }
 
     private void init() {
-        initHistoryFrag();
-        initTodayFrag();
+        initLiuShuiQueryFrag();
+        initShopGroupFrag();
+        initDealTypeFrag();
         List<Fragment> lists = new ArrayList<>();
         lists.add(historyFrag);
-        lists.add(todayFrag);
+        lists.add(shopGroupFrag);
+        lists.add(dealTypeFrag);
         pager.setAdapter(new TestAdapter(fm, lists));
+        pager.setOffscreenPageLimit(3);
         slidingTabStrip.setViewPager(pager);
         slidingTabStrip.setOnPageChangeListener(this);
         initTabsValue();
         setSelectedTextColor(0);
     }
 
-    private void initHistoryFrag() {
-        historyFrag = (LiuShuiHistoryQueryFragment) fm.findFragmentByTag(LiuShuiHistoryQueryFragment.HISTORY);
-        if (null == historyFrag) {
-            historyFrag = LiuShuiHistoryQueryFragment.newInstance(LiuShuiHistoryQueryFragment.HISTORY);
+    private void initDealTypeFrag() {
+        dealTypeFrag = (PayInfoFrag) fm.findFragmentByTag(PayInfoFrag.TYPE2);
+        if (null == dealTypeFrag) {
+            dealTypeFrag = PayInfoFrag.newInstance(PayInfoFrag.TYPE2);
+            dealTypeFrag.setFloatingActionButton(fab);
         }
     }
 
-    private void initTodayFrag() {
-        todayFrag = (LiuShuiQueryFragment) fm.findFragmentByTag(LiuShuiQueryFragment.TODAY);
-        if (null == todayFrag) {
-            todayFrag = LiuShuiQueryFragment.newInstance(LiuShuiQueryFragment.TODAY);
+    private void initLiuShuiQueryFrag() {
+        historyFrag = (LiuShuiQueryFragment) fm.findFragmentByTag(LiuShuiQueryFragment.PARAM);
+        if (null == historyFrag) {
+            historyFrag = LiuShuiQueryFragment.newInstance(LiuShuiQueryFragment.PARAM);
+            historyFrag.setFloatingActionButton(fab);
+
+        }
+    }
+
+    private void initShopGroupFrag() {
+        shopGroupFrag = (PayInfoFrag) fm.findFragmentByTag(PayInfoFrag.TYPE1);
+        if (null == shopGroupFrag) {
+            shopGroupFrag = PayInfoFrag.newInstance(PayInfoFrag.TYPE1);
+            shopGroupFrag.setFloatingActionButton(fab);
+
         }
     }
 
@@ -130,7 +155,7 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
     private void setSelectedTextColor(int position) {
         View view = slidingTabStrip.getChildAt(0);
         if (view instanceof LinearLayout) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 3; i++) {
                 View viewText = ((LinearLayout) view).getChildAt(i);
                 TextView tabTextView = (TextView) viewText;
                 if (viewText instanceof TextView) {
@@ -150,9 +175,59 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
 
     }
 
+    @Override
+    public void onClick(View v) {
+        if (R.id.fab == v.getId()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            DatePickerView datePickerView = new DatePickerView(getActivity());
+            getCurrentTime();
+            datePickerView.initTime(startTime, endTime);
+            int margin = (int) MyUtils.dp2px(getActivity(), 15f);
+            builder.setView(datePickerView, margin, margin, margin, margin);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+            datePickerView.setOnTimeGetListener(new DatePickerView.OnTimeGetListener() {
+                @Override
+                public void getTime(String startTime, String endTime) {
+                    if (TextUtils.isEmpty(startTime) || TextUtils.isEmpty(endTime)) {
+                        return;
+                    }
+                    LiuShuiFrag.this.startTime = startTime;
+                    LiuShuiFrag.this.endTime = endTime;
+                    dialog.dismiss();
+                    int index = pager.getCurrentItem();
+                    if (index == 0) {
+                        historyFrag.query(startTime, endTime);
+                    } else if (index == 1) {
+                        shopGroupFrag.query(startTime, endTime);
+                    } else if (index == 2) {
+                        dealTypeFrag.query(startTime, endTime);
+                    }
+                }
+            });
+        }
+    }
+
+    private void getCurrentTime() {
+        int index = pager.getCurrentItem();
+        if (index == 0) {
+            String[] s = historyFrag.getCurrentTime();
+            startTime = s[0];
+            endTime = s[1];
+        } else if (index == 1) {
+            String[] s = shopGroupFrag.getCurrentTime();
+            startTime = s[0];
+            endTime = s[1];
+        } else if (index == 2) {
+            String[] s = dealTypeFrag.getCurrentTime();
+            startTime = s[0];
+            endTime = s[1];
+        }
+    }
+
     private class TestAdapter extends FragmentPagerAdapter {
         private List<Fragment> lists;
-        private int[] tag = new int[]{R.string.historyQuery, R.string.todayquery};
+        private int[] tag = new int[]{R.string.liushuichaxun, R.string.shopcount, R.string.dealtype};
 
         public TestAdapter(FragmentManager manager, List<Fragment> lists) {
             super(manager);

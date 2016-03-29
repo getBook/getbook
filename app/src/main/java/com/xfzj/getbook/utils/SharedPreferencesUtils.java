@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.xfzj.getbook.common.LibraryInfo;
 import com.xfzj.getbook.common.User;
 
 import java.lang.reflect.Field;
@@ -25,9 +26,14 @@ public class SharedPreferencesUtils {
     private static final String SNO = "sno";
     private static final String HUANAME = "huaname";
     private static final String ID = "Id";
+    private static final String LIBRARYUSERINFOPREFERENCES = "libraryuserinfo";
+    private static final String ACCOUNT = "account";
+    private static final String COOKIE = "cookie";
 
     public static void saveUser(Context context, User user) {
-
+        if (null == user) {
+            return;
+        }
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         if (!TextUtils.isEmpty(user.getUsername())) {
@@ -49,7 +55,7 @@ public class SharedPreferencesUtils {
         if (!TextUtils.isEmpty(user.getSno())) {
             editor.putString(SNO, user.getSno());
         }
-        if (user.getId()!=0) {
+        if (user.getId() != 0) {
             editor.putInt(ID, user.getId());
         }
         editor.putBoolean(GENDER, user.isGender());
@@ -58,6 +64,41 @@ public class SharedPreferencesUtils {
         }
         editor.apply();
     }
+
+
+    public static void saveLibraryUserInfo(Context context, LibraryInfo libraryInfo) {
+        if (null == libraryInfo) {
+            return;
+        }
+        SharedPreferences sp = context.getSharedPreferences(LIBRARYUSERINFOPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String account = libraryInfo.getAccount();
+        if (!TextUtils.isEmpty(account)) {
+            editor.putString(ACCOUNT, account);
+        }
+        String password = libraryInfo.getPassword();
+        if (!TextUtils.isEmpty(password)) {
+            editor.putString(USERPASSWORD, password);
+        }
+        String cookie = libraryInfo.getCookie();
+        if (!TextUtils.isEmpty(cookie)) {
+            editor.putString(COOKIE, cookie);
+        }
+        editor.apply();
+    }
+
+    public static LibraryInfo getLibraryUserInfo(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(LIBRARYUSERINFOPREFERENCES, Context.MODE_PRIVATE);
+        return new LibraryInfo(sp.getString(ACCOUNT, ""), sp.getString(USERPASSWORD, ""), sp.getString(COOKIE, ""));
+
+    }
+
+    public static String getLibraryCookie(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(LIBRARYUSERINFOPREFERENCES, Context.MODE_PRIVATE);
+        return sp.getString(COOKIE, "");
+
+    }
+
 
     public static User getUser(Context context) {
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
@@ -68,10 +109,10 @@ public class SharedPreferencesUtils {
         boolean gender = sp.getBoolean(GENDER, false);
         String huaName = sp.getString(HUANAME, "");
         String name = sp.getString(NAME, "");
-        int id= sp.getInt(ID, 0);
-        return new User(name, gender, huaName, sno, cardno, msg,id);
+        int id = sp.getInt(ID, 0);
+        return new User(name, gender, huaName, sno, cardno, msg, id);
     }
-    
+
     public static void saveUserHeader(Context context, String header) {
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -105,7 +146,7 @@ public class SharedPreferencesUtils {
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
         return sp.getString(HUANAME, "");
     }
-    
+
     public static String getUserHeader(Context context) {
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
         return sp.getString(HEADER, "");
@@ -125,7 +166,19 @@ public class SharedPreferencesUtils {
     }
 
     public static void clearUser(Context context) {
+        clearCard(context);
+        clearLibrary(context);
+    }
+
+    public static void clearCard(Context context) {
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    public static void clearLibrary(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(LIBRARYUSERINFOPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();
         editor.apply();

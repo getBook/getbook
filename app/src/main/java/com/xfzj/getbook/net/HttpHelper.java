@@ -14,8 +14,10 @@ public class HttpHelper implements IHttpHelper {
         iHttpHelper = new HttpHelperImp();
     }
 
-  
-    
+
+    public HttpHelper(HttpHelperImp httpHelperImp) {
+        iHttpHelper = httpHelperImp;
+    }
 
     @Override
 
@@ -27,12 +29,28 @@ public class HttpHelper implements IHttpHelper {
     }
 
     @Override
+    public byte[] DoConnection(String url, String cookie) throws NetException, Exception {
+        if (TextUtils.isEmpty(url)) {
+            return iHttpHelper.NET_ERROR;
+        }
+        return iHttpHelper.DoConnection(url,cookie);
+    }
+
+    @Override
+    public void setCookie(String cookie) {
+        iHttpHelper.setCookie(cookie);
+    }
+
+    @Override
     public byte[] DoConnection(String url, int requestType, Map<String, String> params) throws Exception {
         if (TextUtils.isEmpty(url)) {
             return iHttpHelper.NET_ERROR;
         }
         return iHttpHelper.DoConnection(url, requestType, params);
     }
-
-
+    @Override
+    public String getCookie() {
+        return iHttpHelper.getCookie();
+    }
+    
 }

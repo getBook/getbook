@@ -15,6 +15,16 @@ public class BaseHttp {
     public static final String BANKTRANSFER = " http://ucard.nuist.edu.cn:8070/Api/Card/BankTransfer";
     public static final String CHANGEQUERYPWD = "http://ucard.nuist.edu.cn:8070/Api/Card/ChangeQueryPwd";
     public static final String GetHistoryTrjn = "http://ucard.nuist.edu.cn:8070/Api/Card/GetHistoryTrjn";
+    public static final String GetCurrentTrjn = "http://ucard.nuist.edu.cn:8070/Api/Card/GetCurrentTrjn";
+    public static final String GetTrjnCount = "http://ucard.nuist.edu.cn:8070/Api/Card/GetTrjnCount";
+    public static final String GetMyBill = "http://ucard.nuist.edu.cn:8070/Api/Card/GetMyBill";
+    public static final String GetAllSubsidyTrjn = "http://ucard.nuist.edu.cn:8070/Api/Card/GetAllSubsidyTrjn";
+    public static final String SetCardLost = "http://ucard.nuist.edu.cn:8070/Api/Card/SetCardLost";
+    public static final String LOGINLIBRARY = "http://lib2.nuist.edu.cn/reader/login.php";
+    public static final String GETLIBRARY = "http://lib2.nuist.edu.cn/reader/hwthau.php";
+    public static final String REDEINFO = "http://lib2.nuist.edu.cn/reader/redr_info.php";
+    public static final String CAPTCHA = "http://lib2.nuist.edu.cn/reader/captcha.php";
+    public static final String LIBRARYVERFY = "http://lib2.nuist.edu.cn/reader/redr_verify.php";
     
 
     public BaseHttp() {

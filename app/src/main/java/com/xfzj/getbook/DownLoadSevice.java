@@ -83,7 +83,7 @@ public class DownLoadSevice extends Service {
                     break;
                 case NO_FILE:
                     MyToast.show(getApplicationContext(), getString(R.string.no_sdcard_fail));
-                    
+
                     break;
             }
         }
@@ -167,17 +167,13 @@ public class DownLoadSevice extends Service {
                             fos = new FileOutputStream(file);
                             Intent intent = new Intent("android.intent.action.VIEW");
                             if (MyUtils.isPicture(uri)) {
-                                intent.setDataAndType(Uri.fromFile(file),
-                                        "image/*");
+                                intent.setDataAndType(Uri.fromFile(file), "image/*");
                             } else if (MyUtils.isWord(uri)) {
-                                intent.setDataAndType(Uri.fromFile(file),
-                                        "application/msword");
+                                intent.setDataAndType(Uri.fromFile(file), "application/msword");
                             } else if (MyUtils.isExcel(uri)) {
-                                intent.setDataAndType(Uri.fromFile(file),
-                                        "application/vnd.ms-excel");
+                                intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
                             } else {
-                                intent.setDataAndType(Uri.fromFile(file),
-                                        "application/*");
+                                intent.setDataAndType(Uri.fromFile(file), "application/*");
                             }
                             PendingIntent PIntent = PendingIntent.getActivity(
                                     getApplicationContext(), 0, intent, 0);

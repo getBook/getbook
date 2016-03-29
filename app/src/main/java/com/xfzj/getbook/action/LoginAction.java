@@ -68,6 +68,11 @@ public class LoginAction extends BaseAction {
                 callBack.onModify();
             }
             return callBack;
+        }else if ("该校园卡已挂失".equals(msg)) {
+            if (null != callBack) {
+                callBack.onFail();
+            }
+            return callBack;
         }
         if (hasUser()) {
             if (isSameUser()) {
@@ -117,7 +122,6 @@ public class LoginAction extends BaseAction {
             boolean isSucc = jsonObject.getBoolean("success");
             String msg = jsonObject.getString("msg");
             if (isSucc) {
-              
                 this.newUser = gson.fromJson(jsonObject.getJSONObject("obj").toString(), User.class);
                 this.newUser.setPassword(password);
                 this.newUser.setUsername(account);
@@ -212,7 +216,10 @@ public class LoginAction extends BaseAction {
      * @param user
      */
     private void registerBmob(final User user, final CallBack callBack) {
-        user.setEmail(user.getSno()+user.getCardno()+"@163.com");
+        if (null == user) {
+            return;
+        }
+        user.setEmail(user.getSno() + user.getCardno() + "@163.com");
         user.signUp(context, new SaveListener() {
             @Override
             public void onSuccess() {

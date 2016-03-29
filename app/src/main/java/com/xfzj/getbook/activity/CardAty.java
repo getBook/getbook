@@ -22,6 +22,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.ChongzhiAsync;
 import com.xfzj.getbook.async.GetCardInfoAsync;
+import com.xfzj.getbook.async.GuaShiAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.async.XiuGaiMiMaAsync;
 import com.xfzj.getbook.common.Card;
@@ -123,11 +124,58 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 xiugaiMiMa();
                 break;
             case R.id.tvGuaShi:
+
+                guashi();
+                
                 break;
             case R.id.btn:
                 getCardInfo();
                 break;
         }
+    }
+
+    private void guashi() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CardAty.this);
+        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.xiugaimima, null);
+        final EditText etOld = (EditText) view.findViewById(R.id.etOld);
+        final EditText etNew1 = (EditText) view.findViewById(R.id.etNew1);
+        final EditText etNew2 = (EditText) view.findViewById(R.id.etNew2);
+        etOld.setHint(R.string.card_query_passsword);
+        etNew1.setVisibility(View.GONE);
+        etNew2.setVisibility(View.GONE);
+        final Button btn = (Button) view.findViewById(R.id.btn);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String old = etOld.getText().toString();
+                if (TextUtils.isEmpty(old)) {
+                    MyToast.show(getApplicationContext(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
+                    return;
+                }
+                final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
+                GuaShiAsync guaShiAsync = new GuaShiAsync(CardAty.this);
+                guaShiAsync.execute(old);
+                guaShiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        dialog.dismiss();
+                        new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.success)).setMessage(s).create().show();
+                    }
+
+                    @Override
+                    public void onFail(String s) {
+                        new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.fail)).setMessage(s).create().show();
+                    }
+                });
+
+
+            }
+        });
+        
     }
 
     private void xiugaiMiMa() {

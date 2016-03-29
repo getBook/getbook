@@ -132,6 +132,37 @@
                 android:background="@color/divider" />
 
             <LinearLayout
+                android:id="@+id/lllibrary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="15dp"
+                    android:text="@string/library"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:padding="5dp"
+                    android:src="@mipmap/arrow" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.5"
+                android:background="@color/divider" />
+
+            <LinearLayout
                 android:id="@+id/llyikatong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

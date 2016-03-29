@@ -3,7 +3,7 @@ package com.xfzj.getbook.async;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
-import com.xfzj.getbook.common.HistoryTrjn;
+import com.xfzj.getbook.common.SubsidyTrjn;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.net.IHttpHelper;
@@ -16,33 +16,28 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/25.
  */
-public class GetHistoryTrjnAsync extends UcardAsyncTask<String, Void, List<HistoryTrjn>> {
-    public GetHistoryTrjnAsync(Context context) {
+public class GetSubsidyTrjnAsync extends UcardAsyncTask<String, Void, List<SubsidyTrjn>> {
+    public GetSubsidyTrjnAsync(Context context) {
         super(context);
     }
 
     @Override
-    protected List<HistoryTrjn> excute(String[] params) {
+    protected List<SubsidyTrjn> excute(String[] params) {
         try {
             if (null == params) {
                 return null;
             }
             param.put("pageIndex", params[0]);
             param.put("pageSize", "10");
-            param.put("cardno", null);
-            param.put("trancode", "");
-            param.put("begindate", params[1]);
-            param.put("enddate", params[2]);
-
-            byte[] bytes = new HttpHelper().DoConnection(BaseHttp.GetHistoryTrjn, IHttpHelper.METHOD_POST, param);
+            byte[] bytes = new HttpHelper().DoConnection(BaseHttp.GetAllSubsidyTrjn, IHttpHelper.METHOD_POST, param);
             String str = new String(bytes, "utf-8");
             JSONObject jsonObject = new JSONObject(str);
             if (MyUtils.isSuccess(jsonObject)) {
 
 
-                List<HistoryTrjn> historyTrjns = gson.fromJson(jsonObject.getString("obj"), new TypeToken<List<HistoryTrjn>>() {
+                List<SubsidyTrjn> subsidyTrjns = gson.fromJson(jsonObject.getString("obj"), new TypeToken<List<SubsidyTrjn>>() {
                 }.getType());
-                return historyTrjns;
+                return subsidyTrjns;
             } else {
                 return null;
             }
@@ -53,15 +48,15 @@ public class GetHistoryTrjnAsync extends UcardAsyncTask<String, Void, List<Histo
     }
 
     @Override
-    protected void onPost(List<HistoryTrjn> historyTrjns) {
-        if (null == historyTrjns) {
+    protected void onPost(List<SubsidyTrjn> subsidyTrjns) {
+        if (null == subsidyTrjns) {
             if (null != onUcardTaskListener) {
                 onUcardTaskListener.onFail("");
             }
 
         } else {
             if (null != onUcardTaskListener) {
-                onUcardTaskListener.onSuccess(historyTrjns);
+                onUcardTaskListener.onSuccess(subsidyTrjns);
             }
 
         }

@@ -24,7 +24,7 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
 
     private Context context;
     private TextView tvStart, tvEnd;
-    private ImageView ivQuery;
+    private ImageView ivQuery, ivToday;
     private Calendar calendar;
     private String startTime, endTime;
     private int[] start = new int[3];
@@ -60,9 +60,11 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
         tvStart = (TextView) view.findViewById(R.id.tvStart);
         tvEnd = (TextView) view.findViewById(R.id.tvEnd);
         ivQuery = (ImageView) view.findViewById(R.id.ivQuery);
+        ivToday = (ImageView) view.findViewById(R.id.ivToday);
         tvStart.setOnClickListener(this);
         tvEnd.setOnClickListener(this);
         ivQuery.setOnClickListener(this);
+        ivToday.setOnClickListener(this);
         addView(view);
         initTime();
     }
@@ -82,11 +84,25 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
 
     }
 
+    private String getTodayTime() {
+        return calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
     public void initTime(String startTime, String endTime) {
         if (TextUtils.isEmpty(startTime) && TextUtils.isEmpty(endTime)) {
             initTime();
             return;
         }
+        String[] starts = startTime.split("-");
+        String[] ends = endTime.split("-");
+
+        start[0] = Integer.parseInt(starts[0]);
+        start[1] = Integer.parseInt(starts[1]);
+        start[2] = Integer.parseInt(starts[2]);
+        end[0] = Integer.parseInt(ends[0]);
+        end[1] = Integer.parseInt(ends[1]);
+        end[2] = Integer.parseInt(ends[2]);
+
         tvStart.setText(startTime);
         tvEnd.setText(endTime);
     }
@@ -120,6 +136,11 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
                     onTimeGetListener.getTime(startTime, endTime);
                 }
                 break;
+            case R.id.ivToday:
+                if (null != onTimeGetListener) {
+                    onTimeGetListener.getTime(getTodayTime(), getTodayTime());
+                }
+                break;
 
         }
     }
@@ -134,8 +155,8 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
                     start[0] = year;
                     start[1] = monthOfYear + 1;
                     start[2] = dayOfMonth;
-                    
-                }else if (R.string.endtime == title) {
+
+                } else if (R.string.endtime == title) {
                     end[0] = year;
                     end[1] = monthOfYear + 1;
                     end[2] = dayOfMonth;
