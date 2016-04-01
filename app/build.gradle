@@ -38,4 +38,5 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:design:22.2.1'
+    compile files('libs/umeng-analytics-v5.6.7.jar')
 }

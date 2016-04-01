@@ -3,7 +3,6 @@ package com.xfzj.getbook.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +21,7 @@ import com.xfzj.getbook.async.GetBillAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.Bill;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.PayInfoVIew;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/25.
  */
-public class PayInfoFrag extends Fragment implements View.OnClickListener, View.OnTouchListener {
+public class PayInfoFrag extends BaseFragment implements View.OnClickListener, View.OnTouchListener {
 
 
     public static final String PARAM = "PayInfoFrag.class";
@@ -75,7 +75,7 @@ public class PayInfoFrag extends Fragment implements View.OnClickListener, View.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_payinfo, null);
+        View view = inflater.inflate(R.layout.fragment_payinfo, container,false);
         loadMoreView = (RecyclerView) view.findViewById(R.id.loadMoreView);
         iv = (ImageView) view.findViewById(R.id.iv);
         iv.setOnClickListener(this);
@@ -142,6 +142,7 @@ public class PayInfoFrag extends Fragment implements View.OnClickListener, View.
     @Override
     public void onClick(View v) {
         if (R.id.iv == v.getId()) {
+            AppAnalytics.onEvent(getActivity(), AppAnalytics.C_DWCY);
             BaseApplication baseApplication = (BaseApplication) getActivity().getApplicationContext();
             if (null != baseApplication && null != baseApplication.getUser()) {
                 String sno = baseApplication.getUser().getSno();

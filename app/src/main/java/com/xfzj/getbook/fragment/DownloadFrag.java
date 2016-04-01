@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -32,7 +31,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/22.
  */
-public class DownloadFrag extends Fragment implements LoaderManager.LoaderCallbacks<List<DownloadFile>>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCallbacks<List<DownloadFile>>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     public static final String PARAM = "DownloadFrag.class";
     private String param;
@@ -68,7 +67,7 @@ public class DownloadFrag extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_download, null);
+        View view = inflater.inflate(R.layout.fragment_download, container,false);
         lv = (ListView) view.findViewById(R.id.lv);
         llNodata = (LinearLayout) view.findViewById(R.id.llnodata);
         downloadAdapter = new DownloadAdapter(getActivity());

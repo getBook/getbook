@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:showIn="@layout/secondbookinfo_item_right">
+
+
+    <ImageView
+        android:id="@+id/ivDate"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_below="@+id/tvYuan"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:src="@mipmap/date" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ivDate"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@id/ivDate"
+        android:gravity="top"
+        android:textColor="@color/secondary_text"
+        android:textSize="8sp" />
+
+
+    <ImageView
+        android:id="@+id/ivCount"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_alignTop="@+id/ivDate"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:src="@mipmap/book_count" />
+
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ivCount"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@+id/ivCount"
+        android:gravity="top"
+        android:textColor="@color/secondary_text"
+        android:textSize="8sp" />
+
+
+    <ImageView
+        android:id="@+id/ivNewOld"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_alignTop="@+id/ivDate"
+        android:layout_below="@+id/tvYuan"
+        android:layout_gravity="center"
+        android:layout_marginRight="3dp"
+        android:layout_toLeftOf="@+id/tvNewold"
+        android:src="@mipmap/quality" />
+
+    <TextView
+        android:id="@+id/tvNewold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/ivDate"
+        android:textColor="@color/secondary_text"
+        android:textSize="8sp" />
+</merge>

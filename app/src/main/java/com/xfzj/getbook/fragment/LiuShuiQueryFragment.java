@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -32,7 +31,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/25.
  */
-public class LiuShuiQueryFragment extends Fragment implements View.OnClickListener, LoadMoreView.RefreshListener, LoadMoreListen, LoadMoreLayout.OnScrollCallBack {
+public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickListener, LoadMoreView.RefreshListener, LoadMoreListen, LoadMoreLayout.OnScrollCallBack {
 
 
     public static final String PARAM = "PayInfoFrag.class";
@@ -69,7 +68,7 @@ public class LiuShuiQueryFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_liushuihistory, null);
+        View view = inflater.inflate(R.layout.fragment_liushuihistory, container,false);
 
         loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         loadMoreView.setOnScrollCallBack(this);

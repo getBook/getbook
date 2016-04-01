@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
 
     <application
         android:name=".BaseApplication"
@@ -16,7 +18,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
+        android:hardwareAccelerated="false"
         tools:replace="android:icon">
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="56fb38aae0f55a39af000a67"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Test" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -103,9 +113,9 @@
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -208,9 +218,9 @@
             android:label="@string/title_activity_demoaty"
             android:theme="@style/AppTheme">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
     </application>

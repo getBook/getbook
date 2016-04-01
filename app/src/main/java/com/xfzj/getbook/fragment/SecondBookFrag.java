@@ -19,12 +19,11 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
-import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
-import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.SecondBookInfoView;
 
@@ -36,7 +35,7 @@ import java.util.List;
  * Use the {@link SecondBookFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListener<SecondBook>, LoadMoreListen, View.OnClickListener, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
+public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryListener<SecondBook>, LoadMoreListen, View.OnClickListener, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -115,6 +114,8 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
         if (mParam1.equals(FROMMAIN)) {
             loadMoreView.setRefreshing();
             queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
+        }else {
+            AppAnalytics.onEvent(getActivity(), AppAnalytics.SB_SEARCH);
         }
         queryAction.setOnQueryListener(this);
         return view;
@@ -230,35 +231,6 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
 
             return view;
         }
-
-//        @Override
-//        protected RecyclerView.ViewHolder getViewHolder(View view, int viewType) {
-//            return new BaseViewHolder<SecondBook>(view) {
-//                @Override
-//                protected void setContent(View itemView, SecondBook item, int viewType) {
-//                    final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
-//                    bookInfoView.update(item);
-//
-//                    bookInfoView.setOnUserInfoClick(new SecondBookInfoView.onClickListener<User>() {
-//                        @Override
-//                        public void onClick(User user) {
-//                            MyLog.print("点击的人物", user.toString());
-//                        }
-//                    });
-//
-//                    bookInfoView.setOnSecondBookInfoClick(new SecondBookInfoView.onClickListener<SecondBook>() {
-//                        @Override
-//                        public void onClick(SecondBook secondBook) {
-//                            MyLog.print("点击的书本", secondBook.toString());
-//                            Intent intent = new Intent(getActivity(), SecondBookDetailAty.class);
-//                            intent.putExtra(SecondBookDetailAty.DATA, secondBook);
-//                            startActivity(intent);
-//                        }
-//                    });
-//                }
-//            };
-//        }
-
         @Override
         protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
             return new NormalViewHolder<SecondBook>(view, viewType) {
@@ -266,18 +238,11 @@ public class SecondBookFrag extends Fragment implements QueryAction.OnQueryListe
                 protected void setNormalContent(View itemView, SecondBook item, int viewType) {
                     final SecondBookInfoView bookInfoView = ((SecondBookInfoView) itemView.getTag());
                     bookInfoView.update(item);
-
-                    bookInfoView.setOnUserInfoClick(new SecondBookInfoView.onClickListener<User>() {
-                        @Override
-                        public void onClick(User user) {
-                            MyLog.print("点击的人物", user.toString());
-                        }
-                    });
-
                     bookInfoView.setOnSecondBookInfoClick(new SecondBookInfoView.onClickListener<SecondBook>() {
                         @Override
                         public void onClick(SecondBook secondBook) {
-                            MyLog.print("点击的书本", secondBook.toString());
+//                            MyLog.print("点击的书本", secondBook.toString());
+                            AppAnalytics.onEvent(getActivity(), AppAnalytics.CLICK_SECONDBOOK);
                             Intent intent = new Intent(getActivity(), SecondBookDetailAty.class);
                             intent.putExtra(SecondBookDetailAty.DATA, secondBook);
                             startActivity(intent);

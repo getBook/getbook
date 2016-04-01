@@ -87,7 +87,7 @@ public class DebrisInfoView extends LinearLayout implements View.OnClickListener
 
     @Override
     public void onClick(Debris debris) {
-        if (null != onUserInfoClick && null != debris) {
+        if (null != onDebrisInfoClick && null != debris) {
             onDebrisInfoClick.onClick(debris);
         }
     }

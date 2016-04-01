@@ -169,7 +169,6 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
             ivs[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyToast.show(getApplicationContext(), finalI + "");
                     Intent intent = new Intent(SecondBookDetailAty.this, ViewPagerAty.class);
                     intent.putExtra(ViewPagerAty.PATH, (Serializable) lists);
                     intent.putExtra(ViewPagerAty.INDEX, finalI);
@@ -209,6 +208,8 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
             return;
         }
         String moudle = getString(R.string.send_message, getString(R.string.app_name), secondBook.getBookInfo().getBookName());
-        Sms.sendSms(getApplicationContext(), tele, moudle);
+        Sms.sendSms(this, tele, moudle, R.string.secondbook);
     }
+
+   
 }

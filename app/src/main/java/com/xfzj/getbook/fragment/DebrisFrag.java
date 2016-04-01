@@ -18,11 +18,11 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
 import com.xfzj.getbook.common.Debris;
-import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.DebrisInfoView;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
  * Use the {@link DebrisFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
+public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -108,6 +108,8 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
         if (mParam1.equals(FROMMAIN)) {
             loadMoreView.setRefreshing();
             queryAction.queryDebrisInfo(MAX_NUM, limit, skip, key);
+        }else {
+            AppAnalytics.onEvent(getActivity(), AppAnalytics.DB_SEARCH);
         }
         queryAction.setOnQueryListener(this);
         return view;
@@ -230,17 +232,18 @@ public class DebrisFrag extends Fragment implements QueryAction.OnQueryListener<
                     final DebrisInfoView debrisInfoView = ((DebrisInfoView) itemView.getTag());
                     debrisInfoView.update(item);
 
-                    debrisInfoView.setOnUserInfoClick(new DebrisInfoView.onClickListener<User>() {
-                        @Override
-                        public void onClick(User user) {
-//                            MyLog.print("点击的人物", user.toString());
-                        }
-                    });
+//                    debrisInfoView.setOnUserInfoClick(new DebrisInfoView.onClickListener<User>() {
+//                        @Override
+//                        public void onClick(User user) {
+////                            MyLog.print("点击的人物", user.toString());
+//                        }
+//                    });
 
                     debrisInfoView.setOnDebrisInfoClick(new DebrisInfoView.onClickListener<Debris>() {
                         @Override
                         public void onClick(Debris debris) {
 //                            MyLog.print("点击的书本", debris.toString());
+                            AppAnalytics.onEvent(getActivity(), AppAnalytics.CLICK_DEBRIS);
                             Intent intent = new Intent(getActivity(), DebrisDetailAty.class);
                             intent.putExtra(DebrisDetailAty.DATA, debris);
                             startActivity(intent);

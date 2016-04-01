@@ -53,7 +53,8 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        loadMoreLayout.setColorSchemeColors(R.color.primary);
+        loadMoreLayout.setColorSchemeResources(R.color.primary);
+//        loadMoreLayout.setColorSchemeColors(R.color.primary);
         loadMoreLayout.setOnRefreshListener(this);
         loadMoreLayout.setLoadMoreListen(this);
         loadMoreLayout.setOnScrollCallBack(this);

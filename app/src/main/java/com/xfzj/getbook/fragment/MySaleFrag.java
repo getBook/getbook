@@ -21,6 +21,7 @@ import com.xfzj.getbook.activity.MySaleAty;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.WrapDebrisInfoItemView;
 import com.xfzj.getbook.views.view.WrapSecondBookInfoItemView;
 
@@ -32,7 +33,7 @@ import java.util.List;
  * Use the {@link MySaleFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MySaleFrag extends Fragment implements QueryAction.OnQueryListener<Object>, WrapSecondBookInfoItemView.onClickListener, WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onClickListener, WrapDebrisInfoItemView.onLongClickListener {
+public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListener<Object>, WrapSecondBookInfoItemView.onClickListener, WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onClickListener, WrapDebrisInfoItemView.onLongClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -234,12 +235,14 @@ public class MySaleFrag extends Fragment implements QueryAction.OnQueryListener<
                     for (WrapSecondBookInfoItemView w : wraps) {
                         w.refresh();
                     }
+                    AppAnalytics.onEvent(getActivity(), AppAnalytics.R_SB);
                     refreshAction.refresh(lists, SecondBook.class);
                 } else if (mParam1.equals(COLUMNDEBRIS)) {
                     for (WrapDebrisInfoItemView w : wrapDebris) {
                         w.refresh();
 
                     }
+                    AppAnalytics.onEvent(getActivity(), AppAnalytics.R_DB);
                     refreshAction.refresh(lists, Debris.class);
                 }
             }
@@ -291,7 +294,7 @@ public class MySaleFrag extends Fragment implements QueryAction.OnQueryListener<
                         ((MySaleAty) getActivity()).setVisibilty(View.GONE);
                         llnodata.setVisibility(View.VISIBLE);
                     }
-                 
+                    AppAnalytics.onEvent(getActivity(), AppAnalytics.D_SB);
                     deleteAction.delete(lists, SecondBook.class);
                 } else if (mParam1.equals(COLUMNDEBRIS)) {
                     for (WrapDebrisInfoItemView w : wrapDebris) {
@@ -306,6 +309,7 @@ public class MySaleFrag extends Fragment implements QueryAction.OnQueryListener<
                         ((MySaleAty) getActivity()).setVisibilty(View.GONE);
                         llnodata.setVisibility(View.VISIBLE);
                     }
+                    AppAnalytics.onEvent(getActivity(), AppAnalytics.D_DB);
                     deleteAction.delete(lists, Debris.class);
                 }
                 

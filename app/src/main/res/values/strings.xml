@@ -58,6 +58,7 @@
     <string name="book_des">书本描述：</string>
     <string name="saleprice">售价:</string>
     <string name="originprice">原价:</string>
+    <string name="originprice1">原价</string>
     <string name="new_old">新旧:</string>
     <string name="chengxin">成新</string>
     <string name="couont">数量:</string>
@@ -165,4 +166,10 @@
     <string name="login_library_fail">图书馆登陆失败</string>
     <string name="logining_library">正在登陆图书馆...</string>
     <string name="getting_library_info">正在获取图书馆信息...</string>
+    <string name="exitaccount">退出账户</string>
+    <string name="sms_content">短信内容</string>
+    <string name="sms_fail">短信发送失败</string>
+    <string name="sms_success">短信发送成功</string>
+    <string name="cofirm_to_exit_edit">确定退出编辑吗？</string>
+    <string name="sethuaname">起个昵称吧(暂时不可更改)</string>
 </resources>

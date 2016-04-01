@@ -10,6 +10,7 @@
         android:scrollbars="none"
         android:layout_height="wrap_content">
     <TextView
+        android:padding="5dp"
         android:id="@+id/tvContent"
         android:autoLink="web"
         android:layout_width="match_parent"

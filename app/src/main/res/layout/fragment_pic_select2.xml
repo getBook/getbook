@@ -24,8 +24,7 @@
         android:layout_height="48dp"
         android:layout_gravity="bottom"
         android:layout_weight="0"
-        android:alpha="0.6"
-        android:background="@color/primary_text">
+        android:background="#88323232">
 
         <TextView
             android:id="@+id/tv"

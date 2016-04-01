@@ -10,6 +10,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.ScoreQueryAsync;
 import com.xfzj.getbook.common.Score;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.BaseToolBar;
 import com.xfzj.getbook.views.view.WrapWrapScoreItemView;
 
@@ -70,6 +71,7 @@ public class ScoreAty extends AppActivity implements View.OnClickListener, BaseA
 
     @Override
     public void onSuccess(List<List<Score>> lists) {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.S_S);
         ll.removeAllViews();
         ll.setVisibility(View.VISIBLE);
         llError.setVisibility(View.GONE);
@@ -77,7 +79,7 @@ public class ScoreAty extends AppActivity implements View.OnClickListener, BaseA
             WrapWrapScoreItemView wrapWrapScoreItemView = new WrapWrapScoreItemView(getApplicationContext());
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wrapWrapScoreItemView.setLayoutParams(lp);
-            
+
             wrapWrapScoreItemView.update(scores);
             ll.addView(wrapWrapScoreItemView);
         }
@@ -87,6 +89,7 @@ public class ScoreAty extends AppActivity implements View.OnClickListener, BaseA
 
     @Override
     public void onFail() {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.S_F);
         ll.setVisibility(View.GONE);
         llError.setVisibility(View.VISIBLE);
     }

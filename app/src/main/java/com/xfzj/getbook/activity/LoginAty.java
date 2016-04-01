@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import com.xfzj.getbook.MainActivity;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.async.LoginAsync;
-import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.AryConversion;
 import com.xfzj.getbook.utils.MyToast;
 
@@ -89,7 +90,7 @@ public class LoginAty extends AppActivity {
                 }).setNegativeButton(getString(R.string.relogin), null).create().show();
 
 
-            }else if (msg.what == 1) {
+            } else if (msg.what == 1) {
                 MyToast.show(getApplicationContext(), getString(R.string.login_fail));
             }
         }
@@ -124,12 +125,15 @@ public class LoginAty extends AppActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LoginAsync loginAsync = new LoginAsync(LoginAty.this, null, userName, password, null, getString(R.string.logining));
+        final ProgressDialog pd = setProgressDialog(null, getString(R.string.logining));
+        pd.show();
+        LoginAsync loginAsync = new LoginAsync(LoginAty.this, null, userName, password);
         loginAsync.setCallback(new LoginAction.CallBack() {
             @Override
             public void onSuccess() {
-                MyToast.show(getApplicationContext(), getString(R.string.login_success) + BmobUser.getCurrentUser(getApplicationContext(), User.class).toString());
-
+                pd.dismiss();
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_SUCCESS);
+                MyToast.show(getApplicationContext(), getString(R.string.login_success));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 startService(new Intent(getApplicationContext(), GetHeaderSerVice.class));
                 finish();
@@ -137,12 +141,15 @@ public class LoginAty extends AppActivity {
 
             @Override
             public void onFail() {
-           
+                pd.dismiss();
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_FAIL);
                 handler.sendEmptyMessage(1);
             }
 
             @Override
             public void onModify() {
+                pd.dismiss();
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_MODIFY);
                 handler.sendEmptyMessage(0);
             }
         });
@@ -153,5 +160,14 @@ public class LoginAty extends AppActivity {
     public void onBackPressed() {
         exitApp();
     }
-    
+
+    public ProgressDialog setProgressDialog(String title, String message) {
+        ProgressDialog pd = new ProgressDialog(LoginAty.this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setTitle(title);
+        pd.setMessage(message);
+        pd.setCancelable(false);
+        pd.setCanceledOnTouchOutside(false);
+        return pd;
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.net.IHttpHelper;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyUtils;
 
 import org.json.JSONObject;
@@ -30,7 +31,8 @@ public class GetTrjnCountAsync extends UcardAsyncTask<String, Void, Integer> {
                 param.put("begindate", params[0]);
                 param.put("enddate", params[1]);
                 param.put("type", "2");
-            }else{
+            }else {
+                AppAnalytics.onEvent(context, AppAnalytics.C_Q_T);
                 param.put("type", "1");
             }
 

@@ -10,6 +10,8 @@
     <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/login_picture_bg.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/lbs_popup_bg.9.png" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/login_default_avatar.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/lbs_popup_bg.9.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/login_default_avatar.png" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -48,7 +49,7 @@ public class Libraryaty extends AppActivity {
     @Bind(R.id.ll)
     LinearLayout ll;
     private GetLibraryCaptureAsync.Capture c;
-
+    private boolean isLoginSUccess = false;
 
     @Override
     protected void onSetContentView() {
@@ -124,6 +125,14 @@ public class Libraryaty extends AppActivity {
         builder.setView(view, margin, margin, margin, margin);
         final AlertDialog dialog = builder.create();
         dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (!isLoginSUccess) {
+                    finish();
+                }
+            }
+        });
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +147,7 @@ public class Libraryaty extends AppActivity {
                     loginLibraryAsyc.setOnTaskListener(new BaseAsyncTask.onTaskListener<LibraryUserInfo>() {
                         @Override
                         public void onSuccess(LibraryUserInfo libraryUserInfo) {
+                            isLoginSUccess = true;
                             dialog.dismiss();
                             setLibraryUserInfo(libraryUserInfo);
 
@@ -179,6 +189,7 @@ public class Libraryaty extends AppActivity {
         getLibraryCaptureAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<GetLibraryCaptureAsync.Capture>() {
             @Override
             public void onSuccess(GetLibraryCaptureAsync.Capture s) {
+                iv.setVisibility(View.VISIBLE);
                 iv.setImageBitmap(s.getBitmap());
                 c = s;
             }

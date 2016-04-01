@@ -37,6 +37,7 @@ import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.fragment.DebrisFrag;
 import com.xfzj.getbook.fragment.MyFrag;
 import com.xfzj.getbook.fragment.SecondBookFrag;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
@@ -140,7 +141,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
         final View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.huaname, null);
-        final AlertDialog ad = builder.setTitle("起个昵称吧").setView(view).setCancelable(false).create();
+        final AlertDialog ad = builder.setTitle(getString(R.string.sethuaname)).setView(view).setCancelable(false).create();
         ad.show();
         final EditText edtHuaName = (EditText) view.findViewById(R.id.edtHuaName);
         Button btnEnsure = (Button) view.findViewById(R.id.btnEnsure);
@@ -193,7 +194,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             String password = SharedPreferencesUtils.getUserPassword(getApplicationContext(), user.getSno());
 
             if (TextUtils.isEmpty(password)) {
-                MyToast.show(getApplicationContext(), "no password");
                 jump2Login(user.getSno());
                 return;
             }
@@ -202,17 +202,20 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
             loginAsync.setCallback(new LoginAction.CallBack() {
                 @Override
                 public void onSuccess() {
-                    MyToast.show(getApplicationContext(), getString(R.string.login_success));
+//                    MyToast.show(getApplicationContext(), getString(R.string.login_success));
+                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_SUCCESS);
                 }
 
                 @Override
                 public void onFail() {
+                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_FAIL);
                     MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
                     jump2Login(user.getSno());
                 }
 
                 @Override
                 public void onModify() {
+                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_MODIFY);
                     jump2Login(user.getSno());
                 }
             });
@@ -222,9 +225,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     }
 
     private void jump2Login(String str) {
-        Intent i = new Intent(this, LoginAty.class);
-        i.putExtra(LoginAty.ACCOUNT, str);
-        startActivity(i);
+        exitAccount(LoginAty.ACCOUNT, str);
         finish();
     }
 
@@ -247,25 +248,6 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
         setSelectedTextColor(0);
     }
 
-//    private void showFrag(Fragment hideFrag, Fragment showFrag) {
-//        FragmentTransaction ft = fm.beginTransaction();
-//        if (null == hideFrag) {
-//            ft.add(R.id.fram, showFrag, currentIndex).commit();
-//            fm.executePendingTransactions();
-//            return;
-//        }
-//        if (hideFrag == showFrag) {
-//            return;
-//        }
-//
-//        if (!showFrag.isAdded()) {
-//            ft.add(R.id.fram, showFrag, currentIndex).hide(hideFrag).commit();
-//
-//        } else {
-//            ft.show(showFrag).hide(hideFrag).commit();
-//        }
-//        fm.executePendingTransactions();
-//    }
 
     /**
      * mPagerSlidingTabStrip默认值配置
@@ -292,7 +274,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private void initSaleFrag() {
         saleFrag = (SecondBookFrag) fm.findFragmentByTag(SecondBookFrag.FROMMAIN);
-        if (null == saleFrag) {
+        if (null == saleFrag || saleFrag.isDetached()) {
             saleFrag = SecondBookFrag.newInstance(SecondBookFrag.FROMMAIN);
             saleFrag.setFloatingBUtton(fab);
         }
@@ -302,7 +284,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     private void initWantFrag() {
         wantFrag = (DebrisFrag) fm.findFragmentByTag(DebrisFrag.FROMMAIN);
 
-        if (null == wantFrag) {
+        if (null == wantFrag || saleFrag.isDetached()) {
             wantFrag = DebrisFrag.newInstance(DebrisFrag.FROMMAIN);
             wantFrag.setFloatingBUtton(fab);
         }
@@ -311,7 +293,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 
     private void initMyFrag() {
         myFrag = (MyFrag) fm.findFragmentByTag(MyFrag.MY);
-        if (null == myFrag) {
+        if (null == myFrag || saleFrag.isDetached()) {
             myFrag = MyFrag.newInstance(MyFrag.MY);
         }
     }
@@ -354,6 +336,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
 //
 //                break;
             case R.id.action_search:
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.CLICK_SEARCH);
                 Intent intent = new Intent(MainActivity.this, SearchAty.class);
                 startActivity(intent);
                 break;
@@ -417,11 +400,13 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab1:
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_PUBLISH_SB);
                 fab.collapseImmediately();
                 Intent intent = new Intent(MainActivity.this, CaptureAty.class);
                 startActivity(intent);
                 break;
             case R.id.fab2:
+                AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_PUBLISH_DB);
                 fab.collapseImmediately();
                 Intent intent2 = new Intent(MainActivity.this, PublishDebrisActivity.class);
                 startActivity(intent2);

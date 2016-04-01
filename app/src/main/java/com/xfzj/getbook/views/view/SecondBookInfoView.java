@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
@@ -17,13 +17,14 @@ import com.xfzj.getbook.loader.ImageLoader;
  * Created by zj on 2016/2/29.
  */
 public class SecondBookInfoView extends FrameLayout implements View.OnClickListener, SecondBookInfoItemView.onClickListener<Object> {
-    private LinearLayout llUserInfo, llSecondBookInfo;
+    private RelativeLayout llUserInfo;
     private Context context;
     private onClickListener onUserInfoClick, onSecondBookInfoClick;
     private SecondBook secondBook;
     private SimpleUserView simpleUserView;
     private SecondBookInfoItemView itemView;
     private ImageLoader imageLoader;
+
     public <T> void setOnUserInfoClick(onClickListener<T> onUserInfoClick) {
         this.onUserInfoClick = onUserInfoClick;
     }
@@ -55,10 +56,8 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
         imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
         View view = LayoutInflater.from(context).inflate(R.layout.secondbook_info, null);
         simpleUserView = (SimpleUserView) view.findViewById(R.id.simpleUserView);
-        llUserInfo = (LinearLayout) view.findViewById(R.id.llUserInfo);
-        llSecondBookInfo = (LinearLayout) view.findViewById(R.id.llSecondBookInfo);
+        llUserInfo = (RelativeLayout) view.findViewById(R.id.llUserInfo);
         llUserInfo.setOnClickListener(this);
-        llSecondBookInfo.setOnClickListener(this);
         itemView = (SecondBookInfoItemView) view.findViewById(R.id.itemView);
         itemView.setOnSecondBookInfoClick(this);
         addView(view);
@@ -127,7 +126,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 
     @Override
     public void onClick(Object o) {
-        if (null != onUserInfoClick) {
+        if (null != onSecondBookInfoClick) {
             onSecondBookInfoClick.onClick(secondBook);
         }
     }

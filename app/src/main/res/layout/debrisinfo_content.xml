@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,14 +9,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|top"
-        android:visibility="gone"
-        android:src="@mipmap/yxj" />
+        android:src="@mipmap/yxj"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:orientation="horizontal"
         android:padding="5dp">
 
@@ -28,9 +28,9 @@
             android:scaleType="centerCrop"
             android:src="@mipmap/default_book" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -50,151 +50,69 @@
                 android:id="@+id/tvDescribe"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_below="@+id/tvTitle"
                 android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:maxLines="4"
                 android:textColor="@color/secondary_text"
+                android:textSize="10sp"
+                tools:text="sda" />
+
+
+            <TextView
+                android:id="@+id/tvYuan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDescribe"
+                android:layout_gravity="bottom|right"
+                android:text="@string/yuan"
+                android:textColor="@color/accent"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tvYuan"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@+id/tvYuan"
+                android:text="暂无价格"
+                android:textColor="@color/accent"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/tvy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tvYuan"
+                android:layout_gravity="bottom|right"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/tvPrice"
+                android:text="@string/yuan"
+                android:textColor="@color/secondary_text"
                 android:textSize="10sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvOldPrice"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:layout_alignBottom="@+id/tvy"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@id/tvy"
+                android:text="暂无价格"
+                android:textColor="@color/secondary_text"
+                android:textSize="10sp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvYuan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:text="@string/yuan"
-                        android:textColor="@color/accent"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:text="暂无价格"
-                        android:textColor="@color/accent"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/llold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:text="@string/yuan"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:id="@+id/tvOldPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:text="暂无价格"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:gravity="bottom">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-
-                    <ImageView
-                        android:id="@+id/ivDate"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center"
-                        android:src="@mipmap/date" />
-
-                    <TextView
-                        android:id="@+id/tvDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-
-                    <ImageView
-                        android:id="@+id/ivCount"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center"
-                        android:src="@mipmap/book_count" />
-
-                    <TextView
-                        android:id="@+id/tvCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-
-                    <ImageView
-                        android:id="@+id/ivNewOld"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center"
-                        android:src="@mipmap/quality" />
-
-                    <TextView
-
-                        android:id="@+id/tvNewold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
-                        android:gravity="center"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+                <include
+                    layout="@layout/date_count_quality" />
+            </RelativeLayout>
+        </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

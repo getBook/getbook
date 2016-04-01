@@ -19,7 +19,7 @@ import com.xfzj.getbook.views.view.BookInfoView;
  * Use the {@link BookInfoFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookInfoFrag extends Fragment {
+public class BookInfoFrag extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_PARAM1 = "BookInfoFrag";

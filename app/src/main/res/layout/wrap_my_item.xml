@@ -16,14 +16,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/llSecondBook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -33,10 +32,11 @@
                     android:layout_weight="1"
                     android:padding="15dp"
                     android:text="@string/secondbook"
-
                     android:textSize="18sp" />
 
                 <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/iv1"
                     android:id="@+id/tvSecondBookCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,13 +45,16 @@
                     android:textSize="16sp" />
 
                 <ImageView
+                    android:id="@+id/iv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -59,11 +62,10 @@
                 android:alpha="0.5"
                 android:background="@color/divider" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/llDebris"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -77,21 +79,25 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:layout_toLeftOf="@+id/iv2"
                     android:id="@+id/tvDebrisCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:padding="10dp"
+                    android:padding="10dp"  android:layout_centerVertical="true"
                     android:textSize="16sp" />
 
                 <ImageView
+                    android:id="@+id/iv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -99,11 +105,10 @@
                 android:alpha="0.5"
                 android:background="@color/divider" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/llSchoolAnnounce"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -118,11 +123,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <View
@@ -131,11 +138,10 @@
                 android:alpha="0.5"
                 android:background="@color/divider" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/lllibrary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -150,11 +156,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -162,11 +170,10 @@
                 android:alpha="0.5"
                 android:background="@color/divider" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/llyikatong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -181,11 +188,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -193,11 +202,10 @@
                 android:alpha="0.5"
                 android:background="@color/divider" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/llquerygrades"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -212,11 +220,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:layout_weight="0"
                     android:padding="5dp"
                     android:src="@mipmap/arrow" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>

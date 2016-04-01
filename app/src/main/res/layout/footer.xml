@@ -25,13 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingTop="5dip"
-        
         android:text="@string/loading"
         android:layout_centerVertical="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="16sp"
+        android:textColor="@color/accent"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
 </RelativeLayout>  

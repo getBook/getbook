@@ -67,7 +67,7 @@ public class FlashActivity extends AppActivity {
         String from = getIntent().getStringExtra(FROM);
         if (!TextUtils.isEmpty(from)) {
             if (EXITACCOUNT.equals(from)) {
-                jump2Login();
+                jump2Login( getIntent().getStringExtra(LoginAty.ACCOUNT));
             } else if (EXITAPP.equals(from)) {
                 finish();
             }
@@ -77,13 +77,18 @@ public class FlashActivity extends AppActivity {
     }
 
 
-    private void jump2Login() {
+    private void jump2Login(String str) {
 
         Intent i = new Intent(this, LoginAty.class);
+        if (!TextUtils.isEmpty(str)) {
+            i.putExtra(LoginAty.ACCOUNT, str);
+        }
         startActivity(i);
 //        finish();
     }
-
+    private void jump2Login() {
+        jump2Login(null);
+    }
 
     private void jump2MainAty() {
         Intent i = new Intent(this, MainActivity.class);

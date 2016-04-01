@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/tvBookName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="书名未知"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvIsbn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBookName"
+        android:layout_marginTop="3dp"
+        android:textColor="@color/secondary_text"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/tvBookAuthor"
+        style="@style/secondbook_textview"
+        android:layout_below="@+id/tvIsbn"
+        android:text="作者未知" />
+
+    <TextView
+        android:id="@+id/tvPublisher"
+        style="@style/secondbook_textview"
+        android:layout_below="@+id/tvBookAuthor"
+        android:text="暂无出版社" />
+
+
+    <TextView
+        android:id="@+id/tvYuan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPublisher"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="5dp"
+        android:text="@string/yuan"
+        android:textColor="@color/accent"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvYuan"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@+id/tvYuan"
+        android:text="暂无价格"
+        android:textColor="@color/accent"
+        android:textSize="16sp" />
+
+
+    <TextView
+        android:id="@+id/tvy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvPrice"
+        android:layout_gravity="bottom|right"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/tvPrice"
+        android:text="@string/yuan"
+        android:textColor="@color/secondary_text"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/tvOldPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvPrice"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@+id/tvy"
+        android:text="暂无价格"
+        android:textColor="@color/secondary_text"
+        android:textSize="10sp" />
+
+    <include layout="@layout/date_count_quality" />
+</RelativeLayout>

@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 public class FloatWindow implements AdapterView.OnItemClickListener {
 
+    private final Context context;
     private ListView lv;
     private PopupWindow pw;
     private ArrayAdapter arrayAdapter;
@@ -38,6 +40,7 @@ public class FloatWindow implements AdapterView.OnItemClickListener {
     private onItemClickListener onItemClickListener;
 
     public FloatWindow(Context context) {
+        this.context = context;
         init(context);
     }
 
@@ -55,6 +58,7 @@ public class FloatWindow implements AdapterView.OnItemClickListener {
         pw.setFocusable(true);
         pw.setAnimationStyle(R.style.popupwindowanim);
         pw.setBackgroundDrawable(new PaintDrawable());
+        pw.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         arrayAdapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, lists);
         lv.setAdapter(arrayAdapter);
         lv.setOnItemClickListener(this);
@@ -76,7 +80,7 @@ public class FloatWindow implements AdapterView.OnItemClickListener {
         }
         this.lists.addAll(lists);
         arrayAdapter.notifyDataSetChanged();
-        pw.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER, 0, scrrenHeight - v.getTop() - statusBarHeight);
+        pw.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER, 0, v.getHeight()+MyUtils.getNavigationBarHeight(context));
     }
 
     @Override

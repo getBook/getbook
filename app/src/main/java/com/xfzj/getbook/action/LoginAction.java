@@ -4,11 +4,11 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xfzj.getbook.BaseApplication;
-import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.net.IHttpHelper;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
@@ -26,11 +26,8 @@ import cn.bmob.v3.listener.SaveListener;
  */
 public class LoginAction extends BaseAction {
 
-    public static final int SUCCESS = 0;
-    public static final int Fail = 1;
-    public static final int SUCCESS_SAMEUSER = 2;
-    public static final int SUCCESS_UPDATE = 3;
-    public static final int SUCCESS_REGISTER = 4;
+    public static final String PASSWORD_ERROR = "查询密码错误";
+    public static final String CARD_LOSS = "该校园卡已挂失";
     private User currUser;
     private User newUser;
     private Context context;
@@ -58,17 +55,18 @@ public class LoginAction extends BaseAction {
      * @return
      */
     public CallBack loginAll(String huaName,String userName, String password, CallBack callBack) {
+        AppAnalytics.onEvent(context, AppAnalytics.LOGIN);
         this.huaName = huaName;
         String msg = signIn(userName, password);
         if (TextUtils.isEmpty(msg)) {
-            loginBmob(userName, password, callBack,false);
+            loginBmob(userName, password, callBack, false);
             return callBack;
-        } else if(context.getString(R.string.query_password_error).equals(msg)){
+        } else if (PASSWORD_ERROR.equals(msg)) {
             if (null != callBack) {
                 callBack.onModify();
             }
             return callBack;
-        }else if ("该校园卡已挂失".equals(msg)) {
+        } else if (CARD_LOSS.equals(msg)) {
             if (null != callBack) {
                 callBack.onFail();
             }
@@ -77,7 +75,7 @@ public class LoginAction extends BaseAction {
         if (hasUser()) {
             if (isSameUser()) {
                 SharedPreferencesUtils.updateMsg(context, msg);
-                loginBmob(userName, password, callBack,true);
+                loginBmob(userName, password, callBack, true);
                 return callBack;
             } else {
                 SharedPreferencesUtils.clearUser(context);
@@ -90,7 +88,7 @@ public class LoginAction extends BaseAction {
             SharedPreferencesUtils.clearUser(context);
             SharedPreferencesUtils.saveUser(context, this.newUser);
             registerBmob(newUser, callBack);
-            
+
             return callBack;
         }
     }

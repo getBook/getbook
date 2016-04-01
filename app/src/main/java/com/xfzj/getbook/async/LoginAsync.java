@@ -15,23 +15,11 @@ public class LoginAsync extends BaseAsyncTask<Integer, Integer, LoginAction.Call
     private LoginAction.CallBack callBack;
     private String huaName;
 
-    public LoginAsync(Context context, String userName, String password, String title, String message) {
-        this(context, null, userName, password, title, message);
-    }
-
+   
     public LoginAsync(Context context, String userName, String password) {
         this(context, null, userName, password);
     }
 
-    public LoginAsync(Context context, String huaName, String userName, String password, String title, String message) {
-        super(context);
-        this.huaName = huaName;
-        this.userName = userName;
-        this.password = password;
-        this.context = context;
-        loginAction = new LoginAction(context);
-        setProgressDialog(title, message);
-    }
 
     public LoginAsync(Context context, String huaName, String userName, String password) {
         super(context);
@@ -54,6 +42,6 @@ public class LoginAsync extends BaseAsyncTask<Integer, Integer, LoginAction.Call
 
     @Override
     protected LoginAction.CallBack doExcute(Integer[] params) {
-        return loginAction.loginAll(huaName,userName, password, callBack);
+        return loginAction.loginAll(huaName, userName, password, callBack);
     }
 }

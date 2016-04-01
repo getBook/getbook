@@ -3,7 +3,6 @@ package com.xfzj.getbook.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +28,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/16.
  */
-public class NewsShowFrag extends Fragment implements LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>>, LoadMoreView.RefreshListener {
+public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>>, LoadMoreView.RefreshListener {
     public static final String PARAM = "newsshowfrag";
     private static final String NEWSLIST = "newslists";
     private String param;
@@ -75,7 +74,7 @@ public class NewsShowFrag extends Fragment implements LoadMoreListen, View.OnCli
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_newsshow, null);
+        View view = inflater.inflate(R.layout.fragment_newsshow, container,false);
         loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);

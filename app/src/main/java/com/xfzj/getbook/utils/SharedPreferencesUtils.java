@@ -29,6 +29,7 @@ public class SharedPreferencesUtils {
     private static final String LIBRARYUSERINFOPREFERENCES = "libraryuserinfo";
     private static final String ACCOUNT = "account";
     private static final String COOKIE = "cookie";
+    private static final String PHONE = "phone";
 
     public static void saveUser(Context context, User user) {
         if (null == user) {
@@ -191,5 +192,18 @@ public class SharedPreferencesUtils {
             editor.putString(MSG, msg);
         }
         editor.apply();
+    }
+
+    public static void savePhoneNumber(Context context,String phone) {
+        SharedPreferences sp = context.getSharedPreferences(PHONE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        if (!TextUtils.isEmpty(phone)) {
+            editor.putString(PHONE, phone);
+        }
+        editor.apply();
+    }
+    public static String getPhoneNumber(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PHONE, Context.MODE_PRIVATE);
+        return sp.getString(PHONE, "");
     }
 }

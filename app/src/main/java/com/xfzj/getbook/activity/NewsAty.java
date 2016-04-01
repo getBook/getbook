@@ -14,6 +14,7 @@ import com.xfzj.getbook.common.News;
 import com.xfzj.getbook.fragment.DownloadFrag;
 import com.xfzj.getbook.fragment.NewsDetailFrag;
 import com.xfzj.getbook.fragment.NewsShowFrag;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
 import butterknife.Bind;
@@ -82,6 +83,7 @@ public class NewsAty extends AppActivity implements NewsShowFrag.OnNewsClick, Vi
 
     @Override
     public void onClick(News news) {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_SA_DET);
         initNewsDetailFrag(news.getHref());
 
     }

@@ -26,6 +26,7 @@ import com.xfzj.getbook.async.GuaShiAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.async.XiuGaiMiMaAsync;
 import com.xfzj.getbook.common.Card;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.AryConversion;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.BaseToolBar;
@@ -107,15 +108,18 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ivChongZhi:
+                
                 chongzhi();
                 break;
             case R.id.tvLiuShui:
+                AppAnalytics.onEvent(getApplicationContext(),AppAnalytics.C_LSCX);
                 Intent intent = new Intent(this, LiuShuiAty.class);
                 intent.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMLIUSHUI);
                 startActivity(intent);
                 
                 break;
             case R.id.tvBuZhu:
+                AppAnalytics.onEvent(getApplicationContext(),AppAnalytics.C_BZCX);
                 Intent intent1 = new Intent(this, LiuShuiAty.class);
                 intent1.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMBUZHU);
                 startActivity(intent1);
@@ -135,6 +139,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
     }
 
     private void guashi() {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_GS);
         AlertDialog.Builder builder = new AlertDialog.Builder(CardAty.this);
         View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.xiugaimima, null);
         final EditText etOld = (EditText) view.findViewById(R.id.etOld);
@@ -162,12 +167,15 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 guaShiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.GS_S);
+
                         dialog.dismiss();
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.success)).setMessage(s).create().show();
                     }
 
                     @Override
                     public void onFail(String s) {
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.GS_F);
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.fail)).setMessage(s).create().show();
                     }
                 });
@@ -175,10 +183,11 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
 
             }
         });
-        
+
     }
 
     private void xiugaiMiMa() {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_CP);
         AlertDialog.Builder builder = new AlertDialog.Builder(CardAty.this);
         View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.xiugaimima, null);
         final EditText etOld = (EditText) view.findViewById(R.id.etOld);
@@ -217,7 +226,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                         try {
                             String oldp = AryConversion.binary2Hex(old).toUpperCase();
                             String newp = AryConversion.binary2Hex(new1).toUpperCase();
-                        
+
                             BmobUser.updateCurrentUserPassword(getApplicationContext(), oldp, newp, new UpdateListener() {
                                 @Override
                                 public void onSuccess() {
@@ -230,11 +239,13 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.CP_S);
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.success)).setMessage(s).create().show();
                     }
 
                     @Override
                     public void onFail(String s) {
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.CP_F);
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.fail)).setMessage(s).create().show();
                     }
                 });
@@ -247,6 +258,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
     }
 
     private void chongzhi() {
+        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.C_CZ);
         AlertDialog.Builder builder = new AlertDialog.Builder(CardAty.this);
         View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.chongzhi, null);
         final EditText etPassword = (EditText) view.findViewById(R.id.etPassword);
@@ -315,12 +327,14 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 chongzhiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.CZ_S);
                         ad.dismiss();
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.success)).setMessage(s).create().show();
                     }
 
                     @Override
                     public void onFail(String s) {
+                        AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.CZ_F);
                         new AlertDialog.Builder(CardAty.this).setTitle(getString(R.string.fail)).setMessage(s).create().show();
                     }
                 });

@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<com.xfzj.getbook.recycleview.LoadMoreLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loadMoreLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.xfzj.getbook.recycleview.LoadMoreLayout
-        android:id="@+id/loadMoreLayout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:id="@+id/recycleView"
-            android:layout_height="match_parent" />
-
-    </com.xfzj.getbook.recycleview.LoadMoreLayout>
-</LinearLayout>
+</com.xfzj.getbook.recycleview.LoadMoreLayout>

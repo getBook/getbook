@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xfzj.getbook.BaseApplication;
@@ -23,6 +23,7 @@ import com.xfzj.getbook.activity.MySaleAty;
 import com.xfzj.getbook.activity.NewsAty;
 import com.xfzj.getbook.activity.ScoreAty;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.CircleImageView;
 
@@ -33,7 +34,7 @@ import cn.bmob.v3.listener.CountListener;
  * Use the {@link MyFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyFrag extends Fragment implements View.OnClickListener {
+public class MyFrag extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +46,7 @@ public class MyFrag extends Fragment implements View.OnClickListener {
     public static final String MY = "my";
 
 
-    private LinearLayout llSecondBook, llDebris, llquerygrades, llyikatong, llSchoolAnnounce, lllibrary;
+    private RelativeLayout llSecondBook, llDebris, llquerygrades, llyikatong, llSchoolAnnounce, lllibrary;
     private TextView tvSecondBookCount, tvDebrisCount, tvHuaName, tvName, tvUserName;
     private CircleImageView iv;
     private User user;
@@ -85,12 +86,12 @@ public class MyFrag extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
-        llSecondBook = (LinearLayout) view.findViewById(R.id.llSecondBook);
-        llDebris = (LinearLayout) view.findViewById(R.id.llDebris);
-        lllibrary = (LinearLayout) view.findViewById(R.id.lllibrary);
-        llquerygrades = (LinearLayout) view.findViewById(R.id.llquerygrades);
-        llSchoolAnnounce = (LinearLayout) view.findViewById(R.id.llSchoolAnnounce);
-        llyikatong = (LinearLayout) view.findViewById(R.id.llyikatong);
+        llSecondBook = (RelativeLayout) view.findViewById(R.id.llSecondBook);
+        llDebris = (RelativeLayout) view.findViewById(R.id.llDebris);
+        lllibrary = (RelativeLayout) view.findViewById(R.id.lllibrary);
+        llquerygrades = (RelativeLayout) view.findViewById(R.id.llquerygrades);
+        llSchoolAnnounce = (RelativeLayout) view.findViewById(R.id.llSchoolAnnounce);
+        llyikatong = (RelativeLayout) view.findViewById(R.id.llyikatong);
         tvSecondBookCount = (TextView) view.findViewById(R.id.tvSecondBookCount);
         tvDebrisCount = (TextView) view.findViewById(R.id.tvDebrisCount);
         tvName = (TextView) view.findViewById(R.id.tvName);
@@ -119,30 +120,34 @@ public class MyFrag extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.llSecondBook:
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_SB);
                 Intent intent = new Intent(getActivity(), MySaleAty.class);
                 intent.putExtra(MySaleAty.FROM, getString(R.string.secondbook));
                 startActivityForResult(intent, MySaleAty.RESULT);
                 break;
             case R.id.llDebris:
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_DB);
                 Intent intent1 = new Intent(getActivity(), MySaleAty.class);
                 intent1.putExtra(MySaleAty.FROM, getString(R.string.drugstore));
                 startActivityForResult(intent1, MySaleAty.RESULT);
                 break;
             case R.id.llquerygrades:
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_S);
                 Intent intent4 = new Intent(getActivity(), ScoreAty.class);
                 startActivity(intent4);
                 break;
             case R.id.llyikatong:
-
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_C);
                 Intent intent3 = new Intent(getActivity(), CardAty.class);
                 startActivity(intent3);
                 break;
             case R.id.lllibrary:
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_L);
                 Intent intent6 = new Intent(getActivity(), Libraryaty.class);
                 startActivity(intent6);
                 break;
             case R.id.llSchoolAnnounce:
-
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_SA);
                 Intent intent5 = new Intent(getActivity(), NewsAty.class);
                 startActivity(intent5);
                 break;

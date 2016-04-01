@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.DatePickerView;
 
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/24.
  */
-public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListener, View.OnClickListener {
+public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String PARAM = "LiuShuiFrag.class";
 
     private String param;
@@ -68,7 +69,7 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_liushui, null);
+        View view = inflater.inflate(R.layout.fragment_liushui, container,false);
         pager = (ViewPager) view.findViewById(R.id.pager);
         slidingTabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -178,6 +179,7 @@ public class LiuShuiFrag extends Fragment implements ViewPager.OnPageChangeListe
     @Override
     public void onClick(View v) {
         if (R.id.fab == v.getId()) {
+            AppAnalytics.onEvent(getActivity(), AppAnalytics.C_Q);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             DatePickerView datePickerView = new DatePickerView(getActivity());
             getCurrentTime();

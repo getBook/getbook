@@ -3,6 +3,7 @@ package com.xfzj.getbook.utils;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
@@ -13,6 +14,9 @@ import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
 import org.json.JSONException;
@@ -74,6 +78,33 @@ public class MyUtils {
         }
         return 0;
     }
+
+    public static boolean checkDeviceHasNavigationBar(Context activity) {
+
+        //通过判断设备是否有返回键、菜单键(不是虚拟键,是手机屏幕外的按键)来确定是否有navigation bar  
+        boolean hasMenuKey = ViewConfiguration.get(activity)
+                .hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap
+                .deviceHasKey(KeyEvent.KEYCODE_BACK);
+
+        if (!hasMenuKey && !hasBackKey) {
+            return true;
+        }
+        return false;
+    }
+
+    public static int getNavigationBarHeight(Context activity) {
+        if (checkDeviceHasNavigationBar(activity)) {
+            Resources resources = activity.getResources();
+            int resourceId = resources.getIdentifier("navigation_bar_height",
+                    "dimen", "android");
+            //获取NavigationBar的高度  
+            int height = resources.getDimensionPixelSize(resourceId);
+            return height;
+        }
+        return 0;
+    }
+    
 
     public static boolean isWifi(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context
@@ -171,7 +202,7 @@ public class MyUtils {
     public static boolean isSuccess(JSONObject jsonObject) {
 
         try {
-        
+
             return jsonObject.getBoolean("success");
 
         } catch (JSONException e) {

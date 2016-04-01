@@ -14,18 +14,18 @@
             android:id="@+id/etAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="学号"
             android:textColor="@color/accent"
-            android:textColorHint="@color/secondary_text"
-            android:hint="学号" />
+            android:textColorHint="@color/secondary_text" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
-            android:textColor="@color/accent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/secondary_text"
+            android:hint="图书馆登陆密码"
             android:inputType="textPassword"
-            android:hint="图书馆登陆密码" />
+            android:textColor="@color/accent"
+            android:textColorHint="@color/secondary_text" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,21 +33,22 @@
             android:orientation="horizontal">
 
             <EditText
-                android:textColor="@color/accent"
                 android:id="@+id/etVerfy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/iv"
-                android:textColorHint="@color/secondary_text"
-                android:hint="验证码" />
+                android:hint="验证码"
+                android:inputType="numberDecimal"
+                android:textColor="@color/accent"
+                android:textColorHint="@color/secondary_text" />
 
             <ImageView
                 android:id="@+id/iv"
                 android:layout_width="60dp"
                 android:layout_height="36dp"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher" />
+                android:visibility="gone" />
         </RelativeLayout>
     </LinearLayout>
 

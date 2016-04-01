@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -26,7 +25,7 @@ import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.db.DownLoadFileManager;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
-import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
 
 import org.jsoup.Jsoup;
@@ -35,7 +34,7 @@ import org.jsoup.nodes.Document;
 /**
  * Created by zj on 2016/3/21.
  */
-public class NewsDetailFrag extends Fragment implements View.OnClickListener {
+public class NewsDetailFrag extends BaseFragment implements View.OnClickListener {
 
     public static final String PARAM = "NewsDetailFrag.class";
     private static final String TEXTVIEWCONTENT = "textviewcontetn";
@@ -73,7 +72,7 @@ public class NewsDetailFrag extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news_detail, null);
+        View view = inflater.inflate(R.layout.fragment_news_detail, container,false);
         tvContent = (TextView) view.findViewById(R.id.tvContent);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);
@@ -139,7 +138,6 @@ public class NewsDetailFrag extends Fragment implements View.OnClickListener {
         protected Spanned doExcute(String[] params) {
             try {
                 String url = BaseHttp.GETNEWSITEM + params[0];
-                MyLog.print("qwe", url);
                 byte[] bytes = new HttpHelper().DoConnection(url);
                 String result = new String(bytes, "utf-8");
                 Document document = Jsoup.parse(result);
@@ -167,7 +165,7 @@ public class NewsDetailFrag extends Fragment implements View.OnClickListener {
             spannableStringBuilder.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-
+                    AppAnalytics.onEvent(getActivity(), AppAnalytics.C_SA_DOWN);
                     DownLoadFileManager dm = new DownLoadFileManager(getActivity());
                     if (dm.find(sb.toString())) {
                         MyToast.show(getActivity(), sb.toString() + getActivity().getString(R.string.has_download));

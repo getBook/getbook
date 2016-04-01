@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/llUserInfo"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -10,23 +10,27 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:adjustViewBounds="true"
-        android:transitionName="header"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        />
 
     <ImageView
         android:id="@+id/ivSex"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/ivHeader"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/ivSex"
         android:text="阿三"
         android:textColor="@color/primary_text" />
-</LinearLayout>
+</RelativeLayout>

@@ -165,7 +165,6 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
             ivs[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyToast.show(getApplicationContext(), finalI +"");
                     Intent intent = new Intent(DebrisDetailAty.this, ViewPagerAty.class);
                     intent.putExtra(ViewPagerAty.PATH, (Serializable) lists);
                     intent.putExtra(ViewPagerAty.INDEX, finalI);
@@ -208,7 +207,7 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
                 return;
             }
             String moudle = getString(R.string.send_message, getString(R.string.app_name), debris.getTitle());
-            Sms.sendSms(getApplicationContext(), tele, moudle);
+            Sms.sendSms(this, tele, moudle, R.string.debris);
         } 
 
     }

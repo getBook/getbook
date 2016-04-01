@@ -48,7 +48,7 @@ import java.util.Set;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PicSelectFrag extends Fragment implements View.OnClickListener, FloatWindow.onItemClickListener {
+public class PicSelectFrag extends BaseFragment implements View.OnClickListener, FloatWindow.onItemClickListener {
 
     public static final String ARG_PARAM1 = "PicSelectFrag";
     private String mParam1;

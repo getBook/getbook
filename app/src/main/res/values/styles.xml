@@ -11,6 +11,8 @@
         <item name="android:icon">@color/icons</item>
         <item name="android:navigationBarColor">@color/primary_dark</item>
         <item name="android:divider">@color/divider</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="main_bottom">
@@ -75,5 +77,12 @@
     <style name="menu_labels_style">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="secondbook_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+       <item name="android:layout_marginTop">5dp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">12sp</item>
     </style>
 </resources>

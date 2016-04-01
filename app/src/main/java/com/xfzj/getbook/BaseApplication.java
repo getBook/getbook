@@ -7,6 +7,8 @@ import android.view.Display;
 
 import com.bmob.BmobConfiguration;
 import com.bmob.BmobPro;
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.utils.FileUtils;
@@ -40,6 +42,9 @@ public class BaseApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
+        MobclickAgent.openActivityDurationTrack(false);
+        AnalyticsConfig.enableEncrypt(true);
+        MobclickAgent.setDebugMode(false);
         Bmob.initialize(this, "953b4c2054c0d44e168d6725f8df4ff7");
         BmobConfiguration config = new BmobConfiguration.Builder(getApplicationContext()).customExternalCacheDir("cache").build();
         BmobPro.getInstance(getApplicationContext()).initConfig(config);

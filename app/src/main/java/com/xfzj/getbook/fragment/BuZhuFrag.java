@@ -2,7 +2,6 @@ package com.xfzj.getbook.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/24.
  */
-public class BuZhuFrag extends Fragment implements LoadMoreView.RefreshListener, LoadMoreListen {
+public class BuZhuFrag extends BaseFragment implements LoadMoreView.RefreshListener, LoadMoreListen {
     public static final String PARAM = "BuZhuFrag.class";
 
     private String param;
@@ -60,7 +59,7 @@ public class BuZhuFrag extends Fragment implements LoadMoreView.RefreshListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_liushuihistory, null);
+        View view = inflater.inflate(R.layout.fragment_liushuihistory, container,false);
 
         loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         loadMoreView.setVisibility(View.GONE);
