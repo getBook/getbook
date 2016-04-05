@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.GetBookInfoAsync;
 import com.xfzj.getbook.common.BookInfo;
@@ -86,7 +87,7 @@ public class BookInfoFrag extends BaseFragment {
 
     public void update() {
         GetBookInfoAsync getBookInfoAsync = new GetBookInfoAsync(getActivity());
-        getBookInfoAsync.execute(getIsbn());
+        getBookInfoAsync.executeOnExecutor(((AppActivity)getActivity()).getThreadPoolExecutor(),getIsbn());
         getBookInfoAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<BookInfo>() {
             @Override
             public void onSuccess(BookInfo bookInfo) {

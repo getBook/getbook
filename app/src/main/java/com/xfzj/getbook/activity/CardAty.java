@@ -91,7 +91,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
     private void getCardInfo() {
         getCardInfoAsync = new GetCardInfoAsync(CardAty.this);
         getCardInfoAsync.setOnTaskListener(this);
-        getCardInfoAsync.execute();
+        getCardInfoAsync.executeOnExecutor(THREAD_POOL_EXECUTOR);
     }
 
 
@@ -163,7 +163,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 GuaShiAsync guaShiAsync = new GuaShiAsync(CardAty.this);
-                guaShiAsync.execute(old);
+                guaShiAsync.executeOnExecutor(THREAD_POOL_EXECUTOR,old);
                 guaShiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
@@ -218,7 +218,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 XiuGaiMiMaAsync xiuGaiMiMaAsync = new XiuGaiMiMaAsync(CardAty.this);
-                xiuGaiMiMaAsync.execute(old, new1);
+                xiuGaiMiMaAsync.executeOnExecutor(THREAD_POOL_EXECUTOR,old, new1);
                 xiuGaiMiMaAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
@@ -323,7 +323,7 @@ public class CardAty extends AppActivity implements View.OnClickListener, BaseAs
                 final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 ChongzhiAsync chongzhiAsync = new ChongzhiAsync(CardAty.this);
-                chongzhiAsync.execute(money, passsword);
+                chongzhiAsync.executeOnExecutor(THREAD_POOL_EXECUTOR, money, passsword);
                 chongzhiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {

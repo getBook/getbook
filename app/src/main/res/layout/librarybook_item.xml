@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <com.xfzj.getbook.views.view.ScrollTextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/tvBooktype"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:maxLines="2"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"
+                tools:text="Objective-C高级编程:iOS与OS X多线程和内存管理 " />
+
+            <TextView
+                android:id="@+id/tvBooktype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tvCount"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                tools:text="中文图书" />
+
+            <TextView
+                android:layout_alignLeft="@+id/tvName"
+                android:id="@+id/tvAP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvName"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/tvCount"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                android:layout_marginRight="10dp"
+                tools:text="(日)Kazuki Sakamoto,Tomohiko Furumoto著 人民邮电出版社 2013 " />
+
+            <TextView
+
+                android:id="@+id/tvCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tvBooktype"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                tools:text="馆藏复本：2 " />
+
+            <TextView
+                android:id="@+id/tvCanBorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tvCount"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/tvPosition"
+                android:layout_below="@+id/tvCount"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                tools:text="可借复本：1" />
+
+            <TextView
+                android:layout_alignLeft="@+id/tvName"
+                android:id="@+id/tvPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvAP"
+                android:textSize="14sp"
+                android:textColor="@color/accent"
+                tools:text="TN929.53/524" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

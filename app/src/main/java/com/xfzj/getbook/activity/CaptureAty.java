@@ -14,6 +14,7 @@ import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.result.ParsedResultType;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
 import butterknife.Bind;
@@ -42,6 +43,12 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected int[] setFrameWidthHeight() {
+       int width= MyUtils.getScreenWidth(getApplicationContext());
+        return new int[]{width*4/5,width*3/5};
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.fragment.DebrisFrag;
+import com.xfzj.getbook.fragment.LibrarySearchFrag;
 import com.xfzj.getbook.fragment.SecondBookFrag;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
@@ -43,6 +44,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     private SearchView searchView;
     private SecondBookFrag sbFrag;
     private DebrisFrag debrisFrag;
+    private LibrarySearchFrag librarySearchFrag;
     private FragmentManager fm;
     private String query;
 
@@ -63,14 +65,23 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     private void init() {
         initSaleFrag();
         initWantFrag();
+        initLibrarySearchFrag();
         List<Fragment> lists = new ArrayList<>();
         lists.add(sbFrag);
         lists.add(debrisFrag);
+        lists.add(librarySearchFrag);
         pager.setAdapter(new TestAdapter(getSupportFragmentManager(), lists));
         slidingTabStrip.setViewPager(pager);
         slidingTabStrip.setOnPageChangeListener(this);
         initTabsValue();
         setSelectedTextColor(0);
+    }
+
+    private void initLibrarySearchFrag() {
+        librarySearchFrag = (LibrarySearchFrag) fm.findFragmentByTag(LibrarySearchFrag.PARAM);
+        if (null == librarySearchFrag) {
+            librarySearchFrag = LibrarySearchFrag.newInstance(LibrarySearchFrag.PARAM);
+        }
     }
 
     private void initSaleFrag() {
@@ -122,15 +133,25 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     public boolean onQueryTextSubmit(String query) {
         this.query = query;
         int index = pager.getCurrentItem();
+
+        dispatchSearch(index, query);
+
+        return false;
+    }
+
+    private void dispatchSearch(int index, String query) {
+        query = query.trim();
+        if (TextUtils.isEmpty(query)) {
+            return;
+        }
         if (index == 0) {
             sbFrag.searchKey(query);
 
-        } else {
+        } else if (index == 1) {
             debrisFrag.searchKey(query);
+        } else {
+            librarySearchFrag.searchKey(query);
         }
-
-
-        return false;
     }
 
     @Override
@@ -171,14 +192,9 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     @Override
     public void onPageSelected(int position) {
         setSelectedTextColor(position);
-        query = searchView.getQuery().toString();
-        if (TextUtils.isEmpty(query)) {
-            return;
-        }
-        if (position == 0) {
-            sbFrag.searchKey(query);
-        } else {
-            debrisFrag.searchKey(query);
+        if (null != searchView) {
+            query = searchView.getQuery().toString();
+            dispatchSearch(position, query);
         }
     }
 
@@ -207,7 +223,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
 
     private class TestAdapter extends FragmentPagerAdapter {
         private List<Fragment> lists;
-        private int[] tag = new int[]{R.string.secondbook, R.string.drugstore, R.string.my};
+        private int[] tag = new int[]{R.string.secondbook, R.string.drugstore, R.string.library};
 
         public TestAdapter(FragmentManager manager, List<Fragment> lists) {
             super(manager);

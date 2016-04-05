@@ -36,7 +36,7 @@ import camera.CameraConfigurationUtils;
  * A class which deals with reading, parsing, and setting the camera parameters which are used to
  * configure the camera hardware.
  */
-final class CameraConfigurationManager {
+public final class CameraConfigurationManager {
 
   private static final String TAG = "CameraConfiguration";
 
@@ -208,7 +208,7 @@ final class CameraConfigurationManager {
     return cameraResolution;
   }
 
-  Point getScreenResolution() {
+  public Point getScreenResolution() {
     return screenResolution;
   }
 

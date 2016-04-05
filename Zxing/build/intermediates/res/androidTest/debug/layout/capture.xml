@@ -22,7 +22,7 @@
     <com.xfzj.getbook.views.view.BaseToolBar
         android:id="@+id/baseToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -36,8 +36,8 @@
         <com.google.zxing.client.android.ViewfinderView
             android:id="@+id/viewfinder_view"
             android:layout_width="fill_parent"
-            android:layout_gravity="center"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:id="@+id/result_view"
@@ -228,8 +228,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/transparent"
             android:layout_marginBottom="20dp"
+            android:background="@color/transparent"
             android:text="@string/msg_default_status"
             android:textColor="@color/status_text" />
     </FrameLayout>

@@ -235,7 +235,7 @@ public class DownLoadSevice extends Service {
     public File getDownloadFile() throws IOException {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File file = Environment.getExternalStorageDirectory();
-            File file1 = new File(file.getPath() + "/getBookdownloads");
+            File file1 = new File(file.getPath() + "/" + getString(R.string.app_name) + "downloads");
 
             if (!file1.exists()) {
                 file1.mkdirs();

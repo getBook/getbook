@@ -198,7 +198,7 @@ public class MainActivity extends BaseActivity implements Toolbar.OnMenuItemClic
                 return;
             }
             LoginAsync loginAsync = new LoginAsync(getApplicationContext(), user.getSno(), password);
-            loginAsync.execute();
+            loginAsync.executeOnExecutor(THREAD_POOL_EXECUTOR);
             loginAsync.setCallback(new LoginAction.CallBack() {
                 @Override
                 public void onSuccess() {

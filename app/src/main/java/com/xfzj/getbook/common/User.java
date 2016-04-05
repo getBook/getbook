@@ -1,5 +1,7 @@
 package com.xfzj.getbook.common;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import cn.bmob.v3.BmobUser;
@@ -110,7 +112,7 @@ public class User extends BmobUser {
         }
         if (o instanceof User) {
             User oo = (User) o;
-            if (this.sno.equals(oo.getSno())) {
+            if (!TextUtils.isEmpty(sno)&&this.sno.equals(oo.getSno())) {
                 return true;
             }
         }

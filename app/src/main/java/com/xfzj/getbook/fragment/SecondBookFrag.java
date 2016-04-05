@@ -24,7 +24,6 @@ import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.utils.AppAnalytics;
-import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.SecondBookInfoView;
 
 import java.util.ArrayList;
@@ -130,9 +129,6 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
             saleAdapter.clear();
         } else {
             loadMoreView.setLoadMoreFinish();
-            if (null != lists && lists.size() == 0) {
-                MyToast.show(getActivity(), getActivity().getString(R.string.end));
-            }
         }
         if (null == lists || lists.size() == 0) {
             if (skip == 0) {

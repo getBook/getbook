@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.BaseApplication;
@@ -44,7 +43,6 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
     private RecyclerView loadMoreView;
     private ShopGroupAdapter shopGroupAdapter;
     private List<Bill> list = new ArrayList<>();
-    private ImageView iv;
     private int mYDown;
     private int mLastY;
 
@@ -77,8 +75,6 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
 
         View view = inflater.inflate(R.layout.fragment_payinfo, container,false);
         loadMoreView = (RecyclerView) view.findViewById(R.id.loadMoreView);
-        iv = (ImageView) view.findViewById(R.id.iv);
-        iv.setOnClickListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         loadMoreView.setLayoutManager(layoutManager);
@@ -116,7 +112,6 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
 
     private void queryBill(String startTime, String endTime) {
         loadMoreView.setVisibility(View.VISIBLE);
-        iv.setVisibility(View.GONE);
         GetBillAsync getBillAsync = new GetBillAsync(getActivity());
         getBillAsync.execute(param, startTime, endTime);
         getBillAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<Bill>>() {
@@ -131,7 +126,6 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
             public void onFail(String s) {
 //                loadMoreView.setRefreshFinish();
                 loadMoreView.setVisibility(View.GONE);
-                iv.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -142,32 +136,38 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
     @Override
     public void onClick(View v) {
         if (R.id.iv == v.getId()) {
-            AppAnalytics.onEvent(getActivity(), AppAnalytics.C_DWCY);
-            BaseApplication baseApplication = (BaseApplication) getActivity().getApplicationContext();
-            if (null != baseApplication && null != baseApplication.getUser()) {
-                String sno = baseApplication.getUser().getSno();
-                if (!TextUtils.isEmpty(sno)) {
-                    sno = sno.substring(0, 4);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    Date date = new Date(System.currentTimeMillis());
-                    final Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
+           
+        
 
-                    int year = calendar.get(Calendar.YEAR) - Integer.valueOf(sno);
-                    final String startYear = sno;
-                    builder.setMessage(getActivity().getString(R.string.see_pay_info, year + "")).setPositiveButton(getActivity().getString(R.string.start_pay_info), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            queryBill(Integer.valueOf(startYear) + "-1-1", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+        }
+    }
 
-                        }
-                    }).setNegativeButton(getActivity().getString(R.string.no), null).create().show();
-                }
+    public void onDwcyClick() {
+        BaseApplication baseApplication = (BaseApplication) getActivity().getApplicationContext();
+        if (null != baseApplication && null != baseApplication.getUser()) {
+            String sno = baseApplication.getUser().getSno();
+            if (!TextUtils.isEmpty(sno)) {
+                sno = sno.substring(0, 4);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                Date date = new Date(System.currentTimeMillis());
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
 
+                int year = calendar.get(Calendar.YEAR) - Integer.valueOf(sno);
+                final String startYear = sno;
+                builder.setMessage(getActivity().getString(R.string.see_pay_info, year + "")).setPositiveButton(getActivity().getString(R.string.start_pay_info), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        queryBill(Integer.valueOf(startYear) + "-1-1", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+
+                    }
+                }).setNegativeButton(getActivity().getString(R.string.no), null).create().show();
             }
 
         }
     }
+    
+    
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
 

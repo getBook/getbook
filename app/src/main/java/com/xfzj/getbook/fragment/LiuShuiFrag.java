@@ -184,6 +184,14 @@ public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeL
             DatePickerView datePickerView = new DatePickerView(getActivity());
             getCurrentTime();
             datePickerView.initTime(startTime, endTime);
+            int itemIndex = pager.getCurrentItem();
+            if (itemIndex == 0) {
+                datePickerView.setDwcyVisiblity(View.GONE);
+                datePickerView.setIvTodayVisiblity(View.VISIBLE);
+            }else{
+                datePickerView.setDwcyVisiblity(View.VISIBLE);
+                datePickerView.setIvTodayVisiblity(View.GONE);
+            }
             int margin = (int) MyUtils.dp2px(getActivity(), 15f);
             builder.setView(datePickerView, margin, margin, margin, margin);
             final AlertDialog dialog = builder.create();
@@ -204,6 +212,18 @@ public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeL
                         shopGroupFrag.query(startTime, endTime);
                     } else if (index == 2) {
                         dealTypeFrag.query(startTime, endTime);
+                    }
+                }
+            });
+            datePickerView.setOnDwcyClickListener(new DatePickerView.onDwcyClickListener() {
+                @Override
+                public void onDwcyClick() {
+                    dialog.dismiss();
+                    int itemIndex = pager.getCurrentItem();
+                    if (itemIndex == 1) {
+                        shopGroupFrag.onDwcyClick();
+                    }else if (itemIndex == 2) {
+                        dealTypeFrag.onDwcyClick();
                     }
                 }
             });

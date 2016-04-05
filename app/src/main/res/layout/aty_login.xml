@@ -38,9 +38,9 @@
                 android:layout_marginTop="15dp"
                 android:hint="@string/account"
                 android:textColorHint="@color/white"
-                android:inputType="text"
+                android:inputType="number"
                 android:padding="5dp"
-                android:text="20121314024"
+                tools:text="20121314024"
                 android:textColor="@color/white" />
 
 
@@ -53,7 +53,7 @@
                 android:textColorHint="@color/white"
                 android:inputType="numberPassword"
                 android:padding="5dp"
-                android:text="1064012456"
+                tools:text="1064012456"
                 android:textColor="@color/white" />
 
             <Button

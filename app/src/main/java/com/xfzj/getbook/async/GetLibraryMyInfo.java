@@ -19,6 +19,11 @@ public class GetLibraryMyInfo extends BaseGetLibraryInfoAsyc<LibraryUserInfo> {
     }
 
     @Override
+    protected boolean needCookie() {
+        return true;
+    }
+
+    @Override
     protected LibraryUserInfo parse(String[] params, String result) {
         LibraryInfo libraryInfo = SharedPreferencesUtils.getLibraryUserInfo(context);
         if (!TextUtils.isEmpty(result) && result.contains(libraryInfo.getAccount())) {

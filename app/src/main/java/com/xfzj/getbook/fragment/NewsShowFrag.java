@@ -18,7 +18,6 @@ import com.xfzj.getbook.common.News;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
-import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.NewsShowView;
 
 import java.io.Serializable;
@@ -126,8 +125,6 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
             if (isRefresh) {
                 loadMoreView.setVisibility(View.GONE);
                 llError.setVisibility(View.VISIBLE);
-            } else {
-                MyToast.show(getActivity(), getActivity().getString(R.string.end));
             }
         } else {
             loadMoreView.setVisibility(View.VISIBLE);

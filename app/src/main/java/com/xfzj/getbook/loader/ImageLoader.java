@@ -329,6 +329,7 @@ public class ImageLoader {
         if (mDiskLruCache == null) {
             return null;
         }
+        MyLog.print("loadBitmapFromLocal",url);
         Bitmap bitmap;
         String key = hashKeyFormUrl(url);
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -339,6 +340,7 @@ public class ImageLoader {
         options.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeFile(url, options);
         addBitmapToMemoryCache(key, bitmap);
+        
         return bitmap;
     }
 

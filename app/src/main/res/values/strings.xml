@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">盖簿</string>
+    <string name="app_name">盖饭</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -109,7 +109,6 @@
     <string name="has_download">已下载过</string>
     <string name="confirm_delete">确定要删除%1$s吗?</string>
     <string name="no_download">您还未下载过任何文件...</string>
-    <string name="end">到头了~</string>
     <string name="min_max_money">单笔金额最小0.01元，最大100元</string>
     <string name="pwd">密码</string>
     <string name="money">金额</string>
@@ -172,4 +171,5 @@
     <string name="sms_success">短信发送成功</string>
     <string name="cofirm_to_exit_edit">确定退出编辑吗？</string>
     <string name="sethuaname">起个昵称吧(暂时不可更改)</string>
+    <string name="get_bookinfo_nothing">未获取到书本信息，请重新扫描</string>
 </resources>

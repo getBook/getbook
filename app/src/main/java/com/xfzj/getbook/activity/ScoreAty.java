@@ -53,7 +53,7 @@ public class ScoreAty extends AppActivity implements View.OnClickListener, BaseA
     private void doQuery() {
         scoreQueryAsync = new ScoreQueryAsync(ScoreAty.this);
         scoreQueryAsync.setOnTaskListener(this);
-        scoreQueryAsync.execute();
+        scoreQueryAsync.executeOnExecutor(THREAD_POOL_EXECUTOR);
 
     }
 

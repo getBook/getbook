@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.GetSubsidyTrjnAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.SubsidyTrjn;
@@ -77,7 +78,7 @@ public class BuZhuFrag extends BaseFragment implements LoadMoreView.RefreshListe
         loadMoreView.setRefreshing();
     
         GetSubsidyTrjnAsync getSubsidyTrjnAsync = new GetSubsidyTrjnAsync(getActivity());
-        getSubsidyTrjnAsync.execute(String.valueOf(page));
+        getSubsidyTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), String.valueOf(page));
         getSubsidyTrjnAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<SubsidyTrjn>>() {
             @Override
             public void onSuccess(List<SubsidyTrjn> subsidyTrjns) {
@@ -101,7 +102,7 @@ public class BuZhuFrag extends BaseFragment implements LoadMoreView.RefreshListe
     public void onLoadMore() {
         page++;
         GetSubsidyTrjnAsync getSubsidyTrjnAsync = new GetSubsidyTrjnAsync(getActivity());
-        getSubsidyTrjnAsync.execute(String.valueOf(page));
+        getSubsidyTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),String.valueOf(page));
         getSubsidyTrjnAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<SubsidyTrjn>>() {
             @Override
             public void onSuccess(List<SubsidyTrjn> subsidyTrjns) {

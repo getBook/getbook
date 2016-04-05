@@ -68,7 +68,7 @@ public class BillAty extends AppActivity implements UcardAsyncTask.OnUcardTaskLi
 
     private void query() {
         GetBillAsync getBillAsync = new GetBillAsync(BillAty.this);
-        getBillAsync.execute(startTime, endTime);
+        getBillAsync.executeOnExecutor(THREAD_POOL_EXECUTOR,startTime, endTime);
         getBillAsync.setOnUcardTaskListener(this);
     }
 

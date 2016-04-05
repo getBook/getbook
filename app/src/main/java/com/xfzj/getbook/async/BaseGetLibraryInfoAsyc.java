@@ -32,7 +32,7 @@ public abstract class BaseGetLibraryInfoAsyc<T> extends BaseAsyncTask<String, Vo
                 return null;
             }
             cookie = SharedPreferencesUtils.getLibraryCookie(context);
-            if (TextUtils.isEmpty(cookie)) {
+            if (needCookie()&&TextUtils.isEmpty(cookie)) {
                 return null;
             }
             libraryHttpImp = new LibraryHttpImp();
@@ -46,6 +46,9 @@ public abstract class BaseGetLibraryInfoAsyc<T> extends BaseAsyncTask<String, Vo
         }
         return null;
     }
+
+    protected abstract boolean needCookie();
+
     protected abstract T parse(String[] params,String result);
 
     @Override

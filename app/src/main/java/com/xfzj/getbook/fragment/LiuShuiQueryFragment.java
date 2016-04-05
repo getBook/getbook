@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.GetTrjnAsync;
 import com.xfzj.getbook.async.GetTrjnCountAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
@@ -114,7 +115,7 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
         page = 1;
         loadMoreView.setRefreshing();
         GetTrjnAsync getTrjnAsync = new GetTrjnAsync(getActivity());
-        getTrjnAsync.execute(String.valueOf(page), startTime, endTime);
+        getTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), String.valueOf(page), startTime, endTime);
         getTrjnAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<HistoryTrjn>>() {
             @Override
             public void onSuccess(List<HistoryTrjn> historyTrjns) {
@@ -136,7 +137,7 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
     public void onLoadMore() {
         page++;
         GetTrjnAsync getTrjnAsync = new GetTrjnAsync(getActivity());
-        getTrjnAsync.execute(String.valueOf(page), startTime, endTime);
+        getTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),String.valueOf(page), startTime, endTime);
         getTrjnAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<HistoryTrjn>>() {
             @Override
             public void onSuccess(List<com.xfzj.getbook.common.HistoryTrjn> historyTrjns) {
@@ -172,7 +173,7 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
         loadMoreView.setVisibility(View.VISIBLE);
         onRefresh();
         GetTrjnCountAsync getTrjnCountAsync = new GetTrjnCountAsync(getActivity());
-        getTrjnCountAsync.execute(startTime, endTime);
+        getTrjnCountAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),startTime, endTime);
         getTrjnCountAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<Integer>() {
             @Override
             public void onSuccess(Integer integer) {

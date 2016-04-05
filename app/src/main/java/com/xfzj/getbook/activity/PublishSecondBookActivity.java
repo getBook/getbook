@@ -89,7 +89,7 @@ public class PublishSecondBookActivity extends PublishAty  {
                     String[] str = (String[]) lists.toArray(new String[lists.size()]);
                     BookInfo info = bif.getBookInfo();
                     if (null == info) {
-                        MyToast.show(getApplicationContext(), "未获取到书本信息，请重新扫描");
+                        MyToast.show(getApplicationContext(), getString(R.string.get_bookinfo_nothing));
                         return;
                     }
 

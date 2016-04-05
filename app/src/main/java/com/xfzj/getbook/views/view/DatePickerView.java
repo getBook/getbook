@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
 
 import java.util.Calendar;
@@ -24,13 +25,13 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
 
     private Context context;
     private TextView tvStart, tvEnd;
-    private ImageView ivQuery, ivToday;
+    private ImageView ivQuery, ivToday,ivDwcy;
     private Calendar calendar;
     private String startTime, endTime;
     private int[] start = new int[3];
     private int[] end = new int[3];
     private OnTimeGetListener onTimeGetListener;
-
+    private onDwcyClickListener onDwcyClickListener;
     public DatePickerView(Context context) {
         this(context, null);
     }
@@ -61,10 +62,12 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
         tvEnd = (TextView) view.findViewById(R.id.tvEnd);
         ivQuery = (ImageView) view.findViewById(R.id.ivQuery);
         ivToday = (ImageView) view.findViewById(R.id.ivToday);
+        ivDwcy=(ImageView) view.findViewById(R.id.ivDwcy);
         tvStart.setOnClickListener(this);
         tvEnd.setOnClickListener(this);
         ivQuery.setOnClickListener(this);
         ivToday.setOnClickListener(this);
+        ivDwcy.setOnClickListener(this);
         addView(view);
         initTime();
     }
@@ -107,6 +110,9 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
         tvEnd.setText(endTime);
     }
 
+    public void setOnDwcyClickListener(DatePickerView.onDwcyClickListener onDwcyClickListener) {
+        this.onDwcyClickListener = onDwcyClickListener;
+    }
 
     @Override
     public void onClick(View v) {
@@ -141,10 +147,23 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
                     onTimeGetListener.getTime(getTodayTime(), getTodayTime());
                 }
                 break;
+            case R.id.ivDwcy:
+                AppAnalytics.onEvent(context, AppAnalytics.C_DWCY);
+                if (null != onDwcyClickListener) {
+                    onDwcyClickListener.onDwcyClick();
+                }
+                break;
 
         }
     }
 
+    public void setDwcyVisiblity(int visiblity) {
+        ivDwcy.setVisibility(visiblity);
+    }
+    public void setIvTodayVisiblity(int visiblity) {
+        ivToday.setVisibility(visiblity);
+    }
+    
     private void datePicker(final TextView tv, final int title, int year, int month, int day) {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
@@ -173,5 +192,8 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
 
     public interface OnTimeGetListener {
         void getTime(String startTime, String endTime);
+    }
+    public interface onDwcyClickListener{
+        void onDwcyClick();
     }
 }

@@ -74,7 +74,7 @@ public class Libraryaty extends AppActivity {
             return;
         }
         GetLibraryMyInfo getLibraryMyInfo = new GetLibraryMyInfo(Libraryaty.this);
-        getLibraryMyInfo.execute(BaseHttp.REDEINFO);
+        getLibraryMyInfo.executeOnExecutor(THREAD_POOL_EXECUTOR,BaseHttp.REDEINFO);
         getLibraryMyInfo.setOnTaskListener(new BaseAsyncTask.onTaskListener<LibraryUserInfo>() {
             @Override
             public void onSuccess(LibraryUserInfo libraryUserInfo) {
@@ -143,7 +143,7 @@ public class Libraryaty extends AppActivity {
                     InputMethodManagerUtils.hide(getApplicationContext(), btn);
                     LoginLibraryAsyc loginLibraryAsyc = new LoginLibraryAsyc(Libraryaty.this);
                     
-                    loginLibraryAsyc.execute(account, password, verfy, c.getCookie());
+                    loginLibraryAsyc.executeOnExecutor(THREAD_POOL_EXECUTOR,account, password, verfy, c.getCookie());
                     loginLibraryAsyc.setOnTaskListener(new BaseAsyncTask.onTaskListener<LibraryUserInfo>() {
                         @Override
                         public void onSuccess(LibraryUserInfo libraryUserInfo) {
@@ -185,7 +185,7 @@ public class Libraryaty extends AppActivity {
 
     private void getCapure(final ImageView iv) {
         GetLibraryCaptureAsync getLibraryCaptureAsync = new GetLibraryCaptureAsync(getApplicationContext());
-        getLibraryCaptureAsync.execute();
+        getLibraryCaptureAsync.executeOnExecutor(THREAD_POOL_EXECUTOR);
         getLibraryCaptureAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<GetLibraryCaptureAsync.Capture>() {
             @Override
             public void onSuccess(GetLibraryCaptureAsync.Capture s) {
