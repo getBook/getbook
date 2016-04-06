@@ -1,14 +1,10 @@
 package com.xfzj.getbook.views.gridview;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-
-import com.xfzj.getbook.R;
-import com.xfzj.getbook.loader.ImageLoader;
 
 import java.util.List;
 
@@ -22,13 +18,11 @@ public abstract class BaseGridViewAdapter<T> extends BaseAdapter implements AbsL
     private static final int LAST = 0;
     private static final int NORMAL = 1;
     protected boolean IsGridViewIdle;
-    protected ImageLoader imageLoader;
 
     // Constructor
     public BaseGridViewAdapter(Context c, List<T> paths) {
         mContext = c;
         this.paths = paths;
-        imageLoader = ImageLoader.build(mContext, BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.image_default));
     }
     @Override
     public int getCount() {

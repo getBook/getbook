@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.PicPath;
-import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
 import com.xfzj.getbook.views.view.NetImageView;
 
@@ -56,7 +55,7 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
         for (int i = 0; i < this.paths.size(); i++) {
             NetImageView iv = new NetImageView(getApplicationContext());
             
-            iv.setBmobImage(this.paths.get(i).getPath(), BitmapFactory.decodeResource(getResources(), R.mipmap.image_default), MyUtils.getScreenWidth(getApplicationContext()),MyUtils.getScreenWidth(getApplicationContext()));
+            iv.setBmobImageWith(this.paths.get(i).getPath(), BitmapFactory.decodeResource(getResources(), R.mipmap.image_default));
             ivs.add(iv);
         }
     }

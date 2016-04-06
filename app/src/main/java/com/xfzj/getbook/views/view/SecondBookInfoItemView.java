@@ -14,12 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.SecondBook;
-import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.utils.MyUtils;
 
 import java.text.ParseException;
@@ -37,7 +35,6 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     private onClickListener  onSecondBookInfoClick;
     private onLongClickListener onSecondBookInfoLongClick;
     private SecondBook secondBook;
-    private ImageLoader imageLoader;
     private ImageView ivDate, ivCount, ivNewOld,ivYxj;
     private LinearLayout llitemView;
     
@@ -69,7 +66,6 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
 
     private void init(Context context) {
         this.context = context;
-        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
         View view = LayoutInflater.from(context).inflate(R.layout.secondbookinfo_item, null);
         tvBookName = (TextView) view.findViewById(R.id.tvBookName);
         tvIsbn = (TextView) view.findViewById(R.id.tvIsbn);
@@ -138,7 +134,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
             return;
         }
         tvIsbn.setText(bookInfo.getIsbn());
-        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), 0, 0);
+        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
         String[] a = bookInfo.getAuthor();
         if (null != a && a.length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -228,7 +224,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     }
 
     public void restartOnSale(SecondBook secondBook) {
-        ivBook.setBmobImage(secondBook.getBookInfo().getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
+        ivBook.setBmobImageWith(secondBook.getBookInfo().getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
         int color1 = context.getResources().getColor(R.color.accent);
         int color2 = context.getResources().getColor(R.color.primary_text);
         tvBookName.setTextColor(color2);

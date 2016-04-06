@@ -33,7 +33,7 @@ public abstract class AppActivity extends AppCompatActivity {
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final long KEEP_ALIVE = 10L;
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
-        private final AtomicInteger mCount = new AtomicInteger(1);
+        private final AtomicInteger mCount = new AtomicInteger(5);
 
         public Thread newThread(Runnable r) {
             return new Thread(r, "ImageLoader#" + mCount.getAndIncrement());

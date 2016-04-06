@@ -26,6 +26,9 @@ dependencies {
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile files('libs/jsoup-1.8.1.jar')
     compile files('libs/jsoup-1.8.1-javadoc.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:support-v4:19.1.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'

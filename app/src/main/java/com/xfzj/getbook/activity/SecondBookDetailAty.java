@@ -14,13 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.Sms;
@@ -72,7 +70,6 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
 
     private BookInfo bookInfo;
 
-    private ImageLoader imageLoader;
 
     @Override
     protected void onSetContentView() {
@@ -91,7 +88,6 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
         }
         
         bookInfo = secondBook.getBookInfo();
-        imageLoader = ((BaseApplication) getApplicationContext()).getImageLoader();
 
         simpleUserView.update(user);
         String tips = secondBook.getTips();
@@ -104,7 +100,7 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
         }
        
         ibSend.setOnClickListener(this);
-        bookInfoView.updateBookInfo(bookInfo, imageLoader);
+        bookInfoView.updateBookInfoUrl(bookInfo);
         bookInfoView.setOriginPriceMiddleLine();
         setBaseInfo();
         setSecondBookPics();
@@ -164,7 +160,8 @@ public class SecondBookDetailAty extends AppActivity implements View.OnClickList
             ivs[i].setAdjustViewBounds(true);
             ivs[i].setScaleType(ImageView.ScaleType.FIT_XY);
 
-            ivs[i].setBmobImage(pics[i], bp, width, width);
+            ivs[i].setBmobthumbnail
+                    (pics[i], bp);
             final int finalI = i;
             ivs[i].setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -155,7 +155,9 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
     }
     
     public void setHeader() {
-
+        if (null == getActivity()) {
+            return;
+        }
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header)) {
             iv.setBmobImage(header, BitmapFactory.decodeResource(getResources(), R.mipmap.default_user));

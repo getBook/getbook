@@ -7,11 +7,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.loader.ImageLoader;
 
 /**
  * Created by zj on 2016/2/29.
@@ -23,7 +21,6 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
     private SecondBook secondBook;
     private SimpleUserView simpleUserView;
     private SecondBookInfoItemView itemView;
-    private ImageLoader imageLoader;
 
     public <T> void setOnUserInfoClick(onClickListener<T> onUserInfoClick) {
         this.onUserInfoClick = onUserInfoClick;
@@ -53,7 +50,6 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 
     private void init(Context context) {
         this.context = context;
-        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
         View view = LayoutInflater.from(context).inflate(R.layout.secondbook_info, null);
         simpleUserView = (SimpleUserView) view.findViewById(R.id.simpleUserView);
         llUserInfo = (RelativeLayout) view.findViewById(R.id.llUserInfo);

@@ -50,7 +50,7 @@ public class GetHeaderSerVice extends Service implements BaseAsyncTask.onTaskLis
             userBmobQuery.findObjects(getApplicationContext(), new FindListener<User>() {
                 @Override
                 public void onSuccess(List<User> list) {
-                    User user = list.get(0);
+                     user = list.get(0);
                     String header = user.getHeader();
                     String localHeader = SharedPreferencesUtils.getUserHeader(getApplicationContext());
                     if (TextUtils.isEmpty(header) || !header.endsWith(".jpg")) {
@@ -73,8 +73,6 @@ public class GetHeaderSerVice extends Service implements BaseAsyncTask.onTaskLis
 
     private void saveHeader(String header) {
         SharedPreferencesUtils.saveUserHeader(getApplicationContext(), header);
-        sendBroadcast(new Intent("com.xfzj.getbook.receiveHeader"));
-        
     }
 
     @Override

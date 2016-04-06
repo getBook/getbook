@@ -7,10 +7,10 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.xfzj.getbook.BaseApplication;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
-import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.MyUtils;
 
@@ -33,7 +33,6 @@ public class NetImageView extends ImageView {
     private Context context;
     private File cachePath;
     private String isbn;
-    private ImageLoader imageLoader;
     private static final int CPU_COUNT = Runtime.getRuntime()
             .availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -62,13 +61,11 @@ public class NetImageView extends ImageView {
     public NetImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
     }
 
     public NetImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
-        imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
     }
 
     public String getUrl() {
@@ -144,16 +141,39 @@ public class NetImageView extends ImageView {
         return cachePath.getPath();
     }
 
-    public void setBmobImage(final String name, final Bitmap defaultImage, int width,int height) {
+    public void setBmobImage(final String name, final Bitmap defaultImage) {
         if (TextUtils.isEmpty(name)) {
             setImageBitmap(defaultImage);
             return;
         }
         setImageBitmap(defaultImage);
-        imageLoader.bindBitmap(name, NetImageView.this,width,height);
+        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.mipmap.error).into(NetImageView.this);
+    }
+    
+    
+    public void setBmobImageWith(final String name, final Bitmap defaultImage) {
+        if (TextUtils.isEmpty(name)) {
+            setImageBitmap(defaultImage);
+            return;
+        }
+        setImageBitmap(defaultImage);
+        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).into(NetImageView.this);
+    }
+    public void setBmobImageWith(final String name, final Bitmap defaultImage, int width, int height) {
+        if (TextUtils.isEmpty(name)) {
+            setImageBitmap(defaultImage);
+            return;
+        }
+        setImageBitmap(defaultImage);
+        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).override(width, height).placeholder(R.mipmap.placeholder).error(R.mipmap.error).into(NetImageView.this);
     }
 
-    public void setBmobImage(final String name, final Bitmap defaultImage) {
-        setBmobImage(name, defaultImage, 0, 0);
+    public void setBmobthumbnail(final String name, final Bitmap defaultImage) {
+        if (TextUtils.isEmpty(name)) {
+            setImageBitmap(defaultImage);
+            return;
+        }
+        setImageBitmap(defaultImage);
+        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).thumbnail(0.5f).into(NetImageView.this);
     }
 }

@@ -8,9 +8,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 
 /**
  * Created by zj on 2015/7/1.
@@ -39,8 +40,12 @@ public class CircleImageView extends NetImageView {
         if (getWidth() == 0 || getHeight() == 0) {
             return;
         }
-     
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        Bitmap bitmap=null;
+        try {
+             bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
+        } catch (Exception e) {
+            
+        }
         if (null == bitmap) {
             return;
         }

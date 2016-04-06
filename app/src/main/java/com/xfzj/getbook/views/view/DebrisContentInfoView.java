@@ -15,11 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Debris;
-import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.utils.MyUtils;
 
 import java.text.ParseException;
@@ -97,8 +95,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ImageLoader imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
-            ivPic.setBmobImage(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
+            ivPic.setBmobImageWith(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
         }
 
 
@@ -203,8 +200,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ImageLoader imageLoader = ((BaseApplication) context.getApplicationContext()).getImageLoader();
-            ivPic.setBmobImage(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
+            ivPic.setBmobImageWith(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
         }
         Resources res = context.getResources();
         int color1 = res.getColor(R.color.primary_text);

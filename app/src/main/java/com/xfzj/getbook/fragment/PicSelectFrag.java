@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Album;
 import com.xfzj.getbook.common.PicPath;
@@ -351,18 +352,16 @@ public class PicSelectFrag extends BaseFragment implements View.OnClickListener,
 
                 @Override
                 public void setData(final String s) {
-                    String tag = (String) iv.getTag();
-                    if (!s.equals(tag)) {
-                        iv.setTag(s);
-                        FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) iv.getLayoutParams();
-                        p.width = dimen;
-                        p.height = dimen;
-                        p.gravity = Gravity.CENTER;
-                        iv.setLayoutParams(p);
-                        iv.setImageResource(R.mipmap.image_default);
-                    }
+
+                    FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) iv.getLayoutParams();
+                    p.width = dimen;
+                    p.height = dimen;
+                    p.gravity = Gravity.CENTER;
+                    iv.setLayoutParams(p);
+                    iv.setImageResource(R.mipmap.image_default);
                     if (!IsGridViewIdle) {
-                        imageLoader.bindBitmap(s, gv, iv, 85, 85);
+//                        imageLoader.bindBitmap(s, gv, iv, 85, 85);
+                        Glide.with(mContext).load(s).placeholder(R.mipmap.placeholder).error(R.mipmap.error).override(dimen, dimen).into(iv);
                     }
 
                     cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -388,7 +387,7 @@ public class PicSelectFrag extends BaseFragment implements View.OnClickListener,
                                 }
                             }
                             setText();
-                            
+
                         }
                     });
                     if (path.indexOf(s) != -1) {

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.utils.MyUtils;
@@ -89,15 +90,16 @@ public class PicAddAdapter extends BaseGridViewAdapter {
             imageView.setBackgroundResource(0);
             imageView.setImageResource(lastSrc);
         } else {
-            String tag = (String) imageView.getTag();
+//            String tag = (String) imageView.getTag();
             String uri = ((PicPath) getItem(position)).getPath();
 
-            if (!uri.equals(tag)) {
-                imageView.setImageResource(defaultSrc);
-            }
+//            if (!uri.equals(tag)) {
+//                imageView.setImageResource(defaultSrc);
+//            }
             if (!IsGridViewIdle) {
-                imageView.setTag(uri);
-                imageLoader.bindBitmap(uri, gv, imageView, dimen, dimen);
+//                imageView.setTag(uri);
+//                imageLoader.bindBitmap(uri, gv, imageView, dimen, dimen);
+                Glide.with(mContext).load(uri).placeholder(R.mipmap.placeholder).error(R.mipmap.error).override(dimen, dimen).into(imageView);
             }
         }
         return imageView;

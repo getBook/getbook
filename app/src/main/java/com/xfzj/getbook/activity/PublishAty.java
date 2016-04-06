@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -271,7 +272,7 @@ public abstract class PublishAty extends AppActivity implements View.OnClickList
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == IMAGE_FROM_CAPTURE) {
+        if (requestCode == IMAGE_FROM_CAPTURE&&resultCode== Activity.RESULT_OK) {
             if (picAddView.getPaths().size() == OPTIONS) {
                 picAddView.delete(0);
             }

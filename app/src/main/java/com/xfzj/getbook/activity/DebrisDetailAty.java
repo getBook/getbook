@@ -14,12 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.loader.ImageLoader;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.Sms;
@@ -67,7 +65,6 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
 
     private User user;
 
-    private ImageLoader imageLoader;
 
     @Override
     protected void onSetContentView() {
@@ -88,7 +85,6 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
             finish();
             return;
         }
-        imageLoader = ((BaseApplication) getApplicationContext()).getImageLoader();
 
         simpleUserView.update(user);
         String tips = debris.getTips();
@@ -160,7 +156,7 @@ public class DebrisDetailAty extends AppActivity implements View.OnClickListener
             ivs[i].setAdjustViewBounds(true);
             ivs[i].setScaleType(ImageView.ScaleType.FIT_XY);
 
-            ivs[i].setBmobImage(pics[i], bp,width, width);
+            ivs[i].setBmobthumbnail(pics[i], bp);
             final int finalI = i;
             ivs[i].setOnClickListener(new View.OnClickListener() {
                 @Override

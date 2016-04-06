@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
-import com.xfzj.getbook.loader.ImageLoader;
 
 /**
  * Created by zj on 2016/2/24.
@@ -96,11 +95,11 @@ public class BookInfoView extends LinearLayout {
      *
      * @return
      */
-    public void updateBookInfo(BookInfo bookInfo, ImageLoader imageLoader) {
+    public void updateBookInfoUrl(BookInfo bookInfo) {
         if (null == bookInfo) {
             return;
         }
-        iv.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book), 0,0);
+        iv.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
         if (!TextUtils.isEmpty(bookInfo.getBookName())) {
             bookName.setText(bookInfo.getBookName());
         }
