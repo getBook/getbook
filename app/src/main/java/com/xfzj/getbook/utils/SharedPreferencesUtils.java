@@ -1,11 +1,13 @@
 package com.xfzj.getbook.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.xfzj.getbook.common.LibraryInfo;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.views.view.NavigationHeaderView;
 
 import java.lang.reflect.Field;
 
@@ -67,7 +69,7 @@ public class SharedPreferencesUtils {
     }
 
 
-    public static void saveLibraryUserInfo(Context context, LibraryInfo libraryInfo) {
+    public static void saveLibraryLoginInfo(Context context, LibraryInfo libraryInfo) {
         if (null == libraryInfo) {
             return;
         }
@@ -88,7 +90,7 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
-    public static LibraryInfo getLibraryUserInfo(Context context) {
+    public static LibraryInfo getLibraryLoginInfo(Context context) {
         SharedPreferences sp = context.getSharedPreferences(LIBRARYUSERINFOPREFERENCES, Context.MODE_PRIVATE);
         return new LibraryInfo(sp.getString(ACCOUNT, ""), sp.getString(USERPASSWORD, ""), sp.getString(COOKIE, ""));
 
@@ -141,6 +143,8 @@ public class SharedPreferencesUtils {
             editor.putString(HUANAME, huaName);
         }
         editor.apply();
+        context.sendBroadcast(new Intent(NavigationHeaderView.ACTION_RECEIVE_HUANAME));
+        
     }
 
     public static String getHuaName(Context context) {

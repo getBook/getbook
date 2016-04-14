@@ -23,21 +23,7 @@ public class ScoreQueryAsync extends UcardAsyncTask<Void, Void, List<List<Score>
         setProgressDialog(null, context.getString(R.string.querying));
     }
 
-    @Override
-    protected void onPost(List<List<Score>> score) {
-        if (null != score && score.size() > 0) {
-            if (null != onTaskListener) {
-                onTaskListener.onSuccess(score);
-            }
-
-        } else {
-            if (null != onTaskListener) {
-                onTaskListener.onFail();
-            }
-        }
-
-
-    }
+ 
 
     @Override
     protected List<List<Score>> excute(Void[] params) {

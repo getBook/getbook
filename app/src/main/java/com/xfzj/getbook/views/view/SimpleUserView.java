@@ -54,7 +54,7 @@ public class SimpleUserView extends LinearLayout {
         if (null == user) {
             return;
         }
-        ivHeader.setBmobImage(user.getHeader(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_user));
+        ivHeader.setBmobFileImage(user.getBmobHeader());
         tvName.setText(user.getHuaName());
         if (user.isGender()) {
             ivSex.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.male));

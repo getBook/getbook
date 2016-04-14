@@ -1,9 +1,11 @@
 package com.xfzj.getbook.common;
 
+import cn.bmob.v3.BmobObject;
+
 /**
  * Created by zj on 2016/3/28.
  */
-public class LibraryInfo {
+public class LibraryInfo extends BmobObject {
     private String account;
     private String password;
     private String cookie;

@@ -17,11 +17,7 @@ import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
-import com.xfzj.getbook.activity.CardAty;
-import com.xfzj.getbook.activity.Libraryaty;
-import com.xfzj.getbook.activity.MySaleAty;
-import com.xfzj.getbook.activity.NewsAty;
-import com.xfzj.getbook.activity.ScoreAty;
+import com.xfzj.getbook.activity.BaseMySaleFrag;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
@@ -121,34 +117,34 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.llSecondBook:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_SB);
-                Intent intent = new Intent(getActivity(), MySaleAty.class);
-                intent.putExtra(MySaleAty.FROM, getString(R.string.secondbook));
-                startActivityForResult(intent, MySaleAty.RESULT);
+                Intent intent = new Intent(getActivity(), BaseMySaleFrag.class);
+                intent.putExtra(BaseMySaleFrag.FROM, getString(R.string.secondbook));
+                startActivityForResult(intent, BaseMySaleFrag.RESULT);
                 break;
             case R.id.llDebris:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_DB);
-                Intent intent1 = new Intent(getActivity(), MySaleAty.class);
-                intent1.putExtra(MySaleAty.FROM, getString(R.string.drugstore));
-                startActivityForResult(intent1, MySaleAty.RESULT);
+                Intent intent1 = new Intent(getActivity(), BaseMySaleFrag.class);
+                intent1.putExtra(BaseMySaleFrag.FROM, getString(R.string.drugstore));
+                startActivityForResult(intent1, BaseMySaleFrag.RESULT);
                 break;
             case R.id.llquerygrades:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_S);
-                Intent intent4 = new Intent(getActivity(), ScoreAty.class);
+                Intent intent4 = new Intent(getActivity(), ScoreFrag.class);
                 startActivity(intent4);
                 break;
             case R.id.llyikatong:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_C);
-                Intent intent3 = new Intent(getActivity(), CardAty.class);
+                Intent intent3 = new Intent(getActivity(), CardFrag.class);
                 startActivity(intent3);
                 break;
             case R.id.lllibrary:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_L);
-                Intent intent6 = new Intent(getActivity(), Libraryaty.class);
+                Intent intent6 = new Intent(getActivity(), LibraryFrag.class);
                 startActivity(intent6);
                 break;
             case R.id.llSchoolAnnounce:
                 AppAnalytics.onEvent(getActivity(), AppAnalytics.C_M_SA);
-                Intent intent5 = new Intent(getActivity(), NewsAty.class);
+                Intent intent5 = new Intent(getActivity(), NewsFrag.class);
                 startActivity(intent5);
                 break;
         }
@@ -160,7 +156,7 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
         }
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header)) {
-            iv.setBmobImage(header, BitmapFactory.decodeResource(getResources(), R.mipmap.default_user));
+            iv.setBmobImage(header);
         } else {
             Intent intent = new Intent(getActivity(), GetHeaderSerVice.class);
             getActivity().startService(intent);
@@ -187,7 +183,7 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MySaleAty.RESULT) {
+        if (requestCode == BaseMySaleFrag.RESULT) {
             queryCount();
         }
 
@@ -239,7 +235,7 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
 //        public void onReceive(Context context, Intent intent) {
 //            MyLog.print("onreceive","kaishi receive");
 //            if (intent.getAction().equals("com.xfzj.getbook.receiveHeader")) {
-//                setHeader();
+//                setBmobHeader();
 //                MyLog.print("onreceive","onreceive");
 //            }
 //        }

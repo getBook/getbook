@@ -2,7 +2,6 @@ package com.xfzj.getbook.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,8 +15,9 @@ import android.widget.TextView;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.PicPath;
+import com.xfzj.getbook.views.view.BasePhotoView;
 import com.xfzj.getbook.views.view.BaseToolBar;
-import com.xfzj.getbook.views.view.NetImageView;
+import com.xfzj.getbook.views.view.BaseViewPager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
     BaseToolBar baseToolBar;
 
     @Bind(R.id.viewPager)
-    ViewPager viewPager;
+    BaseViewPager viewPager;
 
     private TextView tvMiddle, tvDelete;
 
@@ -53,9 +53,9 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
         this.paths = paths;
         ivs = new ArrayList<>();
         for (int i = 0; i < this.paths.size(); i++) {
-            NetImageView iv = new NetImageView(getApplicationContext());
+            BasePhotoView iv = new BasePhotoView(getApplicationContext());
             
-            iv.setBmobImageWith(this.paths.get(i).getPath(), BitmapFactory.decodeResource(getResources(), R.mipmap.image_default));
+            iv.setBmobImage(this.paths.get(i).getPath());
             ivs.add(iv);
         }
     }
@@ -70,31 +70,29 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
         baseToolBar.initToolbar(this, "");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tvMiddle = baseToolBar.getTv3();
-       String from= getIntent().getStringExtra(FROM);
+        String from = getIntent().getStringExtra(FROM);
         if (from.equals(EDIT)) {
             tvDelete = baseToolBar.getTv2();
             tvDelete.setVisibility(View.VISIBLE);
             tvDelete.setBackgroundResource(R.drawable.delete_select);
             RelativeLayout.LayoutParams p = (RelativeLayout.LayoutParams) tvDelete.getLayoutParams();
-            p.height = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
-            p.width = (int)getResources().getDimension(R.dimen.abc_action_bar_default_height_material)/2;
+            p.height = (int) getResources().getDimension(R.dimen.abc_action_bar_default_height_material) / 2;
+            p.width = (int) getResources().getDimension(R.dimen.abc_action_bar_default_height_material) / 2;
             tvDelete.setLayoutParams(p);
             tvDelete.setOnClickListener(this);
-         
+
         }
 
         setPicPaths((List<PicPath>) getIntent().getSerializableExtra(PATH));
-        
+
         tvMiddle.setVisibility(View.VISIBLE);
         myAdapter = new MyAdapter();
         viewPager.setAdapter(myAdapter);
         viewPager.addOnPageChangeListener(this);
         setCurrentItem(getIntent().getIntExtra(INDEX, 0));
-      
+
 
     }
-
-
 
 
     private int getPathsSize() {
@@ -148,7 +146,7 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 paths.remove(index);
-                
+
                 ivs.remove(index);
                 myAdapter.notifyDataSetChanged();
                 if (getPathsSize() == 0) {

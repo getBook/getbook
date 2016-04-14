@@ -19,7 +19,7 @@ import org.jsoup.select.Elements;
 public  class LoginParse {
 
     public static LibraryUserInfo parse(Context context, String result, String account, String passwd, String cookie) {
-        SharedPreferencesUtils.saveLibraryUserInfo(context, new LibraryInfo(account, passwd, cookie));
+        SharedPreferencesUtils.saveLibraryLoginInfo(context, new LibraryInfo(account, passwd, cookie));
         Document document = Jsoup.parse(result);
         Element e = document.getElementsByClass("mylib_msg").first();
         Element element = document.getElementById("mylib_info");

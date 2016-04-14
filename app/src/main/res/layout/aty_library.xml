@@ -7,11 +7,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.xfzj.getbook.views.view.BaseToolBar
-        android:id="@+id/baseToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -137,5 +132,27 @@
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="图书馆功能还未完善，因为自己这学期没有在图书馆借过书，所以没办法获得自己的借书信息，\n如果你希望app加入查看自己的借书信息，一键续借的功能，如果你最近在图书馆借过书，如果有超期的书更好，\n希望你可以帮助我完善app,谢谢！" />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:text="点击将你的学号和密码发给我"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnChange"
+            android:layout_width="wrap_content"
+            android:text="修改图书馆密码"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:text="退出登陆"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

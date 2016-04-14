@@ -24,6 +24,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.UploadAction;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.fragment.PicSelectFrag;
+import com.xfzj.getbook.utils.InputMethodManagerUtils;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.gridview.PicAddView;
@@ -162,6 +163,7 @@ public abstract class PublishAty extends AppActivity implements View.OnClickList
     }
 
     protected void openPicSelectFrag() {
+        InputMethodManagerUtils.hide(getApplicationContext(), picAddView);
         picSelectFram.setVisibility(View.VISIBLE);
         isFragView = true;
         tvSelect.setVisibility(View.VISIBLE);
@@ -202,7 +204,7 @@ public abstract class PublishAty extends AppActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-
+        InputMethodManagerUtils.hide(getApplicationContext(), v);
     }
 
     @Override

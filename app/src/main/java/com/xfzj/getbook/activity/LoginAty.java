@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.xfzj.getbook.GetHeaderSerVice;
 import com.xfzj.getbook.MainActivity;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.LoginAction;
@@ -135,7 +134,7 @@ public class LoginAty extends AppActivity {
                 AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_SUCCESS);
                 MyToast.show(getApplicationContext(), getString(R.string.login_success));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                startService(new Intent(getApplicationContext(), GetHeaderSerVice.class));
+//                startService(new Intent(getApplicationContext(), GetHeaderSerVice.class));
                 finish();
             }
 

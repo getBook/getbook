@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.bmob.v3.datatype.BmobFile;
+
 /**
  * Created by zj on 2016/3/6.
  */
@@ -90,12 +92,12 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             return;
         }
         this.debris = debris;
-        String[] str = debris.getPics();
-        if (null == str || TextUtils.isEmpty(str[0])) {
+        BmobFile file = debris.getFiles().get(0);
+        if (null == file) {
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobImageWith(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
+            ivPic.setBmobthumbnail(file,NetImageView.SMALL_WIDTH,NetImageView.SMALL_HEIGHT);
         }
 
 
@@ -195,12 +197,13 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
     }
 
     public void restartOnSale(Debris debris) {
-        String[] str = debris.getPics();
-        if (null == str || TextUtils.isEmpty(str[0])) {
+        BmobFile file = debris.getFiles().get(0);
+        
+        if (null == file) {
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobImageWith(str[0], BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default), i, i);
+            ivPic.setBmobthumbnail(file,NetImageView.SMALL_WIDTH,NetImageView.SMALL_HEIGHT);
         }
         Resources res = context.getResources();
         int color1 = res.getColor(R.color.primary_text);

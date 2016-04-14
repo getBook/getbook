@@ -1,8 +1,10 @@
 package com.xfzj.getbook.common;
 
 import java.util.Arrays;
+import java.util.List;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by zj on 2016/3/5.
@@ -16,6 +18,7 @@ public class Debris extends BmobObject {
 
     private String[] pics;
 
+    private List<BmobFile> files;
     private String discount;
 
     private String originPrice;
@@ -41,6 +44,14 @@ public class Debris extends BmobObject {
         this.count = count;
         this.newold = newold;
         this.tele = tele;
+    }
+
+    public List<BmobFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<BmobFile> files) {
+        this.files = files;
     }
 
     public void setUser(User user) {

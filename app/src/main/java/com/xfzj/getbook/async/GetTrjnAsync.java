@@ -58,20 +58,4 @@ public class GetTrjnAsync extends UcardAsyncTask<String, Void, List<HistoryTrjn>
         return null;
     }
 
-    @Override
-    protected void onPost(List<HistoryTrjn> historyTrjns) {
-        if (null == historyTrjns) {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onFail("");
-            }
-
-        } else {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onSuccess(historyTrjns);
-            }
-
-        }
-
-
-    }
 }

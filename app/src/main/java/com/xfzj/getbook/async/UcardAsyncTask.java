@@ -41,6 +41,21 @@ public abstract class UcardAsyncTask<K, V, T> extends BaseAsyncTask<K, V, T> {
         this.onUcardTaskListener = onUcardTaskListener;
     }
 
+    @Override
+    protected void onPost(T t) {
+        if (null == t) {
+            if (null != onUcardTaskListener) {
+                onUcardTaskListener.onFail("");
+            }
+
+        } else {
+            if (null != onUcardTaskListener) {
+                onUcardTaskListener.onSuccess(t);
+            }
+
+        }
+    }
+
     public interface OnUcardTaskListener<T>{
         void onSuccess(T t);
 

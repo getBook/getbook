@@ -23,23 +23,28 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':Zxing')
     //bmob-sdk ：Bmob的android sdk包
+
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile files('libs/jsoup-1.8.1.jar')
     compile files('libs/jsoup-1.8.1-javadoc.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.android.support:support-v4:19.1.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'cn.bmob.android:bmob-sdk:3.4.5'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.squareup.okio:okio:1.4.0'
+
+    compile('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
+        exclude module: 'support-v4'
+    }
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:design:22.2.1'
     compile files('libs/umeng-analytics-v5.6.7.jar')
+    compile 'com.android.support:palette-v7:23.2.1'
+    compile project(':ViewPagerIndicatorlibrary')
+    compile files('libs/BmobSDK_V3.4.6_0413.jar')
+    compile files('libs/org.apache.http.legacy.jar')
 }

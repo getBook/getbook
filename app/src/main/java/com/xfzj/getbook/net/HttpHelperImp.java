@@ -47,16 +47,24 @@ public class HttpHelperImp implements IHttpHelper {
             return bytes;
         }
     }
-    
-    private byte[] doConect(HttpURLConnection urlConnection, int requestType, Map<String, String> params) throws Exception {
 
+    @Override
+    public byte[] DoConnectionJson(String url, int requestType, String json) throws Exception {
+        return connect(getHttpURLConnection(new URL(url)), requestType, json.getBytes());
+    }
+
+    private byte[] doConect(HttpURLConnection urlConnection, int requestType, Map<String, String> params) throws Exception {
+        return connect(urlConnection, requestType, getParams(params));
+    }
+
+
+    public byte[] connect(HttpURLConnection urlConnection, int requestType,  byte[] b) throws Exception{
         if (requestType == IHttpHelper.METHOD_POST) {
-            if (null != params) {
+            if (null != b) {
                 urlConnection.setDoOutput(true);
-                byte[] bytes = getParams(params);
                 urlConnection.setRequestMethod("POST");
                 OutputStream ops = urlConnection.getOutputStream();
-                ops.write(bytes);
+                ops.write(b);
                 ops.flush();
                 ops.close();
             }
@@ -67,7 +75,7 @@ public class HttpHelperImp implements IHttpHelper {
         if (urlConnection.getResponseCode() == 200 || urlConnection.getResponseCode() == 302) {
             getCookie(urlConnection);
         }
-        
+
         if (urlConnection.getResponseCode() == 200) {
             InputStream ips = urlConnection.getInputStream();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -81,8 +89,8 @@ public class HttpHelperImp implements IHttpHelper {
             return bos.toByteArray();
         }
         return null;
+        
     }
-
     private void getCookie(HttpURLConnection urlConnection) {
         List<String> lists = urlConnection.getHeaderFields().get("Set-Cookie");
         if (null == lists) {

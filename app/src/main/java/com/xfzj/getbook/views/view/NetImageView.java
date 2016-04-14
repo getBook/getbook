@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
+import com.xfzj.getbook.async.GetBmobthumbnail;
+import com.xfzj.getbook.common.BmobThumbnail;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.MyUtils;
 
@@ -23,12 +25,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.bmob.v3.datatype.BmobFile;
+
 /**
  * Created by zj on 2016/2/24.
  */
 public class NetImageView extends ImageView {
-
-
+    public static final int SMALL_WIDTH=150;
+    public static final int SMALL_HEIGHT=267;
+    public static final int LARGE_WIDTH=300;
+    public static final int LARGE_HEIGHT=500;
     private String url;
     private Context context;
     private File cachePath;
@@ -50,6 +56,7 @@ public class NetImageView extends ImageView {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
             KEEP_ALIVE, TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>(), sThreadFactory);
+
     public NetImageView(Context context) {
         this(context, null);
     }
@@ -141,39 +148,56 @@ public class NetImageView extends ImageView {
         return cachePath.getPath();
     }
 
-    public void setBmobImage(final String name, final Bitmap defaultImage) {
+    public void setBmobImage(final String name) {
         if (TextUtils.isEmpty(name)) {
-            setImageBitmap(defaultImage);
+            setImageResource(R.mipmap.placeholder);
             return;
         }
-        setImageBitmap(defaultImage);
-        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.mipmap.error).into(NetImageView.this);
-    }
-    
-    
-    public void setBmobImageWith(final String name, final Bitmap defaultImage) {
-        if (TextUtils.isEmpty(name)) {
-            setImageBitmap(defaultImage);
-            return;
-        }
-        setImageBitmap(defaultImage);
-        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).into(NetImageView.this);
-    }
-    public void setBmobImageWith(final String name, final Bitmap defaultImage, int width, int height) {
-        if (TextUtils.isEmpty(name)) {
-            setImageBitmap(defaultImage);
-            return;
-        }
-        setImageBitmap(defaultImage);
-        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).override(width, height).placeholder(R.mipmap.placeholder).error(R.mipmap.error).into(NetImageView.this);
+        setImageResource(R.mipmap.placeholder);
+        Glide.with(context).load(name).error(R.mipmap.error).diskCacheStrategy(DiskCacheStrategy.ALL).into(NetImageView.this);
     }
 
-    public void setBmobthumbnail(final String name, final Bitmap defaultImage) {
-        if (TextUtils.isEmpty(name)) {
-            setImageBitmap(defaultImage);
+
+    /**
+     * 设置bmobfile上传图片的缩略图
+     *
+     * @param bmobFile
+     */
+    public void setBmobthumbnail(final BmobFile bmobFile, int width, int height) {
+        if (null == bmobFile) {
+            setImageResource(R.mipmap.placeholder);
             return;
         }
-        setImageBitmap(defaultImage);
-        Glide.with(context).load(name).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).thumbnail(0.5f).into(NetImageView.this);
+        setImageResource(R.mipmap.placeholder);
+        BmobThumbnail bmobThumbnail = new BmobThumbnail(bmobFile.getFileUrl(context), width, height);
+        GetBmobthumbnail getBmobthumbnail = new GetBmobthumbnail(context);
+        getBmobthumbnail.executeOnExecutor(THREAD_POOL_EXECUTOR, bmobThumbnail);
+        getBmobthumbnail.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Glide.with(context).load(s).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.mipmap.error).into(NetImageView.this);
+            }
+
+            @Override
+            public void onFail() {
+                setImageResource(R.mipmap.placeholder);
+            }
+        });
+
+
+    }
+
+    /**
+     * 设置bmobfile上传的图片
+     *
+     * @param image
+     */
+    public void setBmobFileImage(BmobFile image) {
+        if (null == image) {
+            setImageResource(R.mipmap.placeholder);
+            return;
+        }
+        setImageResource(R.mipmap.placeholder);
+        Glide.with(context).load(image.getFileUrl(context)).diskCacheStrategy(DiskCacheStrategy.ALL).into(NetImageView.this);
     }
 }

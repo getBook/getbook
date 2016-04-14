@@ -9,6 +9,8 @@
         android:id="@+id/edtHuaName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="最多6个字符"
+        android:textColorHint="@color/accent"
         android:maxLength="6"
         android:maxLines="1" />
 

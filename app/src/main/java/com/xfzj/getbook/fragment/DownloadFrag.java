@@ -12,17 +12,19 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncLoader;
 import com.xfzj.getbook.common.DownloadFile;
 import com.xfzj.getbook.db.DownLoadFileManager;
 import com.xfzj.getbook.utils.MyUtils;
+import com.xfzj.getbook.views.listview.BaseListView;
 import com.xfzj.getbook.views.listview.BaseListViewAdapter;
 
 import java.io.File;
@@ -31,15 +33,15 @@ import java.util.List;
 /**
  * Created by zj on 2016/3/22.
  */
-public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCallbacks<List<DownloadFile>>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCallbacks<List<DownloadFile>>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, AbsListView.OnScrollListener, BaseListView.OnScrollCallBack {
 
     public static final String PARAM = "DownloadFrag.class";
     private String param;
-    private ListView lv;
+    private BaseListView lv;
     private LinearLayout llNodata;
     private DownloadAdapter downloadAdapter;
     private DownLoadFileManager downLoadFileManager;
-
+    private FloatingActionButton fab;
     public DownloadFrag() {
 
     }
@@ -63,12 +65,16 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
 
     }
 
+    public void setFab(FloatingActionButton fab) {
+        this.fab = fab;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_download, container,false);
-        lv = (ListView) view.findViewById(R.id.lv);
+        lv = (BaseListView) view.findViewById(R.id.lv);
         llNodata = (LinearLayout) view.findViewById(R.id.llnodata);
         downloadAdapter = new DownloadAdapter(getActivity());
         lv.setAdapter(downloadAdapter);
@@ -76,6 +82,8 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         if (null == savedInstanceState) {
             getLoaderManager().initLoader(1, null, this);
         }
+        lv.setOnScrollListener(this);
+        lv.setOnScrollCallBack(this);
         lv.setOnItemClickListener(this);
         lv.setOnItemLongClickListener(this);
         return view;
@@ -144,6 +152,16 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         return true;
     }
 
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+
 
     private class DownloadAdapter extends BaseListViewAdapter<DownloadFile> {
 
@@ -195,5 +213,20 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         }
 
 
+    }
+    @Override
+    public void onScroll(boolean b) {
+        if (null == fab) {
+            return ;
+        }
+        if (b) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setFloatingBUtton(FloatingActionButton fab) {
+        this.fab = fab;
     }
 }

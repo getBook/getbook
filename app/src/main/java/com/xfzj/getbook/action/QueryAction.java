@@ -26,7 +26,7 @@ public class QueryAction extends BaseAction {
     private OnQueryListener onQueryListener;
     private Context context;
 
-    public QueryAction(Context context, OnQueryListener onQueryListener) {
+    public <T> QueryAction(Context context, OnQueryListener<T> onQueryListener) {
         this.onQueryListener = onQueryListener;
         this.context = context;
     }
@@ -80,8 +80,6 @@ public class QueryAction extends BaseAction {
      * 查询自己发布的杂货铺
      *
      * @param sno
-     * @param limit
-     * @param skip
      */
     public void querySelfDebris(String sno) {
         BmobQuery<Debris> query = new BmobQuery<>();
@@ -157,7 +155,7 @@ public class QueryAction extends BaseAction {
             bookInfoBmobQuery.addWhereMatches("bookName", name);
             query.addWhereMatchesQuery("bookInfo", "BookInfo", bookInfoBmobQuery);
         }
-        query.include("user[huaName|header|gender|sno],bookInfo");
+        query.include("user[huaName|bmobHeader|gender|sno],bookInfo");
         querySecondBook(query, limit, skip);
     }
 
@@ -177,6 +175,38 @@ public class QueryAction extends BaseAction {
                 if (null != onQueryListener) {
                     onQueryListener.onSuccess(list);
                 }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                if (null != onQueryListener) {
+                    onQueryListener.onFail();
+                }
+            }
+        });
+    }
+
+    /**
+     * 查询自己的信息
+     *
+     * @param user
+     */
+    public void queryUserSelf(User user) {
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addWhereEqualTo("sno", user.getSno());
+        userBmobQuery.findObjects(context, new FindListener<User>() {
+            @Override
+            public void onSuccess(List<User> list) {
+                if (null == list || list.size() == 0) {
+                    if (null != onQueryListener) {
+                        onQueryListener.onFail();
+                    }
+                } else {
+                    if (null != onQueryListener) {
+                        onQueryListener.onSuccess(list.get(0));
+                    }
+                }
+
             }
 
             @Override
@@ -217,7 +247,7 @@ public class QueryAction extends BaseAction {
         if (!TextUtils.isEmpty(name)) {
             query.addWhereMatches("title", name);
         }
-        query.include("user[huaName|header|gender|sno]");
+        query.include("user[huaName|bmobHeader|gender|sno]");
         queryDebris(query, limit, skip);
     }
 //
@@ -255,12 +285,46 @@ public class QueryAction extends BaseAction {
 //
 //    }
 
+    /**
+     * 查询花名是否已经存在
+     * @param huaName
+     */
+    public void queryHasHuaName(String huaName) {
+        BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        userBmobQuery.addQueryKeys("huaName");
+        userBmobQuery.addWhereEqualTo("huaName", huaName);
+        userBmobQuery.findObjects(context, new FindListener<User>() {
+            @Override
+            public void onSuccess(List<User> list) {
+                if (null == list || list.size() == 0) {
+                    if (onQueryListener != null) {
+                        onQueryListener.onSuccess(true);
+                    }
+                } else {
+                    if (onQueryListener != null) {
+                        onQueryListener.onFail();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                if (onQueryListener != null) {
+                    onQueryListener.onFail();
+                }
+            }
+        });
+
+
+    }
+
     public <T> void setOnQueryListener(OnQueryListener<T> onQueryListener) {
         this.onQueryListener = onQueryListener;
     }
 
     public interface OnQueryListener<T> {
-        void onSuccess(List<T> lists);
+        void onSuccess(T t);
 
         void onFail();
     }

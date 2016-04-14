@@ -48,6 +48,15 @@ public class HttpHelper implements IHttpHelper {
         }
         return iHttpHelper.DoConnection(url, requestType, params);
     }
+
+    @Override
+    public byte[] DoConnectionJson(String url, int requestType, String json) throws NetException, Exception {
+        if (TextUtils.isEmpty(url)) {
+            return iHttpHelper.NET_ERROR;
+        }
+        return iHttpHelper.DoConnectionJson(url, requestType, json);
+    }
+
     @Override
     public String getCookie() {
         return iHttpHelper.getCookie();

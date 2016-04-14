@@ -17,7 +17,7 @@ public interface IHttpHelper {
     void setCookie(String cookie);
 
     byte[] DoConnection(String url,int requestType, Map<String, String> params) throws NetException, Exception;
-
+    byte[] DoConnectionJson(String url,int requestType, String json) throws NetException, Exception;
     String getCookie();
     
 }

@@ -177,13 +177,17 @@ public class DownLoadSevice extends Service {
                             }
                             PendingIntent PIntent = PendingIntent.getActivity(
                                     getApplicationContext(), 0, intent, 0);
-                            notification = new Notification();
+                            Notification.Builder builder = new Notification.Builder(getApplicationContext());
                             manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                            notification.contentView = new RemoteViews(
-                                    getPackageName(), R.layout.notification);
-                            notification.icon = R.mipmap.ic_launcher;
-                            notification.tickerText = getString(R.string.start_downloading);
-                            notification.contentIntent = PIntent;
+                            builder.setContent(new RemoteViews(
+                                    getPackageName(), R.layout.notification));
+                            builder.setSmallIcon(R.mipmap.ic_launcher);
+                            builder.setTicker(getString(R.string.start_downloading));
+                            builder.setContentIntent(PIntent);
+                            builder.setOngoing(true);
+                            notification = builder.build();
+                            notification.flags = Notification.FLAG_AUTO_CANCEL;
+
                             notification.contentView.setTextViewText(
                                     R.id.tvFileName, filename);
                             manager.notify(0, notification);

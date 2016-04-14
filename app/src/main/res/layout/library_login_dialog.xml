@@ -50,6 +50,15 @@
                 android:layout_alignParentRight="true"
                 android:visibility="gone" />
         </RelativeLayout>
+
+        <EditText
+            android:visibility="gone"
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="真实姓名"
+            android:textColor="@color/accent"
+            android:textColorHint="@color/secondary_text" />
     </LinearLayout>
 
     <RelativeLayout

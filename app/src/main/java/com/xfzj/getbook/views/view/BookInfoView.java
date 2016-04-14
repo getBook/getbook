@@ -1,7 +1,6 @@
 package com.xfzj.getbook.views.view;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -99,7 +98,7 @@ public class BookInfoView extends LinearLayout {
         if (null == bookInfo) {
             return;
         }
-        iv.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
+        iv.setBmobFileImage(bookInfo.getBmobImage());
         if (!TextUtils.isEmpty(bookInfo.getBookName())) {
             bookName.setText(bookInfo.getBookName());
         }

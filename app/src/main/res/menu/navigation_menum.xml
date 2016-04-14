@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/g1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menum_home"
+            android:icon="@mipmap/menum_home"
+            android:title="@string/home"
+
+            />
+
+        <item
+            android:id="@+id/menum_secondBook"
+            android:icon="@mipmap/menum_secondbook"
+            android:title="@string/secondbook"
+
+            />
+
+        <item
+            android:id="@+id/menum_debris"
+            android:icon="@mipmap/menum_debris"
+            android:title="@string/debris" />
+    </group>
+    <group
+        android:id="@+id/g2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/menum_schoolAnnounce"
+            android:icon="@mipmap/menum_schoolannounce"
+            android:title="@string/school_announce"
+
+            />
+        <item
+            android:id="@+id/menum_library"
+            android:icon="@mipmap/menum_library"
+            android:title="@string/library"
+
+            />
+
+        <item
+            android:id="@+id/menum_card"
+            android:icon="@mipmap/menum_card"
+            android:title="@string/yikatong"
+
+            />
+
+        <item
+            android:id="@+id/menum_score"
+            android:icon="@mipmap/menum_score"
+            android:title="@string/grades"
+
+            />
+
+
+    </group>
+</menu>

@@ -8,10 +8,12 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.request.target.SquaringDrawable;
 
 /**
  * Created by zj on 2015/7/1.
@@ -40,11 +42,16 @@ public class CircleImageView extends NetImageView {
         if (getWidth() == 0 || getHeight() == 0) {
             return;
         }
-        Bitmap bitmap=null;
-        try {
-             bitmap = ((GlideBitmapDrawable) drawable).getBitmap();
-        } catch (Exception e) {
-            
+        Bitmap bitmap = null;
+        if (drawable instanceof GlideBitmapDrawable) {
+            bitmap = ((GlideBitmapDrawable) this.getDrawable()).getBitmap();
+        } else if (drawable instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) this.getDrawable()).getBitmap();
+        } else if (drawable instanceof SquaringDrawable) {
+            GlideBitmapDrawable bitmapDrawable = (GlideBitmapDrawable) drawable.getCurrent();
+            if (bitmapDrawable != null) {
+                bitmap = bitmapDrawable.getBitmap();
+            }
         }
         if (null == bitmap) {
             return;
@@ -56,20 +63,19 @@ public class CircleImageView extends NetImageView {
         paint.setFilterBitmap(true);
 
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        
+
         Canvas canvas1 = new Canvas(output);
         canvas1.drawCircle(bitmap
                 .getWidth() / 2.0f, bitmap.getWidth() / 2.0f, bitmap.getWidth() / 2.0f, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas1.drawBitmap(bitmap, rect1, rect1, paint);
-        float sx =( (float) getWidth())/  (float)output.getWidth();
-        float sy = ((float) getHeight())/ (float)output.getHeight();
+        float sx = ((float) getWidth()) / (float) output.getWidth();
+        float sy = ((float) getHeight()) / (float) output.getHeight();
         Matrix matrix = new Matrix();
         matrix.setScale(sx, sx);
         output = Bitmap.createBitmap(output, 0, 0, output.getWidth(), output.getHeight(), matrix, true);
         canvas.drawBitmap(output, 0, 0, null);
     }
-    
-    
+
 
 }

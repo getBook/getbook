@@ -2,6 +2,8 @@ package com.xfzj.getbook.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -12,6 +14,7 @@ import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
+import com.xfzj.getbook.views.view.NavigationHeaderView;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,10 +47,18 @@ public abstract class AppActivity extends AppCompatActivity {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
             KEEP_ALIVE, TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>(), sThreadFactory);
+    protected NavigationHeaderView navigationHeaderView;
 
     public static Executor getThreadPoolExecutor() {
         return THREAD_POOL_EXECUTOR;
     }
+
+    protected DrawerLayout drawerLayout;
+    protected NavigationView navigationView;
+    /**
+     * 当前被选中的navigation item
+     */
+    protected CharSequence currentClickItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,4 +147,5 @@ public abstract class AppActivity extends AppCompatActivity {
         BmobUser.logOut(getApplicationContext());
         ((BaseApplication) getApplication()).setUser(BmobUser.getCurrentUser(getApplicationContext(), User.class));
     }
+    
 }

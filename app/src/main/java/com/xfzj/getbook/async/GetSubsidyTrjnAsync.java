@@ -46,21 +46,5 @@ public class GetSubsidyTrjnAsync extends UcardAsyncTask<String, Void, List<Subsi
         }
         return null;
     }
-
-    @Override
-    protected void onPost(List<SubsidyTrjn> subsidyTrjns) {
-        if (null == subsidyTrjns) {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onFail("");
-            }
-
-        } else {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onSuccess(subsidyTrjns);
-            }
-
-        }
-
-
-    }
+    
 }

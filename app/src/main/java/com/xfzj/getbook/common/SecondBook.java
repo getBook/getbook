@@ -1,8 +1,10 @@
 package com.xfzj.getbook.common;
 
 import java.util.Arrays;
+import java.util.List;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by zj on 2016/2/5.
@@ -16,6 +18,7 @@ public class SecondBook extends BmobObject {
     private String[] pictures;
     private String tips;
     private String telePhone;
+    private List<BmobFile> files;
 
 
     public SecondBook() {
@@ -31,7 +34,13 @@ public class SecondBook extends BmobObject {
         this.tips = tips;
         this.telePhone = telePhone;
     }
+    public List<BmobFile> getFiles() {
+        return files;
+    }
 
+    public void setFiles(List<BmobFile> files) {
+        this.files = files;
+    }
     public User getUser() {
         return user;
     }

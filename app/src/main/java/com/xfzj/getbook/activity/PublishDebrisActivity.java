@@ -77,6 +77,7 @@ public class PublishDebrisActivity extends PublishAty {
 
     @Override
     public void onClick(View v) {
+        super.onClick(v);
         switch (v.getId()) {
             case R.id.tvPublish:
                 if (canPublish()) {

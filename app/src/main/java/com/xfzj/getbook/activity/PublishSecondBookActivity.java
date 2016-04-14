@@ -79,9 +79,9 @@ public class PublishSecondBookActivity extends PublishAty  {
         from = i.getStringExtra(FROM);
         bif.setContent(isbn);
     }
-
     @Override
     public void onClick(View v) {
+        super.onClick(v);
         switch (v.getId()) {
             case R.id.tvPublish:
                 if (canPublish()) {

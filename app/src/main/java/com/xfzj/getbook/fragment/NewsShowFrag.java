@@ -12,22 +12,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetNewsListLoader;
 import com.xfzj.getbook.common.News;
 import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.recycleview.LoadMoreListen;
 import com.xfzj.getbook.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.NewsShowView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zj on 2016/3/16.
  */
-public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>>, LoadMoreView.RefreshListener {
+public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.OnClickListener, LoaderManager.LoaderCallbacks<List<News>>, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     public static final String PARAM = "newsshowfrag";
     private static final String NEWSLIST = "newslists";
     private String param;
@@ -39,6 +40,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
     private NewsShowAdapter newsShowAdapter;
     private GetNewsListLoader getNewsListLoader;
     private OnNewsClick onNewsClick;
+    private FloatingActionButton fab;
 
     public NewsShowFrag() {
 
@@ -70,11 +72,16 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         }
     }
 
+    public void setFab(FloatingActionButton fab) {
+        this.fab = fab;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_newsshow, container,false);
+        View view = inflater.inflate(R.layout.fragment_newsshow, container, false);
         loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
+        loadMoreView.setOnScrollCallBack(this);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);
         newsShowAdapter = new NewsShowAdapter(lists, getActivity());
@@ -83,6 +90,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         loadMoreView.setOnLoadMoreListen(this);
         btn.setOnClickListener(this);
         onRefresh();
+
         return view;
     }
 
@@ -108,11 +116,6 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(NEWSLIST, (Serializable) newsShowAdapter.getAll());
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
@@ -181,6 +184,22 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
             }
                     ;
         }
+    }
+
+    @Override
+    public void onScroll(boolean b) {
+        if (null == fab) {
+            return;
+        }
+        if (b) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setFloatingBUtton(FloatingActionButton fab) {
+        this.fab = fab;
     }
 
     public interface OnNewsClick {

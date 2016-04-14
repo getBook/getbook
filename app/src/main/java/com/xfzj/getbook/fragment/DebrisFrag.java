@@ -33,7 +33,7 @@ import java.util.List;
  * Use the {@link DebrisFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListener<Debris>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
+public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListener<List<Debris>>, View.OnClickListener, LoadMoreListen, LoadMoreView.RefreshListener, LoadMoreLayout.OnScrollCallBack {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

@@ -2,24 +2,28 @@ package com.xfzj.getbook.action;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
+import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
+import com.xfzj.getbook.views.view.NavigationHeaderView;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadBatchListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
@@ -48,6 +52,8 @@ public class UploadAction extends BaseAction {
         setProgressDialog(context.getString(R.string.publishing));
     }
 
+    public UploadAction() {
+    }
 
     private void setProgressDialog(String string) {
         pd = ProgressDialog.show(context, "", string);
@@ -55,15 +61,49 @@ public class UploadAction extends BaseAction {
         pd.setCanceledOnTouchOutside(false);
     }
 
+    public static  void saveHeader(Context context, String header) {
+        SharedPreferencesUtils.saveUserHeader(context, header);
+        context.sendBroadcast(new Intent(NavigationHeaderView.ACTION));
+    }
+    public void uploadHeader(final Context context, final User user, String str) {
+        uploadHeader(context, user, new File(str));
+    }
+    public void uploadHeader(final Context context, final User user, File file) {
+        final BmobFile bmobFile = new BmobFile(file);
+        bmobFile.uploadblock(context, new UploadFileListener() {
+            @Override
+            public void onSuccess() {
+
+                user.setBmobHeader(bmobFile);
+
+                user.update(context, new UpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        saveHeader(context,bmobFile.getFileUrl(context));
+                    }
+
+                    @Override
+                    public void onFailure(int i, String s) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
+    }
     public void publishDebris(final UploadListener uploadListener) {
 
         pd.show();
-        Bmob.uploadBatch(context, debris.getPics(), new UploadBatchListener() {
+        BmobFile.uploadBatch(context, debris.getPics(), new UploadBatchListener() {
             @Override
             public void onSuccess(List<BmobFile> list, List<String> list1) {
                 if (list1.size() == debris.getPics().length) {
                     String[] str = list1.toArray(new String[debris.getPics().length]);
-                    debris.setPics(str);
+                    debris.setFiles(list);
                     debris.save(context, new SaveListener() {
                         @Override
                         public void onSuccess() {
@@ -112,7 +152,7 @@ public class UploadAction extends BaseAction {
                     bmobFile.uploadblock(context, new UploadFileListener() {
                         @Override
                         public void onSuccess() {
-                            bookInfo.setImage(bmobFile.getFileUrl(context));
+                            bookInfo.setBmobImage(bmobFile);
                             secondBook.setBookInfo(bookInfo);
                             bookInfo.save(context, new SaveListener() {
                                 @Override
@@ -171,12 +211,12 @@ public class UploadAction extends BaseAction {
 
     private void uploadSecondBook(final UploadListener uploadListener) {
         MyLog.print("pics", Arrays.toString(secondBook.getPictures()));
-        Bmob.uploadBatch(context, secondBook.getPictures(), new cn.bmob.v3.listener.UploadBatchListener() {
+        BmobFile.uploadBatch(context, secondBook.getPictures(), new cn.bmob.v3.listener.UploadBatchListener() {
             @Override
             public void onSuccess(List<BmobFile> list, List<String> list1) {
                 if (list1.size() == secondBook.getPictures().length) {
                     String[] str = list1.toArray(new String[list1.size()]);
-                    secondBook.setPictures(str);
+                    secondBook.setFiles(list);
                     secondBook.save(context, new SaveListener() {
                         @Override
                         public void onSuccess() {

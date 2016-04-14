@@ -1,22 +1,27 @@
 package com.xfzj.getbook.utils;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.Window;
 import android.view.WindowManager;
 
 import org.json.JSONException;
@@ -44,6 +49,16 @@ public class MyUtils {
         return null;
     }
 
+    public static int getBrighterColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv); // convert to hsv
+
+        hsv[1] = hsv[1] - 0.5f; // less saturation
+        hsv[2] = hsv[2] + 0.5f; // more brightness
+        int darkerColor = Color.HSVToColor(hsv);
+        return darkerColor;
+    }
+
     public static void close(Closeable closeable) {
         try {
             if (closeable != null) {
@@ -61,6 +76,22 @@ public class MyUtils {
         return dm;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarColor(Window window, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (color != Color.TRANSPARENT) {
+                window
+                        .getDecorView()
+                        .setSystemUiVisibility(
+                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+            }
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+            );
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
+    }
 
     public static int getScreenWidth(Context context) {
         return getScreenMetrics(context).widthPixels;
@@ -104,7 +135,7 @@ public class MyUtils {
         }
         return 0;
     }
-    
+
 
     public static boolean isWifi(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context

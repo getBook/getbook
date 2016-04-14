@@ -134,7 +134,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
             return;
         }
         tvIsbn.setText(bookInfo.getIsbn());
-        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
+        ivBook.setBmobFileImage(bookInfo.getBmobImage());
         String[] a = bookInfo.getAuthor();
         if (null != a && a.length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -224,7 +224,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     }
 
     public void restartOnSale(SecondBook secondBook) {
-        ivBook.setBmobImageWith(secondBook.getBookInfo().getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book));
+        ivBook.setBmobFileImage(secondBook.getBookInfo().getBmobImage());
         int color1 = context.getResources().getColor(R.color.accent);
         int color2 = context.getResources().getColor(R.color.primary_text);
         tvBookName.setTextColor(color2);

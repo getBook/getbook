@@ -35,4 +35,4 @@
         android:icon="@android:drawable/ic_menu_help"
         android:orderInCategory="4"
         android:showAsAction="withText"/>
-</menu><!-- From: file:/G:/android/GetBook/Zxing/src/main/res/menu/capture.xml -->
+</menu>

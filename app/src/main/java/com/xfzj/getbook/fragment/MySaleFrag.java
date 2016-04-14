@@ -17,7 +17,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.DeleteAction;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.RefreshAction;
-import com.xfzj.getbook.activity.MySaleAty;
+import com.xfzj.getbook.activity.BaseMySaleFrag;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
@@ -33,7 +33,7 @@ import java.util.List;
  * Use the {@link MySaleFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListener<Object>, WrapSecondBookInfoItemView.onClickListener, WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onClickListener, WrapDebrisInfoItemView.onLongClickListener {
+public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListener<List<Object>>, WrapSecondBookInfoItemView.onClickListener, WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onClickListener, WrapDebrisInfoItemView.onLongClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,7 +64,7 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @return A new instance of fragment MySaleFrag.
+     * @return A new instance of fragment BaseMySaleFrag.
      */
     // TODO: Rename and change types and number of parameters
     public static MySaleFrag newInstance(String param1) {
@@ -184,14 +184,18 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
     public void onClick(Object o) {
     }
 
+
     @Override
     public void onLongClick(Object o) {
-        ((MySaleAty) getActivity()).setVisibilty(View.VISIBLE);
-        for (CheckBox cb : cbs) {
-            if (cb.getVisibility() == View.GONE) {
-                cb.setVisibility(View.VISIBLE);
-            }
+        ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.VISIBLE);
+        setCbVisibility(View.VISIBLE);
 
+    
+    }
+
+    public void setCbVisibility(int i) {
+        for (CheckBox cb : cbs) {
+            cb.setVisibility(i);
         }
     }
 
@@ -291,7 +295,7 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                         cbs.remove(i);
                     }
                     if (wrapSecondBookInfoItemViews.size() == 0) {
-                        ((MySaleAty) getActivity()).setVisibilty(View.GONE);
+                        ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.GONE);
                         llnodata.setVisibility(View.VISIBLE);
                     }
                     AppAnalytics.onEvent(getActivity(), AppAnalytics.D_SB);
@@ -306,13 +310,13 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                         cbs.remove(i);
                     }
                     if (wrapDebrisInfoItemViews.size() == 0) {
-                        ((MySaleAty) getActivity()).setVisibilty(View.GONE);
+                        ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.GONE);
                         llnodata.setVisibility(View.VISIBLE);
                     }
                     AppAnalytics.onEvent(getActivity(), AppAnalytics.D_DB);
                     deleteAction.delete(lists, Debris.class);
                 }
-                
+
             }
         }).setNegativeButton(getString(R.string.cancel), null).create().show();
 

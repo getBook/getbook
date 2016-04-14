@@ -53,21 +53,4 @@ public class GetBillAsync extends UcardAsyncTask<String, Void, List<Bill>> {
         }
         return null;
     }
-
-    @Override
-    protected void onPost(List<Bill> bills) {
-        if (null == bills) {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onFail("");
-            }
-
-        } else {
-            if (null != onUcardTaskListener) {
-                onUcardTaskListener.onSuccess(bills);
-            }
-
-        }
-
-
-    }
 }

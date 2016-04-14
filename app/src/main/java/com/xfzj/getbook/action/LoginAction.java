@@ -173,7 +173,7 @@ public class LoginAction extends BaseAction {
 //     * @param callBack
 //     */
 //    private void updateUserMsg(final User user, final CallBack callBack) {
-//        newUser.setHeader(currUser.getHeader());
+//        newUser.setBmobHeader(currUser.getBmobHeader());
 //        newUser.setEmail(currUser.getEmail());
 //        
 //        newUser.update(context, currUser.getObjectId(), new UpdateListener() {

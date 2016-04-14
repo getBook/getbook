@@ -22,18 +22,29 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
         setProgressDialog(null, context.getString(R.string.logining_library));
     }
 
-
+    private onLibraryLoginListener onLibraryLoginListener;
     @Override
     protected void onPost(LibraryUserInfo s) {
         if (null != s) {
-            if (onTaskListener != null) {
-                onTaskListener.onSuccess(s);
+            if(!TextUtils.isEmpty(s.getBookInfo())){
+                if (onLibraryLoginListener != null) {
+                    onLibraryLoginListener.onSuccess(s);
+                }
+            }else{
+                if (onLibraryLoginListener != null) {
+                    onLibraryLoginListener.onVerify();
+                }
             }
+           
         } else {
-            if (null != onTaskListener) {
-                onTaskListener.onFail();
+            if (null != onLibraryLoginListener) {
+                onLibraryLoginListener.onFail();
             }
         }
+    }
+
+    public <T> void setOnLibraryLoginListener(LoginLibraryAsyc.onLibraryLoginListener<T> onLibraryLoginListener) {
+        this.onLibraryLoginListener = onLibraryLoginListener;
     }
 
     @Override
@@ -48,8 +59,12 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
         try {
             byte[] bytes = httpHelper.DoConnection(BaseHttp.LIBRARYVERFY, IHttpHelper.METHOD_POST, param);
             String result = new String(bytes, "utf-8");
-            if (!TextUtils.isEmpty(result) && result.contains(params[0])) {
-                return LoginParse.parse(context, result, params[0], params[1], params[3]);
+            if (!TextUtils.isEmpty(result)  ) {
+                if (result.contains("您尚未完成身份认证，请进行身份核实")) {
+                    return new LibraryUserInfo();
+                } else if(result.contains(params[0])) {
+                    return LoginParse.parse(context, result, params[0], params[1], params[3]);
+                }
             }
 
             return null;
@@ -58,5 +73,11 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
         }
         return null;
     }
+    public interface  onLibraryLoginListener<T>{
+        void onSuccess(T t);
 
+        void onFail();
+
+        void onVerify();
+    }
 }

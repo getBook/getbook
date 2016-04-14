@@ -27,6 +27,8 @@ public class BaseHttp {
     public static final String LIBRARYVERFY = "http://lib2.nuist.edu.cn/reader/redr_verify.php";
     public static final String GETLIBRARYSEARCH = "http://lib2.nuist.edu.cn/opac/openlink.php?dept=ALL&doctype=ALL&lang_code=ALL&match_flag=forward&displaypg=20&showmode=list&orderby=DESC&sort=CATA_DATE&onlylendable=no&with_ebook=&page=2&title=android";
 
+    public static final String VERIFYLIBRARYNAME = "http://lib2.nuist.edu.cn/reader/redr_con_result.php";
+    public static final String CHANGELIBRARYPWD = "http://lib2.nuist.edu.cn/reader/change_passwd_result.php";
 
     public BaseHttp() {
 

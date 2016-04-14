@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by zj on 2016/2/24.
@@ -24,6 +25,8 @@ public class BookInfo extends BmobObject{
     private String originPrice;
     @Expose
     private String image;
+    
+    private BmobFile bmobImage;
 
     public String[] getAuthor() {
         return author;
@@ -67,6 +70,14 @@ public class BookInfo extends BmobObject{
 
     public void setOriginPrice(String originPrice) {
         this.originPrice = originPrice;
+    }
+
+    public BmobFile getBmobImage() {
+        return bmobImage;
+    }
+
+    public void setBmobImage(BmobFile bmobImage) {
+        this.bmobImage = bmobImage;
     }
 
     public String getImage() {

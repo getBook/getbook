@@ -51,7 +51,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
 
     @Override
     protected void onSetContentView() {
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.aty_search);
 
     }
 

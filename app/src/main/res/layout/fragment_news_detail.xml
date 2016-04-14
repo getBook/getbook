@@ -2,10 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.xfzj.getbook.fragment.PicSelectFrag">
 
     <!-- TODO: Update blank fragment layout -->
-    <ScrollView
+    <com.xfzj.getbook.views.view.BaseScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:scrollbars="none"
         android:layout_height="wrap_content">
@@ -14,7 +16,7 @@
         android:id="@+id/tvContent"
         android:autoLink="web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    </ScrollView>
+        android:layout_height="wrap_content" />
+    </com.xfzj.getbook.views.view.BaseScrollView>
     <include layout="@layout/no_data" />
 </FrameLayout>

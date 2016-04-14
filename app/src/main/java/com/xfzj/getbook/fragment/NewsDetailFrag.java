@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -19,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.DownLoadSevice;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
@@ -27,6 +27,7 @@ import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.views.view.BaseScrollView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,7 +35,7 @@ import org.jsoup.nodes.Document;
 /**
  * Created by zj on 2016/3/21.
  */
-public class NewsDetailFrag extends BaseFragment implements View.OnClickListener {
+public class NewsDetailFrag extends BaseFragment implements View.OnClickListener, BaseScrollView.OnScrollCallBack {
 
     public static final String PARAM = "NewsDetailFrag.class";
     private static final String TEXTVIEWCONTENT = "textviewcontetn";
@@ -45,6 +46,11 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
     private LinearLayout llError;
     private Button btn;
     private String content;
+    private String href;
+
+    private FloatingActionButton fab;
+    private BaseScrollView scrollView;
+
 
     public NewsDetailFrag() {
 
@@ -69,52 +75,62 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
 
     }
 
+    public void setFab(FloatingActionButton fab) {
+        this.fab = fab;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news_detail, container,false);
+        View view = inflater.inflate(R.layout.fragment_news_detail, container, false);
+        scrollView = (BaseScrollView) view.findViewById(R.id.scrollView);
+        scrollView.setOnScrollCallBack(this);
+        
         tvContent = (TextView) view.findViewById(R.id.tvContent);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);
         btn.setOnClickListener(this);
-        if (null != savedInstanceState) {
-            String cs = savedInstanceState.getString(TEXTVIEWCONTENT);
-            if (TextUtils.isEmpty(cs)) {
-                getActivity().finish();
-            } else {
-                setContent(Html.fromHtml(cs));
-            }
-        } else {
-            getNews();
-        }
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
     }
 
     @Override
     public void onClick(View v) {
         getNews();
-
-
     }
 
+
+    public void setHref(String href) {
+        this.href = href;
+        getNews();
+    }
+
+    public void getNews() {
+        GetNewsDetailAsync getNewsDetailAsync = new GetNewsDetailAsync(getActivity());
+        getNewsDetailAsync.execute(href);
+    }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (tvContent.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(content)) {
-            outState.putString(TEXTVIEWCONTENT, content);
+    public void onScroll(boolean b) {
+        if (null == fab) {
+            return ;
         }
-        super.onSaveInstanceState(outState);
+        if (b) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void getNews() {
-        GetNewsDetailAsync getNewsDetailAsync = new GetNewsDetailAsync(getActivity());
-        getNewsDetailAsync.execute(param);
-    }
 
     private class GetNewsDetailAsync extends BaseAsyncTask<String, Void, Spanned> {
         public GetNewsDetailAsync(Context context) {
             super(context);
-            setProgressDialog(null, getString(R.string.loading),true);
+            setProgressDialog(null, getString(R.string.loading), true);
         }
 
         @Override
@@ -184,6 +200,11 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
         tvContent.setLinksClickable(true);
         tvContent.setMovementMethod(LinkMovementMethod.getInstance());
         tvContent.setText(spannableStringBuilder);
+    }
+
+
+    public void setFloatingBUtton(FloatingActionButton fab) {
+        this.fab = fab;
     }
 
 }

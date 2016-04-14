@@ -25,7 +25,7 @@ public class GetLibraryMyInfo extends BaseGetLibraryInfoAsyc<LibraryUserInfo> {
 
     @Override
     protected LibraryUserInfo parse(String[] params, String result) {
-        LibraryInfo libraryInfo = SharedPreferencesUtils.getLibraryUserInfo(context);
+        LibraryInfo libraryInfo = SharedPreferencesUtils.getLibraryLoginInfo(context);
         if (!TextUtils.isEmpty(result) && result.contains(libraryInfo.getAccount())) {
             return LoginParse.parse(context, result, libraryInfo.getAccount(), libraryInfo.getPassword(), cookie);
         }

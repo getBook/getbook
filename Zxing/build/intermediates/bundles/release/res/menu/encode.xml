@@ -25,4 +25,4 @@
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
         android:orderInCategory="2"
         android:showAsAction="withText|ifRoom"/>
-</menu><!-- From: file:/G:/android/GetBook/Zxing/src/main/res/menu/encode.xml -->
+</menu>

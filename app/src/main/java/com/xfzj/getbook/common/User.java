@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * Created by zj on 2016/1/28.
@@ -20,7 +21,7 @@ public class User extends BmobUser {
     private boolean gender;
 
     private String huaName;
-    private String header;
+    private BmobFile bmobHeader;
     /**
      * 学号
      */
@@ -40,8 +41,8 @@ public class User extends BmobUser {
      */
     private int id;
 
-    public String getHeader() {
-        return header;
+    public BmobFile getBmobHeader() {
+        return bmobHeader;
     }
 
     public String getHuaName() {
@@ -52,8 +53,8 @@ public class User extends BmobUser {
         this.huaName = huaName;
     }
 
-    public void setHeader(String header) {
-        this.header = header;
+    public void setBmobHeader(BmobFile bmobHeader) {
+        this.bmobHeader = bmobHeader;
     }
 
     public String getName() {
@@ -121,11 +122,15 @@ public class User extends BmobUser {
 
     @Override
     public String toString() {
+        String s = null;
+        if (null != bmobHeader) {
+            s = bmobHeader.getUrl();
+        }
         return "User{" +
                 "name='" + name + '\'' +
                 ", gender=" + gender +
                 ", huaName='" + huaName + '\'' +
-                ", header='" + header + '\'' +
+                ", bmobHeader='" + s + '\'' +
                 ", sno='" + sno + '\'' +
                 ", cardno='" + cardno + '\'' +
                 ", msg='" + msg + '\'' +
