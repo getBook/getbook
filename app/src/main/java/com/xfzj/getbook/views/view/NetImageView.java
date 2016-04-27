@@ -31,10 +31,10 @@ import cn.bmob.v3.datatype.BmobFile;
  * Created by zj on 2016/2/24.
  */
 public class NetImageView extends ImageView {
-    public static final int SMALL_WIDTH=150;
-    public static final int SMALL_HEIGHT=267;
-    public static final int LARGE_WIDTH=300;
-    public static final int LARGE_HEIGHT=500;
+    public static final int SMALL_WIDTH = 150;
+    public static final int SMALL_HEIGHT = 267;
+    public static final int LARGE_WIDTH = 300;
+    public static final int LARGE_HEIGHT = 500;
     private String url;
     private Context context;
     private File cachePath;
@@ -168,8 +168,18 @@ public class NetImageView extends ImageView {
             setImageResource(R.mipmap.placeholder);
             return;
         }
+        setBmobthumbnail(bmobFile.getFileUrl(context), width, height);
+
+
+    }
+
+    public void setBmobthumbnail(String uri, int width, int height) {
+        if (TextUtils.isEmpty(uri)) {
+            setImageResource(R.mipmap.placeholder);
+            return;
+        }
         setImageResource(R.mipmap.placeholder);
-        BmobThumbnail bmobThumbnail = new BmobThumbnail(bmobFile.getFileUrl(context), width, height);
+        BmobThumbnail bmobThumbnail = new BmobThumbnail(uri, width, height);
         GetBmobthumbnail getBmobthumbnail = new GetBmobthumbnail(context);
         getBmobthumbnail.executeOnExecutor(THREAD_POOL_EXECUTOR, bmobThumbnail);
         getBmobthumbnail.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
@@ -183,8 +193,6 @@ public class NetImageView extends ImageView {
                 setImageResource(R.mipmap.placeholder);
             }
         });
-
-
     }
 
     /**

@@ -89,8 +89,8 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
 
     private void startActivity(String text) {
         Intent intent = new Intent(this, PublishSecondBookActivity.class);
-        intent.putExtra(PublishSecondBookActivity.ISBN, text);
-        intent.putExtra(PublishSecondBookActivity.FROM, FROM);
+        intent.putExtra(com.xfzj.getbook.activity.PublishSecondBookActivity.ISBN, text);
+        intent.putExtra(com.xfzj.getbook.activity.PublishSecondBookActivity.FROM, FROM);
         startActivity(intent);
     }
 

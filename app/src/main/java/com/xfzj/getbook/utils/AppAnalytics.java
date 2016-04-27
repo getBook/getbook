@@ -33,6 +33,7 @@ public class AppAnalytics {
     public static final String C_M_L = "click_my_library";
     public static final String C_M_C = "click_my_card";
     public static final String C_M_S = "click_my_scres";
+    public static final String C_T = "click_shudong";
     public static final String D_SB = "delete_secondbook";
 
 

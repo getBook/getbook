@@ -6,12 +6,16 @@ import android.view.Display;
 
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
+import com.xfzj.getbook.common.Post;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.FileUtils;
+import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import cn.bmob.v3.datatype.BmobRelation;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * Created by zj on 2016/1/28.
@@ -51,6 +55,8 @@ public class BaseApplication extends Application {
         Bmob.getInstance().initConfig(config);
         Bmob.initialize(this, "953b4c2054c0d44e168d6725f8df4ff7");
         FileUtils.createDownloadDir();
+   
+        
     }
 
    

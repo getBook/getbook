@@ -175,4 +175,7 @@
     <string name="get_bookinfo_nothing">未获取到书本信息，请重新扫描</string>
     <string name="home">首页</string>
     <string name="name">姓名</string>
+    <string name="tree">树洞</string>
+    <string name="max_3_topic">可最多添加3个话题,之间用空格隔开</string>
+    <string name="content">内容</string>
 </resources>

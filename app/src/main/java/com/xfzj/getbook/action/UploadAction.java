@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
+import com.xfzj.getbook.common.Post;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.MyLog;
@@ -31,6 +32,7 @@ import cn.bmob.v3.listener.UploadFileListener;
  * Created by zj on 2016/2/28.
  */
 public class UploadAction extends BaseAction {
+    private  Post post;
     private Context context;
     private SecondBook secondBook;
     private ProgressDialog pd;
@@ -51,7 +53,13 @@ public class UploadAction extends BaseAction {
         this.debris = debris;
         setProgressDialog(context.getString(R.string.publishing));
     }
+    public UploadAction(Context context, Post post) {
 
+        this.context = context;
+        this.post = post;
+        setProgressDialog(context.getString(R.string.publishing));
+    }
+    
     public UploadAction() {
     }
 
@@ -132,6 +140,50 @@ public class UploadAction extends BaseAction {
         });
     }
 
+    public void publishPost(final UploadListener uploadListener) {
+
+        pd.show();
+        if (post.getPics() == null || post.getPics().length == 0) {
+            uploadPost(uploadListener);
+            return;
+        }
+        BmobFile.uploadBatch(context, post.getPics(), new UploadBatchListener() {
+            @Override
+            public void onSuccess(List<BmobFile> list, List<String> list1) {
+                if (list1.size() == post.getPics().length) {
+                    String[] str = list1.toArray(new String[post.getPics().length]);
+                    post.setFiles(list);
+                    uploadPost(uploadListener);
+                }
+            }
+
+            @Override
+            public void onProgress(int i, int i1, int i2, int i3) {
+//                MyLog.print("onProgress","当前："+i+" 完成"+i1+" 总共"+i2+"完成"+i3);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                MyToast.show(context, "上传图片失败，请重试" + s);
+                onFail(uploadListener);
+            }
+        });
+    }
+
+    private void uploadPost(final UploadListener uploadListener) {
+        post.save(context, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                onSucc(uploadListener);
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                MyToast.show(context, "发布失败，请重试" + i + s);
+                onFail(uploadListener);
+            }
+        });
+    }
 
     public void publishSecondBook(final UploadListener uploadListener) {
 

@@ -45,6 +45,7 @@ import com.xfzj.getbook.fragment.CardFrag;
 import com.xfzj.getbook.fragment.HomeFrag;
 import com.xfzj.getbook.fragment.LibraryFrag;
 import com.xfzj.getbook.fragment.NewsFrag;
+import com.xfzj.getbook.fragment.PostFrag;
 import com.xfzj.getbook.fragment.ScoreFrag;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
@@ -63,6 +64,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.update.BmobUpdateAgent;
 
 public class MainActivity extends BaseActivity implements NavigationHeaderView.OnHeaderClickListener, Toolbar.OnMenuItemClickListener, NavigationView.OnNavigationItemSelectedListener, NavigationHeaderView.OnHuaNameClick {
     public static final String FROM = "MainActivity.class";
@@ -94,6 +96,8 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     private CardFrag cardFrag;
     private ScoreFrag scoreFrag;
     public Menu menu;
+    private PostFrag postFrag;
+
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
     }
@@ -135,6 +139,8 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         isNeedHuaName();
         isNeedLogin();
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        //bmob自动更新
+        BmobUpdateAgent.update(this);
     }
     private void setDrawerToggle() {
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
@@ -216,12 +222,30 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 toolbar.setTitle(R.string.grades);
                 initScoreFrag();
                 break;
+            case R.id.menum_post:
+                AppAnalytics.onEvent(this, AppAnalytics.C_T);
+                toolbar.setTitle(R.string.tree);
+                initPostFrag();
+//                startActivity(new Intent(this, PublishPostAty.class));
+                
+                break;
         }
         drawerLayout.closeDrawers();
         getColor(menuItem);
 
 
         return true;
+    }
+
+    private void initPostFrag() {
+        postFrag = (PostFrag) fm.findFragmentByTag(PostFrag.PARAM);
+        if (null == postFrag || postFrag.isDetached()) {
+            postFrag = PostFrag.newInstance(PostFrag.PARAM);
+        }
+        if (!frags.contains(postFrag)) {
+            frags.add(postFrag);
+        }
+        showFrag(postFrag, null);
     }
 
     private void initScoreFrag() {
@@ -618,12 +642,18 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
      */
     protected void getColor(MenuItem menuItem) {
         final int backGroundColor = ((ColorDrawable) navigationView.getBackground()).getColor();
+        if(null==navigationView.getItemTextColor()){
+            return;
+        }
         final int textColor = navigationView.getItemTextColor().getDefaultColor();
         Bitmap bitmap = ((BitmapDrawable) menuItem.getIcon()).getBitmap();
         Palette.Builder builder = new Palette.Builder(bitmap);
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
+                if(palette==null||null==palette.getVibrantSwatch()){
+                    return;
+                }
                 int checkedTextColor = palette.getVibrantSwatch().getRgb();
                 int checkedBackgroundColor = MyUtils.getBrighterColor(checkedTextColor);
                 if (checkedTextColor != 0 && checkedBackgroundColor != 0) {

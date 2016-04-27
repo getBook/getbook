@@ -48,7 +48,33 @@ public class MyUtils {
         }
         return null;
     }
+    /**
+     * 计算字符数
+     *
+     * @param c
+     * @return
+     */
+    public static long calculateLength(CharSequence c) {
+        if (null == c) {
+            return 0;
+        }
+        double len = 0;
+        for (int i = 0; i < c.length(); i++) {
+            int tmp = (int) c.charAt(i);
+            if (tmp > 0 && tmp < 127) {
+                len += 0.5;
+            } else {
+                len++;
+            }
+        }
+        return Math.round(len);
+    }
 
+    /**
+     * 获取淡处理的颜色
+     * @param color
+     * @return
+     */
     public static int getBrighterColor(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv); // convert to hsv

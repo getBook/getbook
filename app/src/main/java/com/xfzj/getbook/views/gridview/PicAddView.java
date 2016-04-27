@@ -21,9 +21,10 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
     private int maxPics;
     private int lastSrc;
     private int defaultSrc;
-    private NoScrollGridView gv;
-    private PicAddAdapter adapter;
-    private List<PicPath> paths;
+    protected NoScrollGridView gv;
+    protected PicAdapter adapter;
+    protected List<PicPath> paths;
+    protected Context context;
 
     public void setOnItemClick(OnItemClick onItemClick) {
         this.onItemClick = onItemClick;
@@ -49,7 +50,8 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    protected void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        this.context = context;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PicAddView, defStyleAttr, defStyleRes);
         maxPics = a.getInteger(R.styleable.PicAddView_MaxPics, 0);
         lastSrc = a.getResourceId(R.styleable.PicAddView_lastSrc, R.mipmap.ic_launcher);
@@ -60,9 +62,11 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
         gv = (NoScrollGridView) view.findViewById(R.id.gridview);
         paths = new ArrayList<>();
         adapter = new PicAddAdapter(context, paths, gv);
-        adapter.setLastSrc(lastSrc);
-        adapter.setDefaultSrc(defaultSrc);
-        adapter.setMaxPics(maxPics);
+        if (adapter instanceof PicAddAdapter) {
+            ((PicAddAdapter) adapter).setLastSrc(lastSrc);
+            ((PicAddAdapter) adapter).setDefaultSrc(defaultSrc);
+            ((PicAddAdapter) adapter).setMaxPics(maxPics);
+        }
         gv.setAdapter(adapter);
         addView(view);
         gv.setOnItemClickListener(this);
@@ -106,8 +110,8 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
     public List<PicPath> getPaths() {
         return adapter.getPaths();
     }
-    
-    
+
+
     public List<String> getPath() {
         List<PicPath> picPaths = adapter.getPaths();
         List<String> lists = new ArrayList<>();
@@ -119,15 +123,21 @@ public class PicAddView extends LinearLayout implements AdapterView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (adapter.isLast(position)) {
-            if (null != onItemClick) {
-                onItemClick.onAddClick(position, getPaths().size(), maxPics);
+        if (adapter instanceof PicAddAdapter) {
+            if (((PicAddAdapter) adapter).isLast(position)) {
+                if (null != onItemClick) {
+                    onItemClick.onAddClick(position, getPaths().size(), maxPics);
+                }
+            } else {
+                if (null != onItemClick) {
+                    onItemClick.onPicClick(position, getPaths().get(position).getPath());
+                }
+
             }
-        } else {
+        } else if (adapter instanceof PicShowAdapter) {
             if (null != onItemClick) {
                 onItemClick.onPicClick(position, getPaths().get(position).getPath());
             }
-
         }
     }
 

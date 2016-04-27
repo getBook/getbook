@@ -33,6 +33,7 @@ public class LoginAction extends BaseAction {
     private Context context;
     private String huaName;
     private BaseApplication baseApplication;
+
     public LoginAction(Context context) {
         currUser = BmobUser.getCurrentUser(context, User.class);
         this.context = context;
@@ -47,6 +48,7 @@ public class LoginAction extends BaseAction {
     public CallBack loginAll(String userName, String password, CallBack callBack) {
         return loginAll(null, userName, password, callBack);
     }
+
     /**
      * 登陆学校系统以及bmob
      *
@@ -54,7 +56,7 @@ public class LoginAction extends BaseAction {
      * @param password
      * @return
      */
-    public CallBack loginAll(String huaName,String userName, String password, CallBack callBack) {
+    public CallBack loginAll(String huaName, String userName, String password, CallBack callBack) {
         AppAnalytics.onEvent(context, AppAnalytics.LOGIN);
         this.huaName = huaName;
         String msg = signIn(userName, password);
@@ -74,26 +76,26 @@ public class LoginAction extends BaseAction {
         }
         if (hasUser()) {
             if (isSameUser()) {
-                SharedPreferencesUtils.updateMsg(context, msg);
+//                SharedPreferencesUtils.updateMsg(context, msg);
                 loginBmob(userName, password, callBack, true);
                 return callBack;
             } else {
                 SharedPreferencesUtils.clearUser(context);
-                SharedPreferencesUtils.saveUser(context, this.newUser);
+//                SharedPreferencesUtils.saveUser(context, this.newUser);
                 logOutBmob();
                 registerBmob(newUser, callBack);
                 return callBack;
             }
         } else {
             SharedPreferencesUtils.clearUser(context);
-            SharedPreferencesUtils.saveUser(context, this.newUser);
+//            SharedPreferencesUtils.saveUser(context, this.newUser);
             registerBmob(newUser, callBack);
 
             return callBack;
         }
     }
 
-    public void loginBmob(String userName, String password, CallBack callBack,boolean isModify) {
+    public void loginBmob(String userName, String password, CallBack callBack, boolean isModify) {
         User user = new User();
         user.setUsername(userName);
         user.setPassword(password);
@@ -127,7 +129,7 @@ public class LoginAction extends BaseAction {
                 if (!TextUtils.isEmpty(huaName)) {
                     this.newUser.setHuaName(huaName);
                 }
-            
+
                 MyLog.print("sigin", newUser.toString());
                 return this.newUser.getMsg();
             }
@@ -203,7 +205,7 @@ public class LoginAction extends BaseAction {
      * 退出账户
      */
     public void logOutBmob() {
-     
+
         BmobUser.logOut(context);
         currUser = BmobUser.getCurrentUser(context, User.class);
     }
@@ -243,16 +245,9 @@ public class LoginAction extends BaseAction {
         user.login(context, new SaveListener() {
             @Override
             public void onSuccess() {
-                MyLog.print("loginBmob", "onSuccess");
-//                String password = getPassword(user);
-//                if (!TextUtils.isEmpty(password)) {
-//                    SharedPreferencesUtils.saveUser(context, user.getSno(), password);
-//                }
-                User user1 = SharedPreferencesUtils.getUser(context);
-                MyLog.print("user",user1.toString());
-                if (null != user1) {
-                    baseApplication.setUser(user1);
-                }
+                newUser.setObjectId(user.getObjectId());
+                baseApplication.setUser(newUser);
+                SharedPreferencesUtils.saveUser(context, newUser);
                 if (null != callBack) {
                     callBack.onSuccess();
                 }
@@ -260,13 +255,13 @@ public class LoginAction extends BaseAction {
 
             @Override
             public void onFailure(int i, String s) {
-                MyLog.print("loginBmob", "onFailure" + s+i);
+                MyLog.print("loginBmob", "onFailure" + s + i);
                 if (isModify && i == 101) {
                     if (null != callBack) {
                         callBack.onModify();
                     }
 
-                }else {
+                } else {
                     if (null != callBack) {
                         callBack.onFail();
 

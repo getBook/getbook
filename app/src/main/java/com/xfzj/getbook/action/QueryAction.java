@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
+import com.xfzj.getbook.common.Post;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.MyToast;
@@ -45,6 +46,34 @@ public class QueryAction extends BaseAction {
         query.findObjects(context, new FindListener<SecondBook>() {
             @Override
             public void onSuccess(List<SecondBook> list) {
+                if (null == list) {
+                    MyToast.show(context, context.getString(R.string.net_error));
+                }
+                if (null != onQueryListener) {
+                    onQueryListener.onSuccess(list);
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                if (null != onQueryListener) {
+                    onQueryListener.onFail();
+                }
+            }
+        });
+    }
+
+    public  void queryPost(int limit, int skip, final OnQueryListener<List<Post>> onQueryListener) {
+
+        BmobQuery<Post> query = new BmobQuery<>();
+        query.order("-createdAt,-updatedAt");
+        if (limit != 0) {
+            query.setLimit(limit);
+            query.setSkip(skip * limit);
+        }
+        query.findObjects(context, new FindListener<Post>() {
+            @Override
+            public void onSuccess(List<Post> list) {
                 if (null == list) {
                     MyToast.show(context, context.getString(R.string.net_error));
                 }
@@ -287,6 +316,7 @@ public class QueryAction extends BaseAction {
 
     /**
      * 查询花名是否已经存在
+     *
      * @param huaName
      */
     public void queryHasHuaName(String huaName) {

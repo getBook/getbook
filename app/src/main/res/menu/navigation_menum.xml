@@ -51,7 +51,12 @@
             android:title="@string/grades"
 
             />
+        <item
+            android:id="@+id/menum_post"
+            android:icon="@mipmap/menum_shudong"
+            android:title="@string/tree"
 
+            />
 
     </group>
 </menu>

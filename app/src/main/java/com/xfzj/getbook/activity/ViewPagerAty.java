@@ -133,8 +133,8 @@ public class ViewPagerAty extends AppActivity implements ViewPager.OnPageChangeL
 
     private void jump2back() {
         Intent i = new Intent();
-        i.putExtra(PublishSecondBookActivity.REMAIN_PATHS, (Serializable) paths);
-        setResult(PublishSecondBookActivity.REMAIN_PATHS_CODE, i);
+        i.putExtra(com.xfzj.getbook.activity.PublishSecondBookActivity.REMAIN_PATHS, (Serializable) paths);
+        setResult(com.xfzj.getbook.activity.PublishSecondBookActivity.REMAIN_PATHS_CODE, i);
         System.gc();
         finish();
     }

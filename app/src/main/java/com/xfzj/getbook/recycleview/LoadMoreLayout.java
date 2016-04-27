@@ -115,7 +115,7 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
     }
 
     private boolean isPullUp() {
-        return (mYDown - mLastY) >= mTouchSlop;
+        return (mYDown - mLastY) >= 5*mTouchSlop;
 
     }
 
