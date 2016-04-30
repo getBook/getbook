@@ -19,8 +19,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetBillAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.Bill;
-import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
-import com.xfzj.getbook.utils.AppAnalytics;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.view.PayInfoVIew;
 
 import java.util.ArrayList;

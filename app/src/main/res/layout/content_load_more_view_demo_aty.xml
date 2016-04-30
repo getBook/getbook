@@ -11,7 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.xfzj.getbook.activity.LoadMoreViewDemoAty"
     tools:showIn="@layout/activity_load_more_view_demo_aty">
-<com.xfzj.getbook.recycleview.LoadMoreView
+<com.xfzj.getbook.views.recycleview.LoadMoreView
     android:layout_width="match_parent"
     android:id="@+id/loadMoreLayout"
     android:layout_height="match_parent"/>

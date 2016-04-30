@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true">
 
 
-    <com.xfzj.getbook.recycleview.LoadMoreView
+    <com.xfzj.getbook.views.recycleview.LoadMoreView
 
         android:id="@+id/loadMoreView"
         android:layout_width="match_parent"

@@ -16,10 +16,10 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetNewsListLoader;
 import com.xfzj.getbook.common.News;
-import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
-import com.xfzj.getbook.recycleview.LoadMoreLayout;
-import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.recycleview.LoadMoreView;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
+import com.xfzj.getbook.views.recycleview.LoadMoreListen;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.NewsShowView;
 
 import java.util.ArrayList;

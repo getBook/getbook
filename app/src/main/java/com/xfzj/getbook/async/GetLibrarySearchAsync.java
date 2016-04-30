@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xfzj.getbook.common.LibraryBook;
+import com.xfzj.getbook.utils.MyLog;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -63,6 +64,8 @@ public class GetLibrarySearchAsync extends BaseGetLibraryInfoAsyc<List<LibraryBo
             libraryBook.setTitle(name);
             String position = element.getElementsByTag("h3").get(0).ownText();
             libraryBook.setPosition(position);
+            String guancang=element.getElementsByClass("tooltip").get(0).attr("href");
+            libraryBook.setGuancang(guancang);
             libraryBooks.add(libraryBook);
         }
         return libraryBooks;

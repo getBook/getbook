@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment.SecondBookFrag">
 
-    <com.xfzj.getbook.recycleview.LoadMoreView
+    <com.xfzj.getbook.views.recycleview.LoadMoreView
         android:layout_width="match_parent"
         android:id="@+id/loadMoreView"
         android:layout_marginLeft="2dp"

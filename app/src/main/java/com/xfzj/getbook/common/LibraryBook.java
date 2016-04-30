@@ -1,5 +1,7 @@
 package com.xfzj.getbook.common;
 
+import java.util.List;
+
 /**
  * Created by zj on 2016/4/2.
  */
@@ -30,7 +32,21 @@ public class LibraryBook {
      * 图书位置
      */
     private String position;
-    
+    /**
+     * 館藏
+     */
+    private String guancang;
+
+    private List<LibraryBookPosition> libraryBookPositions;
+
+    public List<LibraryBookPosition> getLibraryBookPositions() {
+        return libraryBookPositions;
+    }
+
+    public void setLibraryBookPositions(List<LibraryBookPosition> libraryBookPositions) {
+        this.libraryBookPositions = libraryBookPositions;
+    }
+
     public String getLibraryType() {
         return libraryType;
     }
@@ -84,12 +100,24 @@ public class LibraryBook {
         this.position = position;
     }
 
-    public LibraryBook(String libraryType, String title, String count, String borrowCount, String ap, String position) {
-        this.libraryType = libraryType;
-        this.title = title;
-        this.count = count;
-        this.borrowCount = borrowCount;
-        this.ap = ap;
-        this.position = position;
+    public String getGuancang() {
+        return guancang;
+    }
+
+    public void setGuancang(String guancang) {
+        this.guancang = guancang;
+    }
+
+    @Override
+    public String toString() {
+        return "LibraryBook{" +
+                "libraryType='" + libraryType + '\'' +
+                ", title='" + title + '\'' +
+                ", count='" + count + '\'' +
+                ", borrowCount='" + borrowCount + '\'' +
+                ", ap='" + ap + '\'' +
+                ", position='" + position + '\'' +
+                ", guancang='" + guancang + '\'' +
+                '}';
     }
 }

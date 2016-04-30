@@ -1,4 +1,4 @@
-package com.xfzj.getbook.recycleview;
+package com.xfzj.getbook.views.recycleview;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;

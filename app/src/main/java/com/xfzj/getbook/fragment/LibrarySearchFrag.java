@@ -13,10 +13,11 @@ import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.GetLibrarySearchAsync;
 import com.xfzj.getbook.common.LibraryBook;
+import com.xfzj.getbook.common.LibraryBookPosition;
 import com.xfzj.getbook.net.BaseHttp;
-import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
-import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.recycleview.LoadMoreView;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.views.recycleview.LoadMoreListen;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.LibraryBookItemView;
 
 import java.util.ArrayList;
@@ -149,9 +150,14 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
         protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
             return new NormalViewHolder<LibraryBook>(view, viewType) {
                 @Override
-                protected void setNormalContent(View itemView, LibraryBook item, int viewType) {
+                protected void setNormalContent(View itemView, final LibraryBook item, int viewType) {
                     if (itemView instanceof LibraryBookItemView) {
-                        ((LibraryBookItemView) itemView).update(item);
+                        ((LibraryBookItemView) itemView).update(getActivity(), item, new LibraryBookItemView.OnLibraryBookPositionLoadListener() {
+                            @Override
+                            public void onLoad(List<LibraryBookPosition> libraryBookPositions) {
+                                item.setLibraryBookPositions(libraryBookPositions);
+                            }
+                        });
                     }
 
                 }

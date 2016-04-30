@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.xfzj.getbook.recycleview.BaseLoadMoreRecycleView
+        <com.xfzj.getbook.views.recycleview.BaseLoadMoreRecycleView
             android:id="@+id/rc"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

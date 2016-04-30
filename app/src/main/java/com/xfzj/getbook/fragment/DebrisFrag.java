@@ -18,10 +18,10 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
 import com.xfzj.getbook.common.Debris;
-import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
-import com.xfzj.getbook.recycleview.LoadMoreLayout;
-import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.recycleview.LoadMoreView;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
+import com.xfzj.getbook.views.recycleview.LoadMoreListen;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.DebrisInfoView;
 

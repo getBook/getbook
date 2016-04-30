@@ -1,4 +1,4 @@
-package com.xfzj.getbook.recycleview;
+package com.xfzj.getbook.views.recycleview;
 
 /**
  * Created by zj on 2016/1/26.

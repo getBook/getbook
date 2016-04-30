@@ -12,7 +12,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp">
 
-        <com.xfzj.getbook.recycleview.LoadMoreView
+        <com.xfzj.getbook.views.recycleview.LoadMoreView
             android:id="@+id/loadMoreView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

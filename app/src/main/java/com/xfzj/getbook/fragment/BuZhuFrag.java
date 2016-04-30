@@ -12,9 +12,9 @@ import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.GetSubsidyTrjnAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.SubsidyTrjn;
-import com.xfzj.getbook.recycleview.FooterLoadMoreRVAdapter;
-import com.xfzj.getbook.recycleview.LoadMoreListen;
-import com.xfzj.getbook.recycleview.LoadMoreView;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.views.recycleview.LoadMoreListen;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.SubsidytrjnsView;
 
 import java.util.ArrayList;
