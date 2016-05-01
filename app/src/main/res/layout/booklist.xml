@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="2dp"
+        android:layout_toLeftOf="@+id/btnBorrow">
+
+        <TextView
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:gravity="left"
+            tools:text="dfdsfdfdsf gfdgfdgfdgfdgfdgfdgfdgfdgfdgfffffffffffffffffffffffffffsf" />
+
+        <TextView
+            android:textSize="12sp"
+            android:textColor="@color/secondary_text"
+            android:id="@+id/tvAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvName"
+            android:gravity="left"
+            tools:text="dfdsfdfdsf gfdgfdgfdgfdgfdgfdgfdgfdgfdgfffffffffffffffffffffffffffsf" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnBorrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="续借" />
+</RelativeLayout>

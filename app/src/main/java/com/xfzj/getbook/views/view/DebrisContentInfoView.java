@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Debris;
@@ -97,7 +99,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobthumbnail(file,NetImageView.SMALL_WIDTH,NetImageView.SMALL_HEIGHT);
+            ivPic.setBmobthumbnail(file, NetImageView.SMALL_WIDTH, NetImageView.SMALL_HEIGHT);
         }
 
 
@@ -183,8 +185,16 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
     }
 
     private void handleInvalid() {
-        Bitmap bitmap = ((BitmapDrawable) ivPic.getDrawable()).getBitmap();
-        ivPic.setImageBitmap(MyUtils.toGrayscale(bitmap));
+        Drawable d = ivPic.getDrawable();
+        Bitmap bitmap = null;
+        if (d instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) d).getBitmap();
+        } else if (d instanceof GlideBitmapDrawable) {
+            bitmap = ((GlideBitmapDrawable) d).getBitmap();
+        }
+        if (null != bitmap) {
+            ivPic.setImageBitmap(MyUtils.toGrayscale(bitmap));
+        }
         Resources res = context.getResources();
         int color = res.getColor(R.color.secondary_text);
         tvYuan.setTextColor(color);
@@ -198,12 +208,12 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
 
     public void restartOnSale(Debris debris) {
         BmobFile file = debris.getFiles().get(0);
-        
+
         if (null == file) {
             ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
         } else {
             int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobthumbnail(file,NetImageView.SMALL_WIDTH,NetImageView.SMALL_HEIGHT);
+            ivPic.setBmobthumbnail(file, NetImageView.SMALL_WIDTH, NetImageView.SMALL_HEIGHT);
         }
         Resources res = context.getResources();
         int color1 = res.getColor(R.color.primary_text);

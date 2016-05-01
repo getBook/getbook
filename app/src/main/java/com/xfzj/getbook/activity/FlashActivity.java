@@ -53,7 +53,6 @@ public class FlashActivity extends AppActivity {
         } else {
             handler.sendEmptyMessageDelayed(0, 3000);
         }
-
     }
 
     @Override
@@ -84,7 +83,7 @@ public class FlashActivity extends AppActivity {
             i.putExtra(LoginAty.ACCOUNT, str);
         }
         startActivity(i);
-//        finish();
+        finish();
     }
     private void jump2Login() {
         jump2Login(null);

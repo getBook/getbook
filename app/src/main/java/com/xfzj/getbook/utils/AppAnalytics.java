@@ -58,7 +58,8 @@ public class AppAnalytics {
     public static final String C_DWCY = "click_daiwochuanyue";
     public static final String S_F = "score_fail";
     public static final String S_S = "score_success";
-   
+    public static final String C_L_C_P = "change_library_pwd";
+    public static final String E_L_E_A = "exit_library_account";
     public static void onResume(AppActivity appActivity) {
         MobclickAgent.onResume(appActivity);
     }

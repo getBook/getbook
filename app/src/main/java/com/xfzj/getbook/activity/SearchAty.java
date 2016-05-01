@@ -1,5 +1,6 @@
 package com.xfzj.getbook.activity;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,9 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,6 +27,7 @@ import com.xfzj.getbook.fragment.LibrarySearchFrag;
 import com.xfzj.getbook.fragment.SecondBookFrag;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +36,7 @@ import butterknife.Bind;
 /**
  * Created by zj on 2016/3/7.
  */
-public class SearchAty extends AppActivity implements SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener {
+public class SearchAty extends AppActivity implements SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener, View.OnClickListener {
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
     @Bind(R.id.fram)
@@ -99,12 +103,36 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.search_badge);//在菜单中找到对应控件的item
         searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setQueryHint(getString(R.string.please_input_keywords));
         searchView.setOnQueryTextListener(this);
+        searchView.setIconifiedByDefault(true);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setFocusable(true);
+        searchView.requestFocus();
+        try {
+            Field field = searchView.getClass().getDeclaredField("mGoButton");
+
+            field.setAccessible(true);
+
+            ImageView iv = (ImageView) field.get(searchView);
+
+            iv.setImageResource(R.mipmap.search);
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
         MenuItemCompat.expandActionView(menuItem);
         MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {//设置打开关闭动作监听
             @Override
@@ -131,11 +159,8 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        this.query = query;
         int index = pager.getCurrentItem();
-
         dispatchSearch(index, query);
-
         return false;
     }
 
@@ -146,12 +171,13 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         }
         if (index == 0) {
             sbFrag.searchKey(query);
-
         } else if (index == 1) {
             debrisFrag.searchKey(query);
-        } else {
+        } else if (index == 2) {
             librarySearchFrag.searchKey(query);
         }
+        searchView.clearFocus();
+        
     }
 
     @Override
@@ -219,6 +245,13 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).
+                toggleSoftInput(InputMethodManager.SHOW_FORCED,
+                        InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     private class TestAdapter extends FragmentPagerAdapter {

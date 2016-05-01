@@ -1,10 +1,12 @@
 package com.xfzj.getbook.common;
 
+import java.util.Arrays;
+
 /**
  * Created by zj on 2016/3/29.
  */
 public class LibraryUserInfo {
-    private String bookInfo;
+    private String[] bookInfo;
 
     private String maxBorrow;
 
@@ -14,7 +16,7 @@ public class LibraryUserInfo {
 
     private String borrowCount;
 
-    public LibraryUserInfo(String bookInfo, String maxBorrow, String illegalCount, String ownMoney, String borrowCount) {
+    public LibraryUserInfo(String[] bookInfo, String maxBorrow, String illegalCount, String ownMoney, String borrowCount) {
         this.bookInfo = bookInfo;
         this.maxBorrow = maxBorrow;
         this.illegalCount = illegalCount;
@@ -25,11 +27,11 @@ public class LibraryUserInfo {
     public LibraryUserInfo() {
     }
 
-    public String getBookInfo() {
+    public String[] getBookInfo() {
         return bookInfo;
     }
 
-    public void setBookInfo(String bookInfo) {
+    public void setBookInfo(String[] bookInfo) {
         this.bookInfo = bookInfo;
     }
 
@@ -68,7 +70,7 @@ public class LibraryUserInfo {
     @Override
     public String toString() {
         return "LibraryUserInfo{" +
-                "bookInfo='" + bookInfo + '\'' +
+                "bookInfo=" + Arrays.toString(bookInfo) +
                 ", maxBorrow='" + maxBorrow + '\'' +
                 ", illegalCount='" + illegalCount + '\'' +
                 ", ownMoney='" + ownMoney + '\'' +

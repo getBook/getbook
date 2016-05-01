@@ -178,4 +178,8 @@
     <string name="tree">树洞</string>
     <string name="max_3_topic">可最多添加3个话题,之间用空格隔开</string>
     <string name="content">内容</string>
+    <string name="no_borrow_book">静以修身，学以养德</string>
+    <string name="changeaccount">更改账号</string>
+    <string name="change_library_password">修改图书馆密码</string>
+    <string name="change_library_account">切换图书馆账号</string>
 </resources>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
@@ -211,7 +211,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     }
 
     private void handleInvalid() {
-        Bitmap bitmap = ((BitmapDrawable) ivBook.getDrawable()).getBitmap();
+        Bitmap bitmap = ((GlideBitmapDrawable) ivBook.getDrawable()).getBitmap();
         ivBook.setImageBitmap(MyUtils.toGrayscale(bitmap));
         int color = context.getResources().getColor(R.color.secondary_text);
         tvBookName.setTextColor(color);

@@ -26,7 +26,7 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
     @Override
     protected void onPost(LibraryUserInfo s) {
         if (null != s) {
-            if(!TextUtils.isEmpty(s.getBookInfo())){
+            if(!TextUtils.isEmpty(s.getBookInfo()[0])){
                 if (onLibraryLoginListener != null) {
                     onLibraryLoginListener.onSuccess(s);
                 }

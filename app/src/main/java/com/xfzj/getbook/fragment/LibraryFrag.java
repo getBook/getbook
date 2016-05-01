@@ -1,13 +1,16 @@
 package com.xfzj.getbook.fragment;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,43 +20,77 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.activity.AppActivity;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.ChangeLibraryPwdAsyc;
+import com.xfzj.getbook.async.GetBookListAsync;
 import com.xfzj.getbook.async.GetLibraryCaptureAsync;
 import com.xfzj.getbook.async.GetLibraryMyInfo;
 import com.xfzj.getbook.async.LoginLibraryAsyc;
 import com.xfzj.getbook.async.VerifyLibraryNameAsyc;
+import com.xfzj.getbook.common.BorrowBook;
 import com.xfzj.getbook.common.LibraryInfo;
 import com.xfzj.getbook.common.LibraryUserInfo;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.InputMethodManagerUtils;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
+import com.xfzj.getbook.views.view.BookListView;
 import com.xfzj.getbook.views.view.CircleImageView;
+import com.xfzj.getbook.views.view.NodataView;
+
+import java.util.List;
 
 import butterknife.Bind;
-import cn.bmob.v3.listener.SaveListener;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LibraryFrag extends BaseFragment {
     public static final String ARG_PARAM1 = "LibraryFrag.class";
 
-    TextView tvBookInfo;
 
+    @Bind(R.id.userHeader)
     CircleImageView circleImageView;
+    @Bind(R.id.tvOwnMoney)
     TextView tvOwnMoney;
+    @Bind(R.id.tvBorrowCount)
     TextView tvBorrowCount;
+    @Bind(R.id.tvMaxBorrow)
     TextView tvMaxBorrow;
+    @Bind(R.id.tvIllegalCount)
     TextView tvIllegalCount;
+    @Bind(R.id.tvComingOverdue)
+    TextView tvComingOverdue;
+    @Bind(R.id.tvhasOverdue)
+    TextView tvhasOverdue;
+    @Bind(R.id.tvOrder)
+    TextView tvOrder;
+    @Bind(R.id.tvEntrust)
+    TextView tvEntrust;
+    @Bind(R.id.tvRecommend)
+    TextView tvRecommend;
+    @Bind(R.id.tvRecommendHandle)
+    TextView tvRecommendHandle;
+    @Bind(R.id.llBookList)
+    LinearLayout llBookList;
+    @Bind(R.id.ll)
+    LinearLayout ll;
+    @Bind(R.id.fab1)
+    FloatingActionButton fab1;
+    @Bind(R.id.fab2)
+    FloatingActionButton fab2;
+    @Bind(R.id.fab)
+    FloatingActionsMenu fab;
     private boolean verify = true;
     private User user;
     private LibraryInfo libraryInfo;
-    @Bind(R.id.ll)
-    LinearLayout ll;
     private GetLibraryCaptureAsync.Capture c;
     private boolean isLoginSUccess = false;
     private String mParam1;
@@ -84,108 +121,123 @@ public class LibraryFrag extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.aty_library, container, false);
-        tvBookInfo = (TextView) view.findViewById(R.id.tvBookInfo);
-        circleImageView = (CircleImageView) view.findViewById(R.id.userHeader);
-        tvOwnMoney = (TextView) view.findViewById(R.id.tvOwnMoney);
-        tvBorrowCount = (TextView) view.findViewById(R.id.tvBorrowCount);
-        tvMaxBorrow = (TextView) view.findViewById(R.id.tvMaxBorrow);
-        tvIllegalCount = (TextView) view.findViewById(R.id.tvIllegalCount);
-        ll = (LinearLayout) view.findViewById(R.id.ll);
+        ButterKnife.bind(this, view);
         getMyInfo();
-//test
-        setBtn(view);
+       
+
         return view;
     }
 
-    private void setBtn(View view) {
-        Button btnSend, btnlogout, btnChange;
-        btnSend = (Button) view.findViewById(R.id.btnSend);
-        btnlogout = (Button) view.findViewById(R.id.btnLogout);
-        btnChange = (Button) view.findViewById(R.id.btnChange);
-        btnSend.setOnClickListener(new View.OnClickListener() {
+    /**
+     * 获取借阅信息
+     */
+    private void getBooklist() {
+        llBookList.removeAllViews();
+        final GetBookListAsync getBookListAsync = new GetBookListAsync(getActivity());
+        getBookListAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), BaseHttp.GETBOOKLIST);
+        getBookListAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<List<BorrowBook>>() {
             @Override
-            public void onClick(View v) {
-                libraryInfo.save(getActivity(), new SaveListener() {
-                    @Override
-                    public void onSuccess() {
-                        MyToast.show(getActivity(), "发送成功");
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-                        MyToast.show(getActivity(), "发送失败");
-                    }
-                });
+            public void onSuccess(List<BorrowBook> borrowBooks) {
+                if (null == borrowBooks || borrowBooks.size() == 0) {
+                    TextView textView = new TextView(getActivity());
+                    Drawable drawable = ContextCompat.getDrawable(getActivity(), R.mipmap.borrow);
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    textView.setCompoundDrawables(null, drawable, null, null);
+                    textView.setText(R.string.no_borrow_book);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) MyUtils.dp2px(getActivity(), 100f));
+                    textView.setCompoundDrawablePadding((int) MyUtils.dp2px(getActivity(), 0f));
+                    textView.setLayoutParams(lp);
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setTextSize(16f);
+                    llBookList.addView(textView);
+                    return;
+                }
+                for (BorrowBook borrowBook : borrowBooks) {
+                    BookListView bookListView = new BookListView(getActivity());
+                    bookListView.update(borrowBook);
+                    llBookList.addView(bookListView);
+                }
             }
-        });
-        btnlogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                exitLibrary();
-            }
-        });
 
-        btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.xiugaimima, null);
-                final EditText etOld = (EditText) view.findViewById(R.id.etOld);
-                final EditText etNew1 = (EditText) view.findViewById(R.id.etNew1);
-                final EditText etNew2 = (EditText) view.findViewById(R.id.etNew2);
-                final Button btn = (Button) view.findViewById(R.id.btn);
-                builder.setView(view);
-                etOld.setHint("图书馆旧密码");
-                etNew1.setHint("图书馆新密码");
-                etNew2.setHint("图书馆新密码");
-                etNew1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                etNew2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-                btn.setOnClickListener(new View.OnClickListener() {
+            public void onFail() {
+                NodataView nodataView = new NodataView(getActivity());
+                int padding = (int) MyUtils.dp2px(getActivity(), 10f);
+                nodataView.setPadding(padding, padding, padding, padding);
+                nodataView.show();
+                llBookList.addView(nodataView);
+                nodataView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final String old = etOld.getText().toString().trim();
-                        if (TextUtils.isEmpty(old)) {
-                            MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
-                            return;
-                        }
-                        final String new1 = etNew1.getText().toString().trim();
-                        String new2 = etNew2.getText().toString().trim();
-                        if (TextUtils.isEmpty(new1) || TextUtils.isEmpty(new2)) {
-                            MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.newpassword)));
-                            return;
-                        }
-                        if (!new1.equals(new2)) {
-                            MyToast.show(getActivity(), getString(R.string.twice_password_not_equal));
-                            return;
-                        }
-                        InputMethodManagerUtils.hide(getActivity(), btn);
-                        ChangeLibraryPwdAsyc changeLibraryPwdAsyc = new ChangeLibraryPwdAsyc(getActivity());
-
-                        changeLibraryPwdAsyc.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
-                            @Override
-                            public void onSuccess(String s) {
-                                MyToast.show(getActivity(), s);
-                                dialog.dismiss();
-                                exitLibrary();
-                            }
-
-                            @Override
-                            public void onFail() {
-                                MyToast.show(getActivity(), "密码修改失败");
-                            }
-                        });
-                        changeLibraryPwdAsyc.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR, old, new1, SharedPreferencesUtils.getLibraryCookie(getActivity()));
+                        getBooklist();
                     }
-
                 });
             }
         });
 
+
+    }
+    
+
+    private void changeLibraryPwd() {
+        AppAnalytics.onEvent(getActivity(), AppAnalytics.C_L_C_P);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.xiugaimima, null);
+        final EditText etOld = (EditText) view.findViewById(R.id.etOld);
+        final EditText etNew1 = (EditText) view.findViewById(R.id.etNew1);
+        final EditText etNew2 = (EditText) view.findViewById(R.id.etNew2);
+        final Button btn = (Button) view.findViewById(R.id.btn);
+        builder.setView(view);
+        etOld.setHint("图书馆旧密码");
+        etNew1.setHint("图书馆新密码");
+        etNew2.setHint("图书馆新密码");
+        etOld.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etNew1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etNew2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String old = etOld.getText().toString().trim();
+                if (TextUtils.isEmpty(old)) {
+                    MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
+                    return;
+                }
+                final String new1 = etNew1.getText().toString().trim();
+                String new2 = etNew2.getText().toString().trim();
+                if (TextUtils.isEmpty(new1) || TextUtils.isEmpty(new2)) {
+                    MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.newpassword)));
+                    return;
+                }
+                if (!new1.equals(new2)) {
+                    MyToast.show(getActivity(), getString(R.string.twice_password_not_equal));
+                    return;
+                }
+                InputMethodManagerUtils.hide(getActivity(), btn);
+                ChangeLibraryPwdAsyc changeLibraryPwdAsyc = new ChangeLibraryPwdAsyc(getActivity());
+
+                changeLibraryPwdAsyc.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        MyToast.show(getActivity(), s);
+                        dialog.dismiss();
+                        exitLibrary();
+                    }
+
+                    @Override
+                    public void onFail() {
+                        MyToast.show(getActivity(), "密码修改失败");
+                    }
+                });
+                changeLibraryPwdAsyc.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR, old, new1, SharedPreferencesUtils.getLibraryCookie(getActivity()));
+            }
+
+        });
     }
 
     private void exitLibrary() {
+        AppAnalytics.onEvent(getActivity(), AppAnalytics.E_L_E_A);
         SharedPreferencesUtils.clearLibrary(getActivity());
         getMyInfo();
         ll.setVisibility(View.GONE);
@@ -223,6 +275,7 @@ public class LibraryFrag extends BaseFragment {
         getLibraryMyInfo.setOnTaskListener(new BaseAsyncTask.onTaskListener<LibraryUserInfo>() {
             @Override
             public void onSuccess(LibraryUserInfo libraryUserInfo) {
+                isLoginSUccess = true;
                 setLibraryUserInfo(libraryUserInfo);
             }
 
@@ -236,9 +289,16 @@ public class LibraryFrag extends BaseFragment {
     }
 
     private void setLibraryUserInfo(LibraryUserInfo libraryUserInfo) {
+        getBooklist();
         libraryInfo = SharedPreferencesUtils.getLibraryLoginInfo(getActivity());
         ll.setVisibility(View.VISIBLE);
-        tvBookInfo.setText(libraryUserInfo.getBookInfo());
+        String[] bookInfo = libraryUserInfo.getBookInfo();
+        tvComingOverdue.setText(bookInfo[0]);
+        tvhasOverdue.setText(bookInfo[1]);
+        tvOrder.setText(bookInfo[2]);
+        tvEntrust.setText(bookInfo[3]);
+        tvRecommend.setText(bookInfo[4]);
+        tvRecommendHandle.setText(bookInfo[5]);
         tvOwnMoney.setText(libraryUserInfo.getOwnMoney());
         tvBorrowCount.setText(libraryUserInfo.getBorrowCount());
         tvMaxBorrow.setText(libraryUserInfo.getMaxBorrow());
@@ -403,5 +463,25 @@ public class LibraryFrag extends BaseFragment {
         });
 
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @OnClick({R.id.fab1, R.id.fab2})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab1:
+                fab.collapseImmediately();
+                exitLibrary();
+                break;
+            case R.id.fab2:
+                fab.collapseImmediately();
+                changeLibraryPwd();
+                break;
+        }
     }
 }

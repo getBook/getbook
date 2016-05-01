@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
-
+    android:fitsSystemWindows="true">
+<ScrollView
+    android:layout_width="match_parent"
+    android:scrollbars="none"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -17,19 +20,7 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
-
-            <TextView
-                android:id="@+id/tvBookInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/primary_text" />
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,113 +37,272 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
+
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="欠款金额："
-                            android:textColor="@color/primary_text" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvOwnMoney"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="欠款金额："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvOwnMoney"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8"
+                                android:textColor="@color/red" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="8"
-                            android:textColor="@color/red" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="累计借书："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvBorrowCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="最大可借图书："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvMaxBorrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="违章次数："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvIllegalCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="累计借书："
-                            android:textColor="@color/primary_text" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvBorrowCount"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="即将超期："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvComingOverdue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8"
+                                android:textColor="@color/accent" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="8" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="已经超期："
+                                android:textColor="@color/primary_text" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/tvhasOverdue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8"
+                                android:textColor="@color/red" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="最大可借图书："
-                            android:textColor="@color/primary_text" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvMaxBorrow"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="预约到书："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvOrder"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="8" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="委托到书："
+                                android:textColor="@color/primary_text" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/tvEntrust"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+                        </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="违章次数："
-                            android:textColor="@color/primary_text" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tvIllegalCount"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="荐购总数："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvRecommend"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="8" />
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="荐购处理："
+                                android:textColor="@color/primary_text" />
+
+                            <TextView
+                                android:id="@+id/tvRecommendHandle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <TextView
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="图书馆功能还未完善，因为自己这学期没有在图书馆借过书，所以没办法获得自己的借书信息，\n如果你希望app加入查看自己的借书信息，一键续借的功能，如果你最近在图书馆借过书，如果有超期的书更好，\n希望你可以帮助我完善app,谢谢！" />
+            android:layout_margin="5dp">
 
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:text="点击将你的学号和密码发给我"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnChange"
-            android:layout_width="wrap_content"
-            android:text="修改图书馆密码"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="wrap_content"
-            android:text="退出登陆"
-            android:layout_height="wrap_content" />
+            <LinearLayout
+                android:id="@+id/llBookList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </android.support.v7.widget.CardView>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="@color/primary"
+        fab:fab_addButtonColorPressed="@color/primary_dark"
+        fab:fab_addButtonPlusIconColor="@color/white"
+        fab:fab_labelStyle="@style/menu_labels_style">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@mipmap/exitlibrary"
+            fab:fab_size="mini"
+            fab:fab_title="@string/change_library_account" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_icon="@mipmap/changpwd"
+            fab:fab_size="mini"
+            fab:fab_title="@string/change_library_password" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+</RelativeLayout>

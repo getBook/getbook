@@ -23,7 +23,7 @@ public class GetLibraryBookGuanCangAsync extends BaseGetLibraryInfoAsyc<List<Lib
 
     @Override
     protected boolean needCookie() {
-        return true;
+        return false;
     }
 
     @Override

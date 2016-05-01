@@ -72,6 +72,7 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
 
     @Override
     public void onRefresh() {
+        librarySearchAdapter.clear();
         loadMoreView.setRefreshing();
         page = 0;
         llnodata.setVisibility(View.GONE);
@@ -84,7 +85,6 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
                 loadMoreView.setRefreshFinish();
                 llnodata.setVisibility(View.GONE);
                 loadMoreView.setVisibility(View.VISIBLE);
-                librarySearchAdapter.clear();
                 librarySearchAdapter.addAll(libraryBooks);
 
             }

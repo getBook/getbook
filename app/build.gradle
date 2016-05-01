@@ -23,7 +23,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':Zxing')
     //bmob-sdk ：Bmob的android sdk包
-
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile files('libs/jsoup-1.8.1.jar')
     compile files('libs/jsoup-1.8.1-javadoc.jar')
@@ -31,7 +30,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
         exclude module: 'support-v4'
@@ -47,4 +45,5 @@ dependencies {
     compile files('libs/org.apache.http.legacy.jar')
     compile files('libs/okhttp-2.4.0.jar')
     compile files('libs/okio-1.4.0.jar')
+    compile 'com.android.support:cardview-v7:22.2.1'
 }

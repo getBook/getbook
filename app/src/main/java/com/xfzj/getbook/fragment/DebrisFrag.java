@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
@@ -47,7 +48,7 @@ public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListe
 
     private int skip = 0;
     private int limit = 10;
-    private static final int MAX_NUM = 15;
+    private static final int MAX_NUM = Constants.day;
     private LoadMoreView loadMoreView;
     private LinearLayout llError;
     private Button btn;

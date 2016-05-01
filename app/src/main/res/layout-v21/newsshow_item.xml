@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:id="@+id/rl"
     android:background="?android:attr/selectableItemBackground"
+    android:minHeight="50dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -13,6 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignStart="@+id/tvDate"
         android:layout_marginRight="25dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/tvDate"
         android:padding="5dp"
         android:ellipsize="end"
@@ -27,10 +29,10 @@
         android:layout_centerVertical="true"
         android:textColor="@color/secondary_text" />
     <View
-        android:layout_alignBottom="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:alpha="0.5"
+        android:layout_alignParentBottom="true"
         android:background="@color/divider" />
         
 </RelativeLayout>

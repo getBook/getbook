@@ -16,6 +16,8 @@ import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.NavigationHeaderView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -42,7 +44,7 @@ public abstract class AppActivity extends AppCompatActivity {
             return new Thread(r, "ImageLoader#" + mCount.getAndIncrement());
         }
     };
-
+    private List<AppActivity> activities = new ArrayList<>();
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
             KEEP_ALIVE, TimeUnit.SECONDS,
@@ -64,7 +66,7 @@ public abstract class AppActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        addActivities(this);
         onSetContentView();
         ButterKnife.bind(this);
         onCreateView(savedInstanceState);
@@ -125,13 +127,16 @@ public abstract class AppActivity extends AppCompatActivity {
     }
 
     protected void exitApp() {
-        Intent i = new Intent(this, FlashActivity.class);
-        i.putExtra(FlashActivity.FROM, FlashActivity.EXITAPP);
-        startActivity(i);
-        finish();
+//        Intent i = new Intent(this, FlashActivity.class);
+//        i.putExtra(FlashActivity.FROM, FlashActivity.EXITAPP);
+//        startActivity(i);
+//        finish();
+        removeAllActivity();
+        
     }
 
     protected void exitAccount(String key, String value) {
+        removeAllActivity();
         Intent i = new Intent(this, FlashActivity.class);
         i.putExtra(FlashActivity.FROM, FlashActivity.EXITACCOUNT);
         if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value)) {
@@ -147,5 +152,28 @@ public abstract class AppActivity extends AppCompatActivity {
         BmobUser.logOut(getApplicationContext());
         ((BaseApplication) getApplication()).setUser(BmobUser.getCurrentUser(getApplicationContext(), User.class));
     }
+
+    /**
+     * 将启动的acitvity加进来
+     * @param appActivity
+     */
+    private void addActivities(AppActivity appActivity) {
+        if (null != appActivity) {
+            activities.add(appActivity);
+        }
+    }
+
+    /**
+     * 移除所有的activity
+     */
+    private void removeAllActivity() {
+        if (activities == null || activities.size() == 0) {
+            return;
+        }
+        for (AppActivity appActivity : activities) {
+            appActivity.finish();
+        }
+    }
+    
     
 }

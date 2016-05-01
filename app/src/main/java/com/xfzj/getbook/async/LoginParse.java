@@ -12,11 +12,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by zj on 2016/3/29.
  */
 
-public  class LoginParse {
+public class LoginParse {
 
     public static LibraryUserInfo parse(Context context, String result, String account, String passwd, String cookie) {
         SharedPreferencesUtils.saveLibraryLoginInfo(context, new LibraryInfo(account, passwd, cookie));
@@ -26,8 +29,14 @@ public  class LoginParse {
         Elements elements = element.getElementsByTag("TD");
         LibraryUserInfo libraryUserInfo = new LibraryUserInfo();
         String s = e.text();
-        s = s.replaceAll("，点击继续荐购", "");
-        libraryUserInfo.setBookInfo(s);
+        Pattern pattern = Pattern.compile("\\d+?");
+        Matcher matcher = pattern.matcher(s);
+        String[] strs = new String[6];
+        int j = 0;
+        while (matcher.find()) {
+            strs[j++] = matcher.group();
+        }
+        libraryUserInfo.setBookInfo(strs);
         for (int i = 0; i < elements.size(); i++) {
             Element element1 = elements.get(i);
             String str = element1.text();
