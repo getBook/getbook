@@ -164,7 +164,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
         etOld.setHint(R.string.card_query_passsword);
         etNew1.setVisibility(View.GONE);
         etNew2.setVisibility(View.GONE);
-        final Button btn = (Button) view.findViewById(R.id.btn);
+        final TextView btn = (TextView) view.findViewById(R.id.btn);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
         dialog.show();
@@ -173,7 +173,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
             public void onClick(View v) {
                 final String old = etOld.getText().toString();
                 if (TextUtils.isEmpty(old)) {
-                    MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.oldpassword)));
+                    MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.card_query_passsword)));
                     return;
                 }
                 final InputMethodManager manager = (InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
@@ -209,7 +209,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
         final EditText etOld = (EditText) view.findViewById(R.id.etOld);
         final EditText etNew1 = (EditText) view.findViewById(R.id.etNew1);
         final EditText etNew2 = (EditText) view.findViewById(R.id.etNew2);
-        final Button btn = (Button) view.findViewById(R.id.btn);
+        final TextView btn = (TextView) view.findViewById(R.id.btn);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
         dialog.show();
@@ -279,7 +279,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.chongzhi, null);
         final EditText etPassword = (EditText) view.findViewById(R.id.etPassword);
         final EditText etMoney = (EditText) view.findViewById(R.id.etMoney);
-        final Button btn = (Button) view.findViewById(R.id.btn);
+        final TextView btn = (TextView) view.findViewById(R.id.btn);
         ImageView iv = (ImageView) view.findViewById(R.id.ivTips);
         iv.setOnClickListener(new View.OnClickListener() {
             @Override

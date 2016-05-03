@@ -60,6 +60,12 @@ public class AppAnalytics {
     public static final String S_S = "score_success";
     public static final String C_L_C_P = "change_library_pwd";
     public static final String E_L_E_A = "exit_library_account";
+    public static final String C_R_B = "click_renew_book";
+    public static final String R_B_F = "renew_book_fail";
+    public static final String R_L_B = "recommend_library_book";
+    public static final String R_L_B_S = "recommend_library_book_success";
+    public static final String R_L_B_F= "recommend_library_book_fail";
+    public static final String C_R_B_H= "Click_Recomend_book_history";
     public static void onResume(AppActivity appActivity) {
         MobclickAgent.onResume(appActivity);
     }

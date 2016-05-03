@@ -15,7 +15,7 @@ public class GetLibraryMyInfo extends BaseGetLibraryInfoAsyc<LibraryUserInfo> {
 
     public GetLibraryMyInfo(Context context) {
         super(context);
-        setProgressDialog(null, context.getString(R.string.getting_library_info));
+        setProgressDialog(null, context.getString(R.string.getting_library_info),true);
     }
 
     @Override

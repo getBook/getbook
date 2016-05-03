@@ -36,14 +36,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
 
-        <Button
+        <TextView
             android:id="@+id/btn"
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/btn_chongzhi_selector"
             android:text="@string/ensure"
-            android:textColor="@color/white" />
+            android:textColor="@drawable/tv_select_textcolor" />
 
     </RelativeLayout>
 

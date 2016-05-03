@@ -65,12 +65,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
+        <TextView
+            android:padding="10dp"
             android:id="@+id/btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/btn_chongzhi_selector"
+            android:textColor="@drawable/tv_select_textcolor"
             android:text="@string/login" />
     </RelativeLayout>
 </LinearLayout>

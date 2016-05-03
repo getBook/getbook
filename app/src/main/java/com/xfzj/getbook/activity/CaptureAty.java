@@ -13,6 +13,7 @@ import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.result.ParsedResultType;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.fragment.RecommendFrag;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
@@ -76,8 +77,12 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
                 MyToast.show(getApplicationContext(), "扫码失败，请重试");
                 return;
             }
-
-            startActivity(rawResult.getText());
+            String from = getIntent().getStringExtra(FROM);
+            if(TextUtils.isEmpty(from)) {
+                startPublishActivity(rawResult.getText());
+            } else if (from.equals(RecommendFrag.class.getName())) {
+                startRecommendFrag(rawResult.getText());
+            }
 
 
         }else {
@@ -87,7 +92,14 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
 
     }
 
-    private void startActivity(String text) {
+    private void startRecommendFrag(String text) {
+        Intent intent = new Intent(this, PublishSecondBookActivity.class);
+        intent.putExtra(RecommendFrag.ISBN, text);
+        setResult(RecommendFrag.SCAN, intent);
+        finish();
+    }
+
+    private void startPublishActivity(String text) {
         Intent intent = new Intent(this, PublishSecondBookActivity.class);
         intent.putExtra(com.xfzj.getbook.activity.PublishSecondBookActivity.ISBN, text);
         intent.putExtra(com.xfzj.getbook.activity.PublishSecondBookActivity.FROM, FROM);

@@ -22,12 +22,13 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncLoader;
 import com.xfzj.getbook.common.DownloadFile;
-import com.xfzj.getbook.db.DownLoadFileManager;
+import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.listview.BaseListView;
 import com.xfzj.getbook.views.listview.BaseListViewAdapter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +41,6 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
     private BaseListView lv;
     private LinearLayout llNodata;
     private DownloadAdapter downloadAdapter;
-    private DownLoadFileManager downLoadFileManager;
     private FloatingActionButton fab;
     public DownloadFrag() {
 
@@ -78,7 +78,6 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         llNodata = (LinearLayout) view.findViewById(R.id.llnodata);
         downloadAdapter = new DownloadAdapter(getActivity());
         lv.setAdapter(downloadAdapter);
-        downLoadFileManager = new DownLoadFileManager(getActivity());
         if (null == savedInstanceState) {
             getLoaderManager().initLoader(1, null, this);
         }
@@ -94,11 +93,38 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         return new BaseAsyncLoader<List<DownloadFile>>(getActivity()) {
             @Override
             protected List<DownloadFile> doInBackground() {
-                return downLoadFileManager.findAll();
+                List<DownloadFile> downloadFiles = new ArrayList<>();
+                File f= FileUtils.getDownloadLibrary(getActivity());
+                File[] files = f.listFiles();
+                for (File file : files) {
+                    DownloadFile downloadFile;
+                    String uri=file.getAbsolutePath();
+                    String filename = file.getName();
+                    if (uri.contains("doc") || uri.contains("docx")) {
+                        downloadFile = new DownloadFile(file.getPath(), filename,
+                                0);
+                    } else if (uri.contains("xls") || uri.contains("xlsx")) {
+                        downloadFile = new DownloadFile(file.getPath(), filename,
+                                1);
+                    } else if (uri.contains("ppt") || uri.contains("pptx")) {
+                        downloadFile = new DownloadFile(file.getPath(), filename,
+                                2);
+                    } else if (uri.contains("jpg") || uri.contains("png") || uri.contains("jpeg")) {
+                        downloadFile = new DownloadFile(file.getPath(), filename,
+                                3);
+                    } else {
+                        downloadFile = new DownloadFile(file.getPath(), filename,
+                                4);
+                    }
+                    downloadFiles.add(downloadFile);
+                }
+
+
+                return downloadFiles;
             }
         };
     }
-
+   
     @Override
     public void onLoadFinished(Loader<List<DownloadFile>> loader, List<DownloadFile> data) {
         if (null == data || data.size() == 0) {
@@ -144,7 +170,7 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 downloadAdapter.delete(position);
-                downLoadFileManager.delete(downloadFile);
+                new File(downloadFile.path).delete();
             }
         }).setNegativeButton(R.string.cancel, null).create().show();
 

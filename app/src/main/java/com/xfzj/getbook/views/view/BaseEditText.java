@@ -129,7 +129,13 @@ public class BaseEditText extends FrameLayout implements TextWatcher {
         editText.setMaxLines(maxLines);
     }
 
+    public void setError(String error) {
+        til.setError(error);
+    }
 
+    public void setErrorEnable(boolean b) {
+        til.setErrorEnabled(b);
+    }
     private void isShowWordCount() {
         if (maxLength != -1 && showWordCount) {
             rlCount.setVisibility(VISIBLE);
@@ -150,6 +156,10 @@ public class BaseEditText extends FrameLayout implements TextWatcher {
         editText.setBackgroundResource(editTextStyle);
     }
 
+    public void setEditTextInputType(int tyepe) {
+        editText.setInputType(tyepe);
+    }
+
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;
         isShowWordCount();
@@ -165,7 +175,9 @@ public class BaseEditText extends FrameLayout implements TextWatcher {
         this.text = text;
         editText.setText(text);
     }
-
+    public void setText(String text) {
+        editText.setText(text);
+    }
     public void setHintColor(int hintColor) {
         this.hintColor = hintColor;
         editText.setHintTextColor(hintColor);
@@ -196,7 +208,6 @@ public class BaseEditText extends FrameLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-
         editStart = editText.getSelectionStart();
         editEnd = editText.getSelectionEnd();
 
@@ -218,5 +229,10 @@ public class BaseEditText extends FrameLayout implements TextWatcher {
             }
         }
         editText.addTextChangedListener(this);
+    }
+
+    @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        editText.setOnFocusChangeListener(l);
     }
 }

@@ -31,7 +31,9 @@ public class BaseHttp {
     public static final String CHANGELIBRARYPWD = "http://lib2.nuist.edu.cn/reader/change_passwd_result.php";
     public static final String GETLIBRARYBOOKGUANCANGINFO = "http://lib2.nuist.edu.cn/opac/ajax_";
     public static final String GETBOOKLIST = "http://lib2.nuist.edu.cn/reader/book_lst.php";
-    
+    public static final String RENEWBOOK = "http://lib2.nuist.edu.cn/reader/ajax_renew.php?";
+    public static final String GETASORDLIST = "http://lib2.nuist.edu.cn/reader/asord_lst.php";
+    public static final String RECOMMENDBOOK = "http://lib2.nuist.edu.cn/asord/asord_redr.php?click_type=commit";
 
     public BaseHttp() {
 

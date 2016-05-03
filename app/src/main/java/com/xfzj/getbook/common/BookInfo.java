@@ -27,9 +27,18 @@ public class BookInfo extends BmobObject{
     private String image;
     
     private BmobFile bmobImage;
-
+    @Expose
+    private String pubdate;
     public String[] getAuthor() {
         return author;
+    }
+
+    public String getPubdate() {
+        return pubdate;
+    }
+
+    public void setPubdate(String pubdate) {
+        this.pubdate = pubdate;
     }
 
     public void setAuthor(String[] author) {

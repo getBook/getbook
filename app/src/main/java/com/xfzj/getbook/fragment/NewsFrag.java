@@ -28,7 +28,7 @@ public class NewsFrag extends BaseFragment implements NewsShowFrag.OnNewsClick, 
     private NewsDetailFrag newsDetailFrag;
     private DownloadFrag downloadFrag;
     private FloatingActionButton fab;
-    public static final String ARG_PARAM1 = "param1";
+    public static final String ARG_PARAM1 = "NewsFrag.class";
 
     private ImageView iv;
     private String mParam1;

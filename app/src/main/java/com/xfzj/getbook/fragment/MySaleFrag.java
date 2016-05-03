@@ -91,10 +91,11 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
             return;
         }
         pd = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        pd.setCancelable(true);
         if (mParam1.equals(COLUMNSECONDBOOK)) {
-            queryAction.querySelfSecondBook(user.getSno());
+            queryAction.querySelfSecondBook(user.getObjectId());
         } else if (mParam1.equals(COLUMNDEBRIS)) {
-            queryAction.querySelfDebris(user.getSno());
+            queryAction.querySelfDebris(user.getObjectId());
         } else {
             getActivity().finish();
         }

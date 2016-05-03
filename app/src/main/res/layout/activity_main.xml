@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -24,6 +25,12 @@
             android:layout_height="match_parent">
         </FrameLayout>
         <include layout="@layout/flaoting_button" />
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/container"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        />
     </LinearLayout>
 
     <android.support.design.widget.NavigationView

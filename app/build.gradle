@@ -8,8 +8,8 @@ android {
         applicationId "com.xfzj.getbook"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
     buildTypes {
         release {
@@ -18,7 +18,7 @@ android {
         }
     }
 }
-
+repositories{ flatDir { dirs 'libs' }}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':Zxing')
@@ -46,4 +46,8 @@ dependencies {
     compile files('libs/okhttp-2.4.0.jar')
     compile files('libs/okio-1.4.0.jar')
     compile 'com.android.support:cardview-v7:22.2.1'
+    compile(name:'feedbackSdk', ext:'aar')//主反馈功能
+    compile files('libs/securityguard-3.1.27.jar') //提供数据统计支持
+    compile files('libs/utdid4all-1.0.4.jar') //提供数据统计支持
+    compile files('libs/alisdk-ut-5.jar') //提供数据统计支持
 }

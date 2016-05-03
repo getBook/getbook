@@ -1,43 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:padding="2dp"
-        android:layout_toLeftOf="@+id/btnBorrow">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:textColor="@color/primary_text"
-            android:textSize="14sp"
-            android:id="@+id/tvName"
+        <LinearLayout
+            android:id="@+id/rl1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="left"
-            tools:text="dfdsfdfdsf gfdgfdgfdgfdgfdgfdgfdgfdgfdgfffffffffffffffffffffffffffsf" />
+            android:layout_weight="1"
 
-        <TextView
-            android:textSize="12sp"
-            android:textColor="@color/secondary_text"
-            android:id="@+id/tvAuthor"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="left"
+
+                android:maxLines="1"
+                android:textColor="@color/primary_text"
+                android:textSize="14sp"
+                tools:text="dfdsfd多数fsf" />
+
+            <TextView
+                android:id="@+id/tvAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:maxLines="1"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                tools:text="dfdsfdfdsf" />
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:id="@+id/rl2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tvName"
-            android:gravity="left"
-            tools:text="dfdsfdfdsf gfdgfdgfdgfdgfdgfdgfdgfdgfdgfffffffffffffffffffffffffffsf" />
-    </RelativeLayout>
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:orientation="vertical"
+            android:padding="2dp">
 
-    <Button
-        android:id="@+id/btnBorrow"
-        android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvBorrowDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textColor="@color/secondary_text"
+                android:textSize="10sp"
+                tools:text="dfdsfdfdsf" />
+
+            <TextView
+                android:id="@+id/tvReturnDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="left"
+                android:textColor="@color/secondary_text"
+                android:textSize="10sp"
+                tools:text="dfdsfdfdsf" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnBorrow"
+            android:layout_width="45dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/tv_select_nosolid"
+            android:padding="2dp"
+            android:text="续借"
+            android:textColor="@drawable/tv_select_textcolor" />
+
+    </LinearLayout>
+
+    <TextView
+       android:visibility="gone"
+        android:id="@+id/tvFeedBack"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="续借" />
-</RelativeLayout>
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:src="@color/divider" />
+</LinearLayout>

@@ -18,6 +18,7 @@ public abstract class BaseGetLibraryInfoAsyc<T> extends BaseAsyncTask<String, Vo
     protected Document document;
     protected LibraryHttpImp libraryHttpImp;
     protected String cookie;
+    protected byte[] bytes;
     public BaseGetLibraryInfoAsyc(Context context) {
         super(context);
     }
@@ -37,7 +38,7 @@ public abstract class BaseGetLibraryInfoAsyc<T> extends BaseAsyncTask<String, Vo
             }
             libraryHttpImp = new LibraryHttpImp();
             httpHelper = new HttpHelper(libraryHttpImp);
-            byte[] bytes = httpHelper.DoConnection(params[0], cookie);
+            bytes = httpHelper.DoConnection(params[0], cookie);
             String result = new String(bytes, "utf-8");
             document = Jsoup.parse(result);
             return parse(params,result);

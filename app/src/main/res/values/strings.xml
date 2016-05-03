@@ -182,4 +182,27 @@
     <string name="changeaccount">更改账号</string>
     <string name="change_library_password">修改图书馆密码</string>
     <string name="change_library_account">切换图书馆账号</string>
+    <string name="borrowdate">借阅日期:</string>
+    <string name="returndate">应还日期:</string>
+    <string name="renew_fail">续借失败，请重试</string>
+    <string name="renew">借阅</string>
+    <string name="recommenthitory">荐购历史</string>
+    <string name="recommendbook">荐购图书</string>
+    <string name="recom">荐购</string>
+    <string name="no_recommend">您还未荐购过任何书籍...</string>
+    <string name="bookcode">ISBN</string>
+    <string name="bookname">题名，必填</string>
+    <string name="author">责任者，必填</string>
+    <string name="publisher">出版社</string>
+    <string name="publishDate">出版年</string>
+    <string name="recommend_reason">推荐理由</string>
+    <string name="bookname_not_null">题名不能为空</string>
+    <string name="author_not_null">责任者不能为空</string>
+    <string name="opencamera_wait">正在打开摄像头，请稍等</string>
+    <string name="recommendfail">荐购失败</string>
+    <string name="feedback">反馈建议</string>
+    <string name="check_update">检查更新</string>
+    <string name="aboutconten">版本号：1.1\n功能：\n1、发布二手书物品，快把闲置物品挂上去把\n2、浏览校园公告，从此再也不需要登教务处啦\n3、图书馆搜索、借阅、荐购一应俱全，方便到不行\n4、成绩查询，一查到底\n5、接入一卡通，该有的都有\nPs:\这款APP从设计、开发到测试，只有我一个人，难免会有bug，所以当您遇到问题或者看哪里不爽，请给我反馈建议，我会及时回复，谢谢！</string>
+    <string name="feedback_unread">你有%1$d反馈建议回复未读</string>
+    <string name="thismsgfrom">\n——本条消息来自</string>
 </resources>

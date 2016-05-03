@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -22,15 +23,18 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.DownLoadSevice;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
-import com.xfzj.getbook.db.DownLoadFileManager;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.AppAnalytics;
+import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.views.view.BaseScrollView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import java.io.File;
+import java.io.FileFilter;
 
 /**
  * Created by zj on 2016/3/21.
@@ -50,7 +54,10 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
 
     private FloatingActionButton fab;
     private BaseScrollView scrollView;
-
+    /**
+     * 通知栏的id
+     */
+    private int i=0;
 
     public NewsDetailFrag() {
 
@@ -85,7 +92,7 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_news_detail, container, false);
         scrollView = (BaseScrollView) view.findViewById(R.id.scrollView);
         scrollView.setOnScrollCallBack(this);
-        
+
         tvContent = (TextView) view.findViewById(R.id.tvContent);
         llError = (LinearLayout) view.findViewById(R.id.llError);
         btn = (Button) view.findViewById(R.id.btn);
@@ -117,7 +124,7 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
     @Override
     public void onScroll(boolean b) {
         if (null == fab) {
-            return ;
+            return;
         }
         if (b) {
             fab.setVisibility(View.GONE);
@@ -182,13 +189,13 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
                 @Override
                 public void onClick(View widget) {
                     AppAnalytics.onEvent(getActivity(), AppAnalytics.C_SA_DOWN);
-                    DownLoadFileManager dm = new DownLoadFileManager(getActivity());
-                    if (dm.find(sb.toString())) {
+                    if (isDownloaded(sb.toString())) {
                         MyToast.show(getActivity(), sb.toString() + getActivity().getString(R.string.has_download));
                     } else {
                         Intent intent = new Intent(getActivity(), DownLoadSevice.class);
                         intent.putExtra(DownLoadSevice.DOWNLOADURL, link);
                         intent.putExtra(DownLoadSevice.DOWNLOADFILENAME, sb.toString());
+                        intent.putExtra(DownLoadSevice.NOTIFY, i++);
                         getActivity().startService(intent);
 
                     }
@@ -200,6 +207,28 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
         tvContent.setLinksClickable(true);
         tvContent.setMovementMethod(LinkMovementMethod.getInstance());
         tvContent.setText(spannableStringBuilder);
+    }
+
+    private boolean isDownloaded(final String s) {
+        File f = FileUtils.getDownloadLibrary(getActivity());
+        if (!f.exists() || TextUtils.isEmpty(s)) {
+            return false;
+        }
+        File[] fs = f.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.getName().contains(s)) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        if (null == fs || fs.length == 0) {
+            return false;
+        }
+        return true;
+
+
     }
 
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.xfzj.getbook.views.view.BaseEditText
+                    android:id="@+id/betIsbn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:hint="@string/bookcode" />
+
+                <ImageView
+                    android:id="@+id/ivScan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/scan_iv_selector" />
+            </LinearLayout>
+
+            <com.xfzj.getbook.views.view.BaseEditText
+                android:id="@+id/betName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="@string/bookname" />
+
+            <com.xfzj.getbook.views.view.BaseEditText
+                android:id="@+id/betAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="@string/author" />
+
+            <com.xfzj.getbook.views.view.BaseEditText
+                android:id="@+id/betPublisher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="@string/publisher" />
+
+            <com.xfzj.getbook.views.view.BaseEditText
+                android:id="@+id/betPublisherDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="@string/publishDate" />
+
+            <RadioGroup
+                android:id="@+id/rg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="语种:" />
+
+                <RadioButton
+                    android:id="@+id/rbC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="中文" />
+
+                <RadioButton
+                    android:id="@+id/rbU"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="西文" />
+            </RadioGroup>
+
+            <com.xfzj.getbook.views.view.BaseEditText
+                android:id="@+id/betRecommend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hint="@string/recommend_reason"
+                app:maxWordCount="120"
+                app:showWordCount="true" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+   

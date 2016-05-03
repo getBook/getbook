@@ -94,12 +94,12 @@ public class QueryAction extends BaseAction {
     /**
      * 查询自己发布的二手书
      *
-     * @param sno
+     * @param objectId
      */
-    public void querySelfSecondBook(String sno) {
+    public void querySelfSecondBook(String objectId) {
         BmobQuery<SecondBook> query = new BmobQuery<>();
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
-        userBmobQuery.addWhereEqualTo("sno", sno);
+        userBmobQuery.addWhereEqualTo("objectId", objectId);
         query.addWhereMatchesQuery("user", "_User", userBmobQuery);
         query.include("bookInfo");
         querySecondBook(query, 0, 0);
@@ -108,12 +108,12 @@ public class QueryAction extends BaseAction {
     /**
      * 查询自己发布的杂货铺
      *
-     * @param sno
+     * @param objectId
      */
-    public void querySelfDebris(String sno) {
+    public void querySelfDebris(String objectId) {
         BmobQuery<Debris> query = new BmobQuery<>();
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
-        userBmobQuery.addWhereEqualTo("sno", sno);
+        userBmobQuery.addWhereEqualTo("objectId", objectId);
         query.addWhereMatchesQuery("user", "_User", userBmobQuery);
         queryDebris(query, 0, 0);
     }

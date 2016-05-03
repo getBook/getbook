@@ -14,9 +14,10 @@
         android:maxLength="6"
         android:maxLines="1" />
 
-    <Button
+    <TextView
+        android:padding="10dp"
         android:id="@+id/btnEnsure"
-        android:background="@color/primary"
+        android:textColor="@drawable/tv_select_textcolor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

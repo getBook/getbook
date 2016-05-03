@@ -15,9 +15,9 @@ import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.xfzj.getbook.common.DownloadFile;
-import com.xfzj.getbook.db.DownLoadFileManager;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
+import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 
@@ -32,6 +32,11 @@ import java.util.regex.Pattern;
 public class DownLoadSevice extends Service {
     public static final String DOWNLOADURL = "downurl";
     public static final String DOWNLOADFILENAME = "downfilename";
+    public static final String NOTIFY = "notify";
+    /**
+     * 通知栏的id
+     */
+    private int i;
     private Notification notification;
     private NotificationManager manager;
     private String uri;
@@ -51,7 +56,7 @@ public class DownLoadSevice extends Service {
                             "100%");
                     notification.contentView.setProgressBar(R.id.pb, 100, 100,
                             false);
-                    manager.notify(0, notification);
+                    manager.notify(i, notification);
                     MyToast.show(getApplicationContext(), getString(R.string.downoad_complete));
                     if (uri.contains("doc") || uri.contains("docx")) {
                         downloadFile = new DownloadFile(file.getPath(), filename,
@@ -69,10 +74,6 @@ public class DownLoadSevice extends Service {
                         downloadFile = new DownloadFile(file.getPath(), filename,
                                 4);
                     }
-                    DownLoadFileManager downLoadFileManager = new DownLoadFileManager(
-                            getApplicationContext());
-                    downLoadFileManager.insert(downloadFile);
-
                     break;
 
                 case DOWNLOADING:
@@ -106,6 +107,7 @@ public class DownLoadSevice extends Service {
         if (null == intent) {
             return START_NOT_STICKY;
         }
+        i = intent.getIntExtra(NOTIFY,0);
         uri = intent.getStringExtra(DOWNLOADURL);
         if (null == uri || "".equals(uri)) {
 
@@ -163,7 +165,7 @@ public class DownLoadSevice extends Service {
                     if (Environment.getExternalStorageState().equals(
                             Environment.MEDIA_MOUNTED)) {
                         try {
-                            file = getDownloadFile();
+                            file = FileUtils.getDownloadFile(getApplicationContext(), uri, filename);
                             fos = new FileOutputStream(file);
                             Intent intent = new Intent("android.intent.action.VIEW");
                             if (MyUtils.isPicture(uri)) {
@@ -190,7 +192,7 @@ public class DownLoadSevice extends Service {
 
                             notification.contentView.setTextViewText(
                                     R.id.tvFileName, filename);
-                            manager.notify(0, notification);
+                            manager.notify(i, notification);
                         } catch (FileNotFoundException e) {
                             MyToast.show(getApplicationContext(), getString(R.string.create_file_fail));
                             cancel(true);
@@ -221,7 +223,7 @@ public class DownLoadSevice extends Service {
                             String.valueOf(values[0]));
                     notification.contentView.setProgressBar(R.id.pb, 100,
                             values[0], false);
-                    manager.notify(0, notification);
+                    manager.notify(i, notification);
 
                     super.onProgressUpdate(values);
                 }
@@ -233,25 +235,5 @@ public class DownLoadSevice extends Service {
         }
 
         return super.onStartCommand(intent, flags, startId);
-    }
-
-
-    public File getDownloadFile() throws IOException {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File file = Environment.getExternalStorageDirectory();
-            File file1 = new File(file.getPath() + "/" + getString(R.string.app_name) + "downloads");
-
-            if (!file1.exists()) {
-                file1.mkdirs();
-            }
-
-            String flag = MyUtils.getFlag(uri);
-            File file2 = new File(file1, filename + flag);
-            if (!file2.exists()) {
-                file2.createNewFile();
-            }
-            return file2;
-        }
-        return null;
     }
 }

@@ -242,33 +242,44 @@ public class LoginAction extends BaseAction {
      * 登陆bmob
      */
     private void loginBmob(final User user, final CallBack callBack, final boolean isModify) {
-        user.login(context, new SaveListener() {
-            @Override
-            public void onSuccess() {
-                newUser.setObjectId(user.getObjectId());
-                baseApplication.setUser(newUser);
-                SharedPreferencesUtils.saveUser(context, newUser);
-                if (null != callBack) {
-                    callBack.onSuccess();
-                }
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-                MyLog.print("loginBmob", "onFailure" + s + i);
-                if (isModify && i == 101) {
-                    if (null != callBack) {
-                        callBack.onModify();
+        try {
+            user.login(context, new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    if (null == newUser) {
+                        if (null != callBack) {
+                            callBack.onFail();
+                        }
+                        return;
                     }
-
-                } else {
+                    newUser.setObjectId(user.getObjectId());
+                    newUser.setEmail(user.getEmail());
+                    baseApplication.setUser(newUser);
+                    SharedPreferencesUtils.saveUser(context, newUser);
                     if (null != callBack) {
-                        callBack.onFail();
-
+                        callBack.onSuccess();
                     }
                 }
-            }
-        });
+
+                @Override
+                public void onFailure(int i, String s) {
+                    MyLog.print("loginBmob", "onFailure" + s + i);
+                    if (isModify && i == 101) {
+                        if (null != callBack) {
+                            callBack.onModify();
+                        }
+
+                    } else {
+                        if (null != callBack) {
+                            callBack.onFail();
+
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            
+        }
     }
 
     private String getPassword(User user) {

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,10 +28,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
+import com.alibaba.sdk.android.feedback.util.IWxCallback;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.UploadAction;
@@ -41,9 +44,9 @@ import com.xfzj.getbook.activity.LoginAty;
 import com.xfzj.getbook.activity.SearchAty;
 import com.xfzj.getbook.async.LoginAsync;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.fragment.BaseLibraryFrag;
 import com.xfzj.getbook.fragment.CardFrag;
 import com.xfzj.getbook.fragment.HomeFrag;
-import com.xfzj.getbook.fragment.LibraryFrag;
 import com.xfzj.getbook.fragment.NewsFrag;
 import com.xfzj.getbook.fragment.PostFrag;
 import com.xfzj.getbook.fragment.ScoreFrag;
@@ -57,7 +60,9 @@ import com.xfzj.getbook.views.view.NavigationHeaderView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import cn.bmob.v3.BmobQuery;
@@ -77,7 +82,8 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     private static File IMAGE_CLIP_PATH;
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolbar;
-
+    @Bind(R.id.ll)
+    LinearLayout ll;
     private Toolbar toolbar;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fm;
@@ -92,7 +98,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     private HomeFrag homeFrag;
     private BaseMySaleFrag baseMySaleFrag;
     private NewsFrag newsFrag;
-    private LibraryFrag libraryFrag;
+    private BaseLibraryFrag baseLibraryFrag;
     private CardFrag cardFrag;
     private ScoreFrag scoreFrag;
     public Menu menu;
@@ -141,7 +147,41 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
         //bmob自动更新
         BmobUpdateAgent.update(this);
+        getUnreadFeedBack();
     }
+
+    private void getUnreadFeedBack() {
+        FeedbackAPI.getFeedbackUnreadCount(getApplicationContext(), null, new IWxCallback() {
+            @Override
+            public void onSuccess(Object... objects) {
+                if (null != objects[0]) {
+                    Integer i = (Integer) objects[0];
+                    if (i > 0) {
+                        Snackbar snackbar = Snackbar.make(ll, getString(R.string.feedback_unread, i), Snackbar.LENGTH_LONG).setAction("查看", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openFeedBack();
+                            }
+                        });
+                        snackbar.getView().setBackgroundColor(Color.WHITE);
+                        snackbar.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+
+            }
+
+            @Override
+            public void onProgress(int i) {
+
+            }
+        });
+
+    }
+
     private void setDrawerToggle() {
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 toolbar, R.string.secondbook, R.string.debris) {
@@ -166,7 +206,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
 
     @Override
     public void onBackPressed() {
-        if (null != newsFrag) {
+        if (null != newsFrag && newsFrag.isVisible()) {
             FragmentManager cfm = newsFrag.getChildFragmentManager();
             if (null != cfm && cfm.getBackStackEntryCount() > 1) {
                 cfm.popBackStack();
@@ -176,8 +216,22 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         } else if (null != baseMySaleFrag && baseMySaleFrag.isVisible() && !baseMySaleFrag.isOriginState()) {
             baseMySaleFrag.setVisibilty(View.GONE);
 
+        } else if (null != baseLibraryFrag && baseLibraryFrag.isVisible()) {
+            FragmentManager cfm = baseLibraryFrag.getChildFragmentManager();
+            if (null != cfm && cfm.getBackStackEntryCount() > 1) {
+                cfm.popBackStack();
+                setbaseLibraryFragVisibility();
+            } else {
+                super.onBackPressed();
+            }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void setbaseLibraryFragVisibility() {
+        if (null != baseLibraryFrag && baseLibraryFrag.isVisible() && !baseLibraryFrag.isOriginState()) {
+            baseLibraryFrag.setVisibilty(View.GONE);
         }
     }
 
@@ -187,6 +241,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         if (null != baseMySaleFrag && baseMySaleFrag.isVisible() && !baseMySaleFrag.isOriginState()) {
             baseMySaleFrag.setVisibilty(View.GONE);
         }
+//        setbaseLibraryFragVisibility();
         switch (menuItem.getItemId()) {
             case R.id.menum_home:
                 toolbar.setTitle(R.string.app_name);
@@ -222,18 +277,16 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 toolbar.setTitle(R.string.grades);
                 initScoreFrag();
                 break;
-            case R.id.menum_post:
-                AppAnalytics.onEvent(this, AppAnalytics.C_T);
-                toolbar.setTitle(R.string.tree);
-                initPostFrag();
-//                startActivity(new Intent(this, PublishPostAty.class));
-                
-                break;
+//            case R.id.menum_post:
+//                AppAnalytics.onEvent(this, AppAnalytics.C_T);
+//                toolbar.setTitle(R.string.tree);
+//                initPostFrag();
+////                startActivity(new Intent(this, PublishPostAty.class));
+//
+//                break;
         }
         drawerLayout.closeDrawers();
         getColor(menuItem);
-
-
         return true;
     }
 
@@ -271,14 +324,16 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     }
 
     private void initLibraryFrag() {
-        libraryFrag = (LibraryFrag) fm.findFragmentByTag(LibraryFrag.ARG_PARAM1);
-        if (null == libraryFrag || libraryFrag.isDetached()) {
-            libraryFrag = LibraryFrag.newInstance(LibraryFrag.ARG_PARAM1);
+        baseLibraryFrag = (BaseLibraryFrag) fm.findFragmentByTag(BaseLibraryFrag.ARG_PARAM1);
+        if (null == baseLibraryFrag || baseLibraryFrag.isDetached()) {
+            baseLibraryFrag = BaseLibraryFrag.newInstance(BaseLibraryFrag.ARG_PARAM1);
+            baseLibraryFrag.initToolbar(baseToolbar);
         }
-        if (!frags.contains(libraryFrag)) {
-            frags.add(libraryFrag);
+        if (!frags.contains(baseLibraryFrag)) {
+            frags.add(baseLibraryFrag);
         }
-        showFrag(libraryFrag, LibraryFrag.ARG_PARAM1);
+
+        showFrag(baseLibraryFrag, BaseLibraryFrag.ARG_PARAM1);
     }
 
     private void initHomeFrag() {
@@ -401,7 +456,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         final AlertDialog ad = builder.setTitle(getString(R.string.sethuaname)).setView(view).setCancelable(cancelable).create();
         ad.show();
         final EditText edtHuaName = (EditText) view.findViewById(R.id.edtHuaName);
-        Button btnEnsure = (Button) view.findViewById(R.id.btnEnsure);
+        TextView btnEnsure = (TextView) view.findViewById(R.id.btnEnsure);
         btnEnsure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -427,7 +482,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                     @Override
                     public void onSuccess() {
                         SharedPreferencesUtils.saveHuaName(getApplicationContext(), huaName);
-                        user.setHuaName(huaName);
+                        baseApplication.setUser(user);
                         alertDialog.dismiss();
                     }
 
@@ -544,9 +599,25 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 Intent intent = new Intent(MainActivity.this, SearchAty.class);
                 startActivity(intent);
                 break;
-
+            case R.id.about:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(R.string.aboutconten).setTitle(R.string.about).setIcon(R.mipmap.ic_launcher).create().show();
+                break;
+            case R.id.update:
+                BmobUpdateAgent.forceUpdate(MainActivity.this);
+                break;
+            case R.id.feedback:
+                openFeedBack();
+                break;
         }
         return false;
+    }
+
+    private void openFeedBack() {
+        Map<String, String> map = new HashMap<>();
+        map.put("avatar", SharedPreferencesUtils.getUserHeader(getApplicationContext()));
+        FeedbackAPI.setUICustomInfo(map);
+        FeedbackAPI.openFeedbackActivity(getApplicationContext());
     }
 
     @Override
@@ -625,7 +696,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                     });
                     queryAction.queryUserSelf(user);
                 }
-
+                break;
         }
     }
 
@@ -642,7 +713,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
      */
     protected void getColor(MenuItem menuItem) {
         final int backGroundColor = ((ColorDrawable) navigationView.getBackground()).getColor();
-        if(null==navigationView.getItemTextColor()){
+        if (null == navigationView.getItemTextColor()) {
             return;
         }
         final int textColor = navigationView.getItemTextColor().getDefaultColor();
@@ -651,7 +722,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         builder.generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                if(palette==null||null==palette.getVibrantSwatch()){
+                if (palette == null || null == palette.getVibrantSwatch()) {
                     return;
                 }
                 int checkedTextColor = palette.getVibrantSwatch().getRgb();

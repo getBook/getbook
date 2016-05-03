@@ -14,10 +14,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -53,7 +53,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LibraryFrag extends BaseFragment {
-    public static final String ARG_PARAM1 = "LibraryFrag.class";
+    public static final String ARG_PARAM1 = "AsordFrag.class";
 
 
     @Bind(R.id.userHeader)
@@ -80,12 +80,16 @@ public class LibraryFrag extends BaseFragment {
     TextView tvRecommendHandle;
     @Bind(R.id.llBookList)
     LinearLayout llBookList;
-    @Bind(R.id.ll)
-    LinearLayout ll;
+    @Bind(R.id.rl)
+    RelativeLayout rl;
     @Bind(R.id.fab1)
     FloatingActionButton fab1;
     @Bind(R.id.fab2)
     FloatingActionButton fab2;
+    @Bind(R.id.fab3)
+    FloatingActionButton fab3;
+    @Bind(R.id.fab4)
+    FloatingActionButton fab4;
     @Bind(R.id.fab)
     FloatingActionsMenu fab;
     private boolean verify = true;
@@ -93,8 +97,20 @@ public class LibraryFrag extends BaseFragment {
     private LibraryInfo libraryInfo;
     private GetLibraryCaptureAsync.Capture c;
     private boolean isLoginSUccess = false;
-    private String mParam1;
+    public String mParam1;
+    /**
+     * 续借的验证码
+     */
+    private String verfy;
+    private OnFabClickLinstener onFabClickLinstener;
 
+    public String getVerfy() {
+        return verfy;
+    }
+
+    public void setVerfy(String verfy) {
+        this.verfy = verfy;
+    }
 
     public static LibraryFrag newInstance(String param1) {
         LibraryFrag fragment = new LibraryFrag();
@@ -154,7 +170,8 @@ public class LibraryFrag extends BaseFragment {
                 }
                 for (BorrowBook borrowBook : borrowBooks) {
                     BookListView bookListView = new BookListView(getActivity());
-                    bookListView.update(borrowBook);
+                    bookListView.update(LibraryFrag.this,borrowBook);
+                    
                     llBookList.addView(bookListView);
                 }
             }
@@ -186,11 +203,11 @@ public class LibraryFrag extends BaseFragment {
         final EditText etOld = (EditText) view.findViewById(R.id.etOld);
         final EditText etNew1 = (EditText) view.findViewById(R.id.etNew1);
         final EditText etNew2 = (EditText) view.findViewById(R.id.etNew2);
-        final Button btn = (Button) view.findViewById(R.id.btn);
+        final TextView btn = (TextView) view.findViewById(R.id.btn);
         builder.setView(view);
         etOld.setHint("图书馆旧密码");
-        etNew1.setHint("图书馆新密码");
-        etNew2.setHint("图书馆新密码");
+        etNew1.setHint("图书馆新密码,只能是数字和字母");
+        etNew2.setHint("图书馆新密码,只能是数字和字母");
         etOld.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         etNew1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         etNew2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -239,8 +256,9 @@ public class LibraryFrag extends BaseFragment {
     private void exitLibrary() {
         AppAnalytics.onEvent(getActivity(), AppAnalytics.E_L_E_A);
         SharedPreferencesUtils.clearLibrary(getActivity());
-        getMyInfo();
-        ll.setVisibility(View.GONE);
+        openLoginDialog();
+        rl.setVisibility(View.GONE);
+        isLoginSUccess = false;
     }
 
     @Override
@@ -251,9 +269,12 @@ public class LibraryFrag extends BaseFragment {
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
         if (!isLoginSUccess && !hidden) {
             openLoginDialog();
+            rl.setVisibility(View.GONE);
+        }
+        if (null != fab) {
+            fab.collapseImmediately();
         }
     }
 
@@ -291,7 +312,7 @@ public class LibraryFrag extends BaseFragment {
     private void setLibraryUserInfo(LibraryUserInfo libraryUserInfo) {
         getBooklist();
         libraryInfo = SharedPreferencesUtils.getLibraryLoginInfo(getActivity());
-        ll.setVisibility(View.VISIBLE);
+        rl.setVisibility(View.VISIBLE);
         String[] bookInfo = libraryUserInfo.getBookInfo();
         tvComingOverdue.setText(bookInfo[0]);
         tvhasOverdue.setText(bookInfo[1]);
@@ -305,9 +326,10 @@ public class LibraryFrag extends BaseFragment {
         tvIllegalCount.setText(libraryUserInfo.getIllegalCount());
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header) && null != libraryInfo && null != user && libraryInfo.getAccount().equals(user.getSno())) {
+            circleImageView.setVisibility(View.VISIBLE);
             circleImageView.setBmobImage(header);
         } else {
-            circleImageView.setImageResource(R.mipmap.default_user);
+           circleImageView.setVisibility(View.GONE);
         }
     }
 
@@ -329,7 +351,7 @@ public class LibraryFrag extends BaseFragment {
         etVerfy = (EditText) view.findViewById(R.id.etVerfy);
         final ImageView iv = (ImageView) view.findViewById(R.id.iv);
         getCapure(iv);
-        final Button btn = (Button) view.findViewById(R.id.btn);
+        final TextView btn = (TextView) view.findViewById(R.id.btn);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         int margin = (int) MyUtils.dp2px(getActivity(), 5f);
         builder.setView(view, margin, margin, margin, margin);
@@ -471,7 +493,7 @@ public class LibraryFrag extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.fab1, R.id.fab2})
+    @OnClick({R.id.fab1, R.id.fab2,R.id.fab3,R.id.fab4})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab1:
@@ -482,6 +504,29 @@ public class LibraryFrag extends BaseFragment {
                 fab.collapseImmediately();
                 changeLibraryPwd();
                 break;
+            case R.id.fab3:
+                fab.collapseImmediately();
+                if (null != onFabClickLinstener) {
+                    onFabClickLinstener.onClickRecommend();
+                }
+                break;
+            case R.id.fab4:
+                fab.collapseImmediately();
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_R_B_H);
+                if (null != onFabClickLinstener) {
+                    onFabClickLinstener.onClickRecommendHistory();
+                }
+                break;
         }
+    }
+
+    public void setOnFabClickLinstener(OnFabClickLinstener onFabClickLinstener) {
+        this.onFabClickLinstener = onFabClickLinstener;
+    }
+
+    public interface  OnFabClickLinstener{
+        void onClickRecommendHistory();
+
+        void onClickRecommend();
     }
 }

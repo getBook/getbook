@@ -7,6 +7,8 @@ public class BorrowBook {
     private String bookName;
     private String code;
     private String check;
+    private String borrowDate;
+    private String returnDate;
 
     public BorrowBook() {
     }
@@ -35,10 +37,28 @@ public class BorrowBook {
         this.check = check;
     }
 
-    public BorrowBook(String bookName, String code, String check) {
+    public String getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(String borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public BorrowBook(String bookName, String code, String check, String borrowDate, String returnDate) {
         this.bookName = bookName;
         this.code = code;
         this.check = check;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
     }
 
     @Override
@@ -47,6 +67,8 @@ public class BorrowBook {
                 "bookName='" + bookName + '\'' +
                 ", code='" + code + '\'' +
                 ", check='" + check + '\'' +
+                ", borrowDate='" + borrowDate + '\'' +
+                ", returnDate='" + returnDate + '\'' +
                 '}';
     }
 }

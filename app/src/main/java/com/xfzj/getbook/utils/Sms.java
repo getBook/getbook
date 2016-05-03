@@ -51,7 +51,7 @@ public class Sms {
                 }
                 InputMethodManagerUtils.hide(aty, view);
                 ad.dismiss();
-                sendMessage(aty, tele, content, id);
+                sendMessage(aty, tele, content + aty.getString(R.string.thismsgfrom) + aty.getString(R.string.app_name), id);
 
             }
         });
@@ -66,6 +66,7 @@ public class Sms {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         MyToast.show(context, aty.getString(R.string.sms_success));
+                        aty.unregisterReceiver(this);
                         if (R.string.secondbook == id) {
                             AppAnalytics.onEvent(aty.getApplicationContext(), AppAnalytics.SMS_SECONDBOOK_SUCCESS);
                         } else if (R.string.debris == id) {
