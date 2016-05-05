@@ -23,19 +23,20 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
     }
 
     private onLibraryLoginListener onLibraryLoginListener;
+
     @Override
     protected void onPost(LibraryUserInfo s) {
         if (null != s) {
-            if(!TextUtils.isEmpty(s.getBookInfo()[0])){
+            if (null != s.getBookInfo() && !TextUtils.isEmpty(s.getBookInfo()[0])) {
                 if (onLibraryLoginListener != null) {
                     onLibraryLoginListener.onSuccess(s);
                 }
-            }else{
+            } else {
                 if (onLibraryLoginListener != null) {
                     onLibraryLoginListener.onVerify();
                 }
             }
-           
+
         } else {
             if (null != onLibraryLoginListener) {
                 onLibraryLoginListener.onFail();
@@ -59,10 +60,10 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
         try {
             byte[] bytes = httpHelper.DoConnection(BaseHttp.LIBRARYVERFY, IHttpHelper.METHOD_POST, param);
             String result = new String(bytes, "utf-8");
-            if (!TextUtils.isEmpty(result)  ) {
+            if (!TextUtils.isEmpty(result)) {
                 if (result.contains("您尚未完成身份认证，请进行身份核实")) {
                     return new LibraryUserInfo();
-                } else if(result.contains(params[0])) {
+                } else if (result.contains(params[0])) {
                     return LoginParse.parse(context, result, params[0], params[1], params[3]);
                 }
             }
@@ -73,7 +74,8 @@ public class LoginLibraryAsyc extends BaseAsyncTask<String, Void, LibraryUserInf
         }
         return null;
     }
-    public interface  onLibraryLoginListener<T>{
+
+    public interface onLibraryLoginListener<T> {
         void onSuccess(T t);
 
         void onFail();

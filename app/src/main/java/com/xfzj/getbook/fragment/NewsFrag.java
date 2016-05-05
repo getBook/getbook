@@ -68,6 +68,10 @@ public class NewsFrag extends BaseFragment implements NewsShowFrag.OnNewsClick, 
         return view;
     }
 
+    public NewsDetailFrag getNewsDetailFrag() {
+        return newsDetailFrag;
+    }
+
     private void initNewsShowFrag() {
         
         newsShowFrag = (NewsShowFrag) fm.findFragmentByTag(NewsShowFrag.PARAM);
@@ -108,10 +112,10 @@ public class NewsFrag extends BaseFragment implements NewsShowFrag.OnNewsClick, 
     @Override
     public void onClick(News news) {
         AppAnalytics.onEvent(getActivity(), AppAnalytics.C_SA_DET);
-        initNewsDetailFrag(news.getHref());
+        initNewsDetailFrag(news.getHref(), news.getTitle());
     }
 
-    private void initNewsDetailFrag(String param) {
+    private void initNewsDetailFrag(String param,String title) {
         newsDetailFrag = (NewsDetailFrag) fm.findFragmentByTag(NewsDetailFrag.PARAM);
         if (null == newsDetailFrag || newsDetailFrag.isDetached()) {
             newsDetailFrag = NewsDetailFrag.newInstance(NewsDetailFrag.PARAM);
@@ -120,6 +124,8 @@ public class NewsFrag extends BaseFragment implements NewsShowFrag.OnNewsClick, 
         newsDetailFrag.setFab(fab);
         showFrag(newsDetailFrag, NewsDetailFrag.PARAM);
         newsDetailFrag.setHref(param);
+        newsDetailFrag.setTitle(title);
+        
     }
 
     private void initDownloadFrag() {

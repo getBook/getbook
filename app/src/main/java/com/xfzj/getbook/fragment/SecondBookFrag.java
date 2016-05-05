@@ -17,6 +17,7 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
+import com.xfzj.getbook.activity.DetailActivity;
 import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
@@ -241,6 +242,7 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
                             AppAnalytics.onEvent(getActivity(), AppAnalytics.CLICK_SECONDBOOK);
                             Intent intent = new Intent(getActivity(), SecondBookDetailAty.class);
                             intent.putExtra(SecondBookDetailAty.DATA, secondBook);
+                            intent.putExtra(DetailActivity.IMAGE, bookInfoView.getSecondBookImage());
                             startActivity(intent);
                         }
                     });

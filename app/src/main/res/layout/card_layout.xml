@@ -189,6 +189,4 @@
 
         </LinearLayout>
     </LinearLayout>
-
-    <include layout="@layout/no_data" />
 </LinearLayout>

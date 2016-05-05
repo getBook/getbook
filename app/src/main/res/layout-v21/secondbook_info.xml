@@ -34,6 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/view"
-        android:background="?android:attr/selectableItemBackgroundBorderless" />
+       />
 
 </RelativeLayout>

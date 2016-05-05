@@ -24,6 +24,9 @@ public abstract class LoadMoreRVAdapter<T>
 
     @Override
     public int getItemViewType(int position) {
+        if (null == datas) {
+            return NORMAL;
+        }
         int last = datas.size();
         if (position == last) {
             return FOOTER;

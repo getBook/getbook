@@ -7,6 +7,8 @@ import android.view.Display;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
@@ -54,9 +56,22 @@ public class BaseApplication extends Application {
         FileUtils.createDownloadDir();
         FeedbackAPI.initAnnoy(this, "23357392");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
+        initSocail();
     }
 
-   
+    private void initSocail() {
+//        Log.LOG = false;
+//
+//        Config.IsToastTip = false;
+        Config.isloadUrl = true;
+        PlatformConfig.setWeixin("wx6bb9118d609db96b", "c9143676f95866c7cec7ffbd32228174");
+        //微信 appid appsecret
+        PlatformConfig.setSinaWeibo("1046885584","4592ac985a563323e1af824eb96c2a33");
+        //新浪微博 appkey appsecret
+        PlatformConfig.setQQZone("1105302925", "M9YJo5sA3J4RYZAE");
+        // QQ和Qzone appid appkey
+    }
+
 
     public User getUser() {
         if (null == user) {

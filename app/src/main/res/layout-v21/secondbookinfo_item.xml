@@ -3,7 +3,6 @@
     android:id="@+id/llitemView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackgroundBorderless"
     android:orientation="vertical">
 
     <View
@@ -27,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="?android:attr/selectableItemBackground"
             android:padding="5dp">
 
             <com.xfzj.getbook.views.view.NetImageView

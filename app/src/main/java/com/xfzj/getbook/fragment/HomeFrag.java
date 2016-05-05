@@ -149,6 +149,10 @@ public class HomeFrag extends BaseFragment implements ViewPager.OnPageChangeList
     @Override
     public void onPageSelected(int position) {
         setSelectedTextColor(position);
+        if (null != fab) {
+            fab.collapseImmediately();
+            fab.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setSelectedTextColor(int position) {

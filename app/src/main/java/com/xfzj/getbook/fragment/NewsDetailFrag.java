@@ -28,6 +28,7 @@ import com.xfzj.getbook.net.HttpHelper;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.utils.ShareUtils;
 import com.xfzj.getbook.views.view.BaseScrollView;
 
 import org.jsoup.Jsoup;
@@ -58,6 +59,7 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
      * 通知栏的id
      */
     private int i=0;
+    private String title;
 
     public NewsDetailFrag() {
 
@@ -131,6 +133,16 @@ public class NewsDetailFrag extends BaseFragment implements View.OnClickListener
         } else {
             fab.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void shareNews() {
+        String url = BaseHttp.GETNEWSITEM + href;
+        String text = getActivity().getString(R.string.use_getfun_read, title);
+        ShareUtils.share(getActivity(), text, title, url, R.mipmap.nuist);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 

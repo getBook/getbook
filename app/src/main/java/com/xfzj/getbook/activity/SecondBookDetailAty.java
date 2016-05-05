@@ -123,6 +123,22 @@ public class SecondBookDetailAty extends DetailActivity {
         if (v.getId() == R.id.ibSend) {
             sendSms(secondBook.getTelePhone(), secondBook.getBookInfo().getBookName(), R.string.secondbook);
         }
-       
+
+    }
+
+    @Override
+    protected String getName() {
+        if (null != secondBook) {
+          return   secondBook.getBookInfo().getBookName();
+        }
+        return null;
+    }
+
+    @Override
+    protected String getDiscount() {
+        if (null != secondBook) {
+          return   secondBook.getDiscount();
+        }
+        return null;
     }
 }

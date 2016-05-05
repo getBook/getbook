@@ -22,7 +22,7 @@
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="图书馆登陆密码"
+            android:hint="图书馆登陆密码，默认为学号"
             android:inputType="textPassword"
             android:textColor="@color/accent"
             android:textColorHint="@color/secondary_text" />

@@ -18,6 +18,7 @@ import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DebrisDetailAty;
+import com.xfzj.getbook.activity.DetailActivity;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
@@ -247,6 +248,7 @@ public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListe
                             AppAnalytics.onEvent(getActivity(), AppAnalytics.CLICK_DEBRIS);
                             Intent intent = new Intent(getActivity(), DebrisDetailAty.class);
                             intent.putExtra(DebrisDetailAty.DATA, debris);
+                            intent.putExtra(DetailActivity.IMAGE, debrisInfoView.getDebrisImage());
                             startActivity(intent);
                         }
                     });

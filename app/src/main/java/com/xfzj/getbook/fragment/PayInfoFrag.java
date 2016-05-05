@@ -19,6 +19,8 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetBillAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.Bill;
+import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.utils.ShareUtils;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.view.PayInfoVIew;
 
@@ -72,7 +74,7 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_payinfo, container,false);
+        View view = inflater.inflate(R.layout.fragment_payinfo, container, false);
         loadMoreView = (RecyclerView) view.findViewById(R.id.loadMoreView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -105,26 +107,48 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
     public void query(String startTime, String endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-        queryBill(startTime, endTime);
+        queryBill(startTime, endTime, false, 0);
 
     }
 
-    private void queryBill(String startTime, String endTime) {
+    /**
+     * @param startTime 查询起始时间
+     * @param endTime   查询终止时间
+     * @param b         是否是带我穿越查询
+     * @param year      大学几年
+     */
+    private void queryBill(String startTime, String endTime, final boolean b, final int year) {
         loadMoreView.setVisibility(View.VISIBLE);
         GetBillAsync getBillAsync = new GetBillAsync(getActivity());
         getBillAsync.execute(param, startTime, endTime);
         getBillAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<Bill>>() {
             @Override
-            public void onSuccess(List<Bill> bills) {
+            public void onSuccess(final List<Bill> bills) {
                 shopGroupAdapter.clear();
                 shopGroupAdapter.addAll(bills);
+                if (param.equals(TYPE2) && bills.size() > 0 && b) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.share).setMessage("将您的消费情况分享出去，炫耀一下吧！").setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String[] str = bills.get(0).getV().split(",");
+                            str[0] = str[0].substring(1, str[0].length());
+                            String text = year + "年的大学时光，我一共使用一卡通进行了" + str[1] + "笔消费，共计" + str[0] + "元，快来看看你的大学账单吧！快下载盖饭——一款南信大学生专属APP！";
+                            String title = "一卡通" + year + "年消费情况";
+                            ShareUtils.share(getActivity(), text, title, R.mipmap.nuist);
+
+                        }
+                    }).setNegativeButton(R.string.no, null).create().show();
+                }
 
             }
 
             @Override
             public void onFail(String s) {
 //                loadMoreView.setRefreshFinish();
-                loadMoreView.setVisibility(View.GONE);
+                if (null != loadMoreView) {
+                    loadMoreView.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -132,11 +156,11 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
     public String[] getCurrentTime() {
         return new String[]{startTime, endTime};
     }
+
     @Override
     public void onClick(View v) {
         if (R.id.iv == v.getId()) {
-           
-        
+
 
         }
     }
@@ -152,12 +176,12 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
                 final Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
 
-                int year = calendar.get(Calendar.YEAR) - Integer.valueOf(sno);
+                final int year = calendar.get(Calendar.YEAR) - Integer.valueOf(sno);
                 final String startYear = sno;
                 builder.setMessage(getActivity().getString(R.string.see_pay_info, year + "")).setPositiveButton(getActivity().getString(R.string.start_pay_info), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        queryBill(Integer.valueOf(startYear) + "-1-1", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+                        queryBill(Integer.valueOf(startYear) + "-1-1", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH), true, year);
 
                     }
                 }).setNegativeButton(getActivity().getString(R.string.no), null).create().show();
@@ -165,8 +189,8 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
 
         }
     }
-    
-    
+
+
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
 
@@ -179,12 +203,22 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
                 mLastY = (int) ev.getRawY();
                 break;
             case MotionEvent.ACTION_UP:
-               
+
                 break;
         }
 
 
         return false;
+    }
+
+    public void setBill(List<Bill> bills) {
+        if (null == bills || bills.size() == 0) {
+            MyToast.show(getActivity(), getActivity().getString(R.string.queryfail));
+            return;
+        }
+        loadMoreView.setVisibility(View.VISIBLE);
+        shopGroupAdapter.clear();
+        shopGroupAdapter.addAll(bills);
     }
 
     private class ShopGroupAdapter extends FooterLoadMoreRVAdapter<Bill> {

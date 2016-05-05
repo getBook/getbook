@@ -66,6 +66,10 @@ public class BaseListView extends ListView {
     }
 
     private boolean isPullUp() {
-        return (downY - lastY) > mTouchSlop;
+        if ((downY - lastY) > mTouchSlop) {
+            lastY = 0;
+            return true;
+        }
+        return false;
     }
 }

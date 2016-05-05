@@ -202,7 +202,15 @@
     <string name="recommendfail">荐购失败</string>
     <string name="feedback">反馈建议</string>
     <string name="check_update">检查更新</string>
-    <string name="aboutconten">版本号：1.1\n功能：\n1、发布二手书物品，快把闲置物品挂上去把\n2、浏览校园公告，从此再也不需要登教务处啦\n3、图书馆搜索、借阅、荐购一应俱全，方便到不行\n4、成绩查询，一查到底\n5、接入一卡通，该有的都有\nPs:\这款APP从设计、开发到测试，只有我一个人，难免会有bug，所以当您遇到问题或者看哪里不爽，请给我反馈建议，我会及时回复，谢谢！</string>
-    <string name="feedback_unread">你有%1$d反馈建议回复未读</string>
+    <string name="aboutconten">版本号：1.2\n功能：\n1、发布二手书物品，快把闲置物品挂上去把\n2、浏览校园公告，从此再也不需要登教务处啦\n3、图书馆搜索、借阅、荐购一应俱全，方便到不行\n4、成绩查询，一查到底\n5、接入一卡通，该有的都有\nPs:这款APP从设计、开发到测试，只有我一个人，难免会有bug，所以当您遇到问题或者看哪里不爽，请给我反馈建议，我会及时回复，谢谢！</string>
+    <string name="feedback_unread">你有%1$d条反馈建议回复未读</string>
     <string name="thismsgfrom">\n——本条消息来自</string>
+    <string name="share">分享</string>
+    <string name="share_succ">分享成功</string>
+    <string name="share_fail">分享失败</string>
+    <string name="queryfail">查询失败</string>
+   <string name="sharebilltitle">一卡通%1$d年消费情况"</string>
+    <string name="sharebilltext"> %1$d年的大学时光，我一共使用一卡通进行了%2$s笔消费，共计%3$s元，快来看看你的大学账单吧！快下载盖饭——一款南信大学生专属APP！</string>
+    <string name="shareyourbill">将您的消费情况分享出去，炫耀一下吧！</string>
+    <string name="use_getfun_read">我正在使用盖饭查看%1$s</string>
 </resources>

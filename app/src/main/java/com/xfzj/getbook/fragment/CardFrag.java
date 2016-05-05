@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -53,9 +52,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
     TextView tvBuZhu;
     TextView tvXiuGaiMiMa;
     TextView tvGuaShi;
-    Button btn;
     LinearLayout ll;
-    LinearLayout llError;
     private GetCardInfoAsync getCardInfoAsync;
     private String mParam1;
 
@@ -94,15 +91,12 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
         tvGuaShi = (TextView) view.findViewById(R.id.tvGuaShi);
         framStatus = (FrameLayout) view.findViewById(R.id.framStatus);
         ivChongZhi = (ImageView) view.findViewById(R.id.ivChongZhi);
-        btn = (Button) view.findViewById(R.id.btn);
         ll = (LinearLayout) view.findViewById(R.id.ll);
-        llError = (LinearLayout) view.findViewById(R.id.llError);
         ivChongZhi.setOnClickListener(this);
         tvLiuShui.setOnClickListener(this);
         tvBuZhu.setOnClickListener(this);
         tvXiuGaiMiMa.setOnClickListener(this);
         tvGuaShi.setOnClickListener(this);
-        btn.setOnClickListener(this);
         getCardInfo();
         return view;
     }
@@ -147,9 +141,6 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
 
                 guashi();
                 
-                break;
-            case R.id.btn:
-                getCardInfo();
                 break;
         }
     }
@@ -364,8 +355,8 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
 
     @Override
     public void onSuccess(Card card) {
-        ll.setVisibility(View.VISIBLE);
-        llError.setVisibility(View.GONE);
+//        ll.setVisibility(View.VISIBLE);
+//        llError.setVisibility(View.GONE);
 
         Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "font/Farrington.ttf");
         tvCardNo.setTypeface(typeface);
@@ -388,7 +379,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
 
     @Override
     public void onFail() {
-        ll.setVisibility(View.GONE);
-        llError.setVisibility(View.VISIBLE);
+//        ll.setVisibility(View.GONE);
+//        llError.setVisibility(View.VISIBLE);
     }
 }

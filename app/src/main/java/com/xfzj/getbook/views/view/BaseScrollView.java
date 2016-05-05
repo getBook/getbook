@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.ScrollView;
 
+import com.xfzj.getbook.utils.MyLog;
+
 /**
  * Created by zj on 2016/4/11.
  * 增加滑动监听
@@ -51,10 +53,10 @@ public class BaseScrollView extends ScrollView {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                downY = (int) event.getRawY();
+                downY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                lastY = (int) event.getRawY();
+                lastY = (int) event.getY();
                 break;
         }
         return super.onTouchEvent(event);
@@ -69,6 +71,11 @@ public class BaseScrollView extends ScrollView {
     }
 
     private boolean isPullUp() {
-        return (downY - lastY) > mTouchSlop;
+        MyLog.print(downY + "", lastY + "");
+        if ((downY - lastY) > mTouchSlop) {
+            lastY = 0;
+            return true;
+        }
+        return false;
     }
 }

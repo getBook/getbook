@@ -8,8 +8,8 @@ android {
         applicationId "com.xfzj.getbook"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.1"
+        versionCode 4
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -18,11 +18,16 @@ android {
         }
     }
 }
+
+
+
+
 repositories{ flatDir { dirs 'libs' }}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':Zxing')
     //bmob-sdk ：Bmob的android sdk包
+
     //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
     compile files('libs/jsoup-1.8.1.jar')
     compile files('libs/jsoup-1.8.1-javadoc.jar')
@@ -46,8 +51,23 @@ dependencies {
     compile files('libs/okhttp-2.4.0.jar')
     compile files('libs/okio-1.4.0.jar')
     compile 'com.android.support:cardview-v7:22.2.1'
-    compile(name:'feedbackSdk', ext:'aar')//主反馈功能
-    compile files('libs/securityguard-3.1.27.jar') //提供数据统计支持
-    compile files('libs/utdid4all-1.0.4.jar') //提供数据统计支持
-    compile files('libs/alisdk-ut-5.jar') //提供数据统计支持
+    compile(name: 'feedbackSdk', ext: 'aar')
+    //主反馈功能
+    compile files('libs/securityguard-3.1.27.jar')
+    //提供数据统计支持
+    compile files('libs/utdid4all-1.0.4.jar')
+    //提供数据统计支持
+    compile files('libs/alisdk-ut-5.jar')
+    //提供数据统计支持
+    compile files('libs/umeng_social_sdk.jar')
+    compile files('libs/SocialSDK_QQZone_3.jar')
+    compile files('libs/SocialSDK_Sina.jar')
+    compile files('libs/SocialSDK_tencentWB_1.jar')
+    compile files('libs/SocialSDK_tencentWB_2.jar')
+    compile files('libs/SocialSDK_tencentWB_3.jar')
+    compile files('libs/SocialSDK_WeiXin_1.jar')
+    compile files('libs/SocialSDK_WeiXin_2.jar')
+    compile files('libs/mta-sdk-1.6.2.jar')
+    compile files('libs/open_sdk_r5509.jar')
+    compile files('libs/weiboSDKCore_3.1.4.jar')
 }

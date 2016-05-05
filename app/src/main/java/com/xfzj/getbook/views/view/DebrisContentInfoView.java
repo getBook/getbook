@@ -159,6 +159,20 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         }
     }
 
+    public Bitmap getDebrisImage() {
+        if (null == ivPic) {
+            return null;
+        }
+        Drawable d = ivPic.getDrawable();
+        Bitmap bitmap = null;
+        if (d instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) d).getBitmap();
+        } else if (d instanceof GlideBitmapDrawable) {
+            bitmap = ((GlideBitmapDrawable) d).getBitmap();
+        }
+        return bitmap;
+    }
+    
     public void doInvalid() {
         if (null == debris) {
             return;

@@ -78,7 +78,7 @@ public class DebrisDetailAty extends DetailActivity {
 
     @Override
     protected void setPics() {
-       bmobFiles = debris.getFiles();
+        bmobFiles = debris.getFiles();
     }
 
     private Debris getIntentData() {
@@ -105,5 +105,22 @@ public class DebrisDetailAty extends DetailActivity {
         if (v.getId() == R.id.ibSend) {
             sendSms(debris.getTele(), debris.getTitle(), R.string.debris);
         }
+    }
+
+
+    @Override
+    protected String getName() {
+        if (null != debris) {
+            return debris.getTitle();
+        }
+        return null;
+    }
+
+    @Override
+    protected String getDiscount() {
+        if (null != debris) {
+            return debris.getDiscount();
+        }
+        return null;
     }
 }

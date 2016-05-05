@@ -32,12 +32,12 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     private TextView tvBookName, tvIsbn, tvBookAuthor, tvPublisher, tvPrice, tvOldPrice, tvNewold, tvDate, tvCount, tvYuan;
     private NetImageView ivBook;
     private Context context;
-    private onClickListener  onSecondBookInfoClick;
+    private onClickListener onSecondBookInfoClick;
     private onLongClickListener onSecondBookInfoLongClick;
     private SecondBook secondBook;
-    private ImageView ivDate, ivCount, ivNewOld,ivYxj;
+    private ImageView ivDate, ivCount, ivNewOld, ivYxj;
     private LinearLayout llitemView;
-    
+
     public <T> void setOnSecondBookInfoClick(onClickListener<T> onSecondBookInfoClick) {
         this.onSecondBookInfoClick = onSecondBookInfoClick;
     }
@@ -200,9 +200,9 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
         } else {
             long update = date.getTime();
             long now = System.currentTimeMillis();
-            if (now - update >= Constants.day * 24 * 60 * 60 *1000) {
+            if (now - update >= Constants.day * 24 * 60 * 60 * 1000) {
                 handleInvalid();
-            }else {
+            } else {
                 restartOnSale(secondBook);
             }
         }
@@ -248,6 +248,17 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     public void onClick(View v) {
         if (null != onSecondBookInfoClick) {
             onSecondBookInfoClick.onClick(v);
+        }
+    }
+
+    public Bitmap getSecondBookImage() {
+        if (null == ivBook.getDrawable()) {
+            return null;
+        }
+        try {
+            return ((GlideBitmapDrawable) ivBook.getDrawable()).getBitmap();
+        } catch (Exception e) {
+            return null;
         }
     }
 

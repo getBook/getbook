@@ -9,22 +9,23 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-
-        android:layout_marginTop="2dp">
+        android:layout_marginTop="2dp"
+        android:minHeight="50dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:padding="5dp">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="持卡人消费"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/money"
+                android:gravity="left"
+                android:text="持卡人消费"
                 android:textColor="@color/primary_text"
                 android:textSize="16sp" />
 

@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.IWxCallback;
+import com.umeng.socialize.UMShareAPI;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.UploadAction;
@@ -54,6 +55,7 @@ import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.PhotoClipTool;
+import com.xfzj.getbook.utils.ShareUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
 import com.xfzj.getbook.views.view.NavigationHeaderView;
@@ -142,15 +144,23 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         baseApplication = (BaseApplication) getApplication();
         user = baseApplication.getUser();
         setDrawerToggle();
-        isNeedHuaName();
-        isNeedLogin();
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
-        //bmob自动更新
-        BmobUpdateAgent.update(this);
-        getUnreadFeedBack();
+       
+        if(null==savedInstanceState) {
+            isNeedHuaName();
+            isNeedLogin();
+            onNavigationItemSelected(navigationView.getMenu().getItem(0));
+            //bmob自动更新
+            BmobUpdateAgent.update(this);
+            getUnreadFeedBack();
+           
+        }
+       
     }
 
     private void getUnreadFeedBack() {
+        if (null == ll) {
+            return;
+        }
         FeedbackAPI.getFeedbackUnreadCount(getApplicationContext(), null, new IWxCallback() {
             @Override
             public void onSuccess(Object... objects) {
@@ -434,7 +444,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                         } else {
                             SharedPreferencesUtils.saveHuaName(getApplicationContext(), serverUser.getHuaName());
                             user.setHuaName(serverUser.getHuaName());
-
+                            baseApplication.setUser(user);
                         }
                     } else {
                         showHuaNameDialog(false);
@@ -609,6 +619,15 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             case R.id.feedback:
                 openFeedBack();
                 break;
+            case R.id.action_share:
+                if (null != newsFrag&&newsFrag.isVisible()) {
+                    if (null != newsFrag.getNewsDetailFrag() && newsFrag.getNewsDetailFrag().isVisible()) {
+                        newsFrag.getNewsDetailFrag().shareNews();
+                        break;
+                    }
+                }
+                ShareUtils.shareDefautl(this);
+                break;
         }
         return false;
     }
@@ -640,6 +659,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get( this ).onActivityResult( requestCode, resultCode, data);
         switch (requestCode) {
             case IMAGE_FROM_CAPTURE:
                 if (resultCode == Activity.RESULT_OK) {

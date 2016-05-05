@@ -99,6 +99,12 @@ public class QueryAction extends BaseAction {
     public void querySelfSecondBook(String objectId) {
         BmobQuery<SecondBook> query = new BmobQuery<>();
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        if (TextUtils.isEmpty(objectId)) {
+            if (null != onQueryListener) {
+                onQueryListener.onFail();
+            }
+            return;
+        }
         userBmobQuery.addWhereEqualTo("objectId", objectId);
         query.addWhereMatchesQuery("user", "_User", userBmobQuery);
         query.include("bookInfo");
@@ -113,6 +119,12 @@ public class QueryAction extends BaseAction {
     public void querySelfDebris(String objectId) {
         BmobQuery<Debris> query = new BmobQuery<>();
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
+        if (TextUtils.isEmpty(objectId)) {
+            if (null != onQueryListener) {
+                onQueryListener.onFail();
+            }
+            return;
+        }
         userBmobQuery.addWhereEqualTo("objectId", objectId);
         query.addWhereMatchesQuery("user", "_User", userBmobQuery);
         queryDebris(query, 0, 0);

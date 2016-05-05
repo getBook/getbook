@@ -35,7 +35,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
     private LoadMoreView loadMoreView;
     private LinearLayout llError;
     private Button btn;
-    private List<News> lists = new ArrayList<>();
+    private List<News> lists;
     private boolean isRefresh = true;
     private NewsShowAdapter newsShowAdapter;
     private GetNewsListLoader getNewsListLoader;
@@ -80,6 +80,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newsshow, container, false);
+        lists = new ArrayList<>();
         loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
         loadMoreView.setOnScrollCallBack(this);
         llError = (LinearLayout) view.findViewById(R.id.llError);
@@ -89,7 +90,9 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         loadMoreView.setOnrefreshListener(this);
         loadMoreView.setOnLoadMoreListen(this);
         btn.setOnClickListener(this);
-        onRefresh();
+        if (null == savedInstanceState) {
+            onRefresh();
+        }
 
         return view;
     }
@@ -196,10 +199,6 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         } else {
             fab.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void setFloatingBUtton(FloatingActionButton fab) {
-        this.fab = fab;
     }
 
     public interface OnNewsClick {

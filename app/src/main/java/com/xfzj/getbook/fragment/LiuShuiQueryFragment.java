@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.xfzj.getbook.R;
@@ -18,16 +19,19 @@ import com.xfzj.getbook.async.GetTrjnAsync;
 import com.xfzj.getbook.async.GetTrjnCountAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.HistoryTrjn;
+import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.views.recycleview.LoadMoreListen;
 import com.xfzj.getbook.views.recycleview.LoadMoreView;
-import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.DatePickerView;
 import com.xfzj.getbook.views.view.TrjnItemVIew;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by zj on 2016/3/25.
@@ -36,8 +40,11 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
 
 
     public static final String PARAM = "PayInfoFrag.class";
+    @Bind(R.id.loadMoreView)
+    LoadMoreView loadMoreView;
+    @Bind(R.id.rl)
+    RelativeLayout rl;
     private String param;
-    private LoadMoreView loadMoreView;
     private String startTime, endTime;
     private int page = 1;
     private List<HistoryTrjn> list = new ArrayList<>();
@@ -69,16 +76,15 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_liushuihistory, container,false);
-
-        loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
+        View view = inflater.inflate(R.layout.fragment_liushuihistory, container, false);
+        ButterKnife.bind(this, view);
         loadMoreView.setOnScrollCallBack(this);
-
         loadMoreView.setVisibility(View.GONE);
         loadMoreView.setOnrefreshListener(this);
         loadMoreView.setOnLoadMoreListen(this);
         historyTrjnAdapter = new HistoryTrjnAdapter(list, getActivity());
         loadMoreView.setAdapter(historyTrjnAdapter);
+       
         return view;
     }
 
@@ -137,10 +143,10 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
     public void onLoadMore() {
         page++;
         GetTrjnAsync getTrjnAsync = new GetTrjnAsync(getActivity());
-        getTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),String.valueOf(page), startTime, endTime);
+        getTrjnAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), String.valueOf(page), startTime, endTime);
         getTrjnAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<HistoryTrjn>>() {
             @Override
-            public void onSuccess(List<com.xfzj.getbook.common.HistoryTrjn> historyTrjns) {
+            public void onSuccess(List<HistoryTrjn> historyTrjns) {
                 loadMoreView.setLoadMoreFinish();
                 historyTrjnAdapter.addAll(historyTrjns);
             }
@@ -173,11 +179,15 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
         loadMoreView.setVisibility(View.VISIBLE);
         onRefresh();
         GetTrjnCountAsync getTrjnCountAsync = new GetTrjnCountAsync(getActivity());
-        getTrjnCountAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),startTime, endTime);
+        getTrjnCountAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), startTime, endTime);
         getTrjnCountAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<Integer>() {
             @Override
             public void onSuccess(Integer integer) {
-                Snackbar snackbar = Snackbar.make(loadMoreView, "当前共查询到" + integer + "笔消费", Snackbar.LENGTH_LONG);
+                if (null == rl || rl.getContext() == null) {
+
+                    return;
+                }
+                Snackbar snackbar = Snackbar.make(rl, "当前共查询到" + integer + "笔消费", Snackbar.LENGTH_LONG);
                 snackbar.getView().setBackgroundColor(Color.WHITE);
                 snackbar.show();
             }
@@ -191,6 +201,12 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
 
     public String[] getCurrentTime() {
         return new String[]{startTime, endTime};
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
 
