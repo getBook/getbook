@@ -10,11 +10,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.LikeAction;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.common.Post;
+import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.FaceConversionUtil;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.views.recycleview.LoadMoreListen;
@@ -44,6 +47,7 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
     private PostAdapter postAdapter;
     private int skip = 0;
     private QueryAction queryAction;
+    private User user;
 
     public static PostFrag newInstance(String param) {
         PostFrag postFrag = new PostFrag();
@@ -60,6 +64,8 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
         if (getArguments() != null) {
             param = getArguments().getString(PARAM);
         }
+        user = ((BaseApplication) getActivity().getApplicationContext()).getUser();
+        FaceConversionUtil.getInstace().getFileText(getActivity());
     }
 
     @Nullable
@@ -92,7 +98,7 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
     public void onRefresh() {
         skip = 0;
         loadMoreView.setRefreshing();
-        queryAction.queryPost(Constants.POST_LIMIT, skip, new QueryAction.OnQueryListener<List<Post>>() {
+        queryAction.queryPost(user.getObjectId(), Constants.POST_LIMIT, skip, new QueryAction.OnQueryListener<List<Post>>() {
 
 
             @Override
@@ -115,7 +121,7 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
 
     @Override
     public void onLoadMore() {
-        queryAction.queryPost(Constants.POST_LIMIT, ++skip, new QueryAction.OnQueryListener<List<Post>>() {
+        queryAction.queryPost(user.getObjectId(),Constants.POST_LIMIT, ++skip, new QueryAction.OnQueryListener<List<Post>>() {
 
 
             @Override
@@ -144,9 +150,7 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
 
         @Override
         protected View getNormalView() {
-            PostShowView postShowView = new PostShowView(context);
-            postShowView.setTag(postShowView);
-            return postShowView;
+            return new PostShowView(context);
         }
 
         @Override
@@ -154,10 +158,21 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
             return new NormalViewHolder<Post>(view, viewType) {
 
                 @Override
-                protected void setNormalContent(final View itemView, Post item, int viewType) {
-                    Post post = (Post) itemView.getTag();
-                    if (itemView instanceof PostShowView && (null == post || !post.equals(item))) {
-                        ((PostShowView) itemView).update(item);
+                protected void setNormalContent(final View itemView, final Post item, int viewType) {
+
+                    if (itemView instanceof PostShowView) {
+                        ((PostShowView) itemView).update(item, new PostShowView.OnLikedListener() {
+                            @Override
+                            public void isLiked() {
+                                item.setLikeState(Post.LIKEDSTATE);
+                                
+                            }
+
+                            @Override
+                            public void isNotLiked() {
+                                item.setLikeState(Post.NOLIKESTATE);
+                            }
+                        });
                         ((PostShowView) itemView).setOnPostClickListener(new PostShowView.OnPostClickListener() {
                             @Override
                             public void onContentClick(Post post) {
@@ -168,29 +183,32 @@ public class PostFrag extends BaseFragment implements View.OnClickListener, Load
                             }
 
                             @Override
-                            public void onLikeClick(Post post) {
+                            public void onLikeClick() {
                                 LikeAction likeAction = new LikeAction(getActivity());
-                                likeAction.excute(post);
+                                likeAction.excute(item);
                                 likeAction.setOnLikeListener(new LikeAction.OnLikeListener() {
                                     @Override
                                     public void onDoLikeSuccess() {
                                         ((PostShowView) itemView).setLikeSuccess();
+                                        item.setLikeState(Post.LIKEDSTATE);
                                     }
 
                                     @Override
                                     public void onCancelLikeSuccess() {
                                         ((PostShowView) itemView).setLikeFail();
+                                        item.setLikeState(Post.NOLIKESTATE);
                                     }
 
                                     @Override
                                     public void onLikeFail() {
                                         ((PostShowView) itemView).setLikeFail();
+                                        item.setLikeState(Post.UNKNOWNLIKESTATE);
                                     }
                                 });
                             }
 
                             @Override
-                            public void onCommentClick(Post post) {
+                            public void onCommentClick() {
                             }
                         });
                     }

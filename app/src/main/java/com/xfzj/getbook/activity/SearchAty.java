@@ -37,6 +37,7 @@ import butterknife.Bind;
  * Created by zj on 2016/3/7.
  */
 public class SearchAty extends AppActivity implements SearchView.OnQueryTextListener, ViewPager.OnPageChangeListener, View.OnClickListener {
+    public static final String QUERY = "query";
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
     @Bind(R.id.fram)
@@ -64,6 +65,9 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         baseToolBar.initToolbar(this, "");
         fm = getSupportFragmentManager();
         init();
+        if (null != savedInstanceState) {
+            query = savedInstanceState.getString(QUERY);
+        }
     }
 
     private void init() {
@@ -105,7 +109,13 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     @Override
     protected void onResume() {
         super.onResume();
-        invalidateOptionsMenu();
+//        invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(QUERY, query);
     }
 
     @Override
@@ -113,12 +123,18 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.search_badge);//在菜单中找到对应控件的item
         searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-        searchView.setQueryHint(getString(R.string.please_input_keywords));
+       
         searchView.setOnQueryTextListener(this);
         searchView.setIconifiedByDefault(true);
         searchView.setSubmitButtonEnabled(true);
         searchView.setFocusable(true);
         searchView.requestFocus();
+        if(TextUtils.isEmpty(query)) {
+            searchView.setQueryHint(getString(R.string.please_input_keywords));
+        }else{
+            searchView.setQuery(query,false);
+            searchView.clearFocus();
+        }
         try {
             Field field = searchView.getClass().getDeclaredField("mGoButton");
 
@@ -169,6 +185,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         if (TextUtils.isEmpty(query)) {
             return;
         }
+        this.query = query;
         if (index == 0) {
             sbFrag.searchKey(query);
         } else if (index == 1) {
@@ -177,7 +194,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
             librarySearchFrag.searchKey(query);
         }
         searchView.clearFocus();
-        
+
     }
 
     @Override
@@ -249,7 +266,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
 
     @Override
     public void onClick(View v) {
-        ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).
                 toggleSoftInput(InputMethodManager.SHOW_FORCED,
                         InputMethodManager.HIDE_IMPLICIT_ONLY);
     }

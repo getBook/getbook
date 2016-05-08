@@ -59,34 +59,28 @@ public class LikeAction extends BaseAction {
      * @param post
      */
     public void excute(final Post post) {
+        if (post.getLikeState() == Post.LIKEDSTATE) {
+            cancelLike(post);
+        }else{
+            doLike(post);
+        }
+    }
+
+    /**
+     * 查询自己是否点赞
+     * @param post
+     * @param userFindListener
+     */
+    public void querySelfLiked(Post post, FindListener<User> userFindListener) {
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.addWhereRelatedTo("likes", new BmobPointer(post));
         userBmobQuery.addQueryKeys("objectId");
-        userBmobQuery.findObjects(context, new FindListener<User>() {
-            @Override
-            public void onSuccess(List<User> list) {
-                if (null == list || list.size() == 0) {
-                    doLike(post);
-                } else {
-                    for (User user : list) {
-                        if (user.getObjectId().equals(LikeAction.this.user.getObjectId())) {
-                            cancelLike(post);
-                            return;
-                        }
-                    }
-                    doLike(post);
-                }
-            }
-
-
-            @Override
-            public void onError(int i, String s) {
-
-            }
-        });
+        userBmobQuery.findObjects(context, userFindListener);
 
     }
 
+    
+    
     /**
      * 取消点赞
      */
@@ -98,7 +92,7 @@ public class LikeAction extends BaseAction {
         post.update(context, new UpdateListener() {
             @Override
             public void onSuccess() {
-                post.increment("likeCount",-1);
+                post.increment("likeCount", -1);
                 post.update(context, new UpdateListener() {
                     @Override
                     public void onSuccess() {

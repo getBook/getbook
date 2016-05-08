@@ -1,7 +1,6 @@
 package com.xfzj.getbook.views.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +64,7 @@ public class DebrisInfoView extends LinearLayout implements View.OnClickListener
     }
 
 
-    public Bitmap getDebrisImage() {
+    public String getDebrisImage() {
         if (null != debrisContentInfoView) {
             return debrisContentInfoView.getDebrisImage();
         }

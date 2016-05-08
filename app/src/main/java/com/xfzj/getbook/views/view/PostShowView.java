@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.xfzj.getbook.action.LikeAction;
 import com.xfzj.getbook.activity.ViewPagerAty;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.Post;
+import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.FaceConversionUtil;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.gridview.PicAddView;
 import com.xfzj.getbook.views.gridview.PicShowView;
@@ -30,6 +33,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.CountListener;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by zj on 2016/4/17.
@@ -80,15 +84,26 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         addView(view);
     }
 
-
-    public void update(final Post post) {
+    /**
+     * 
+     * @param post
+     * @param onLikedListener 本人是否点赞的回调
+     */
+    public void update(final Post post,OnLikedListener onLikedListener) {
         if (null == post) {
             return;
         }
             this.post = post;
-        tvContent.setText(this.post.getContent());
-        tvLike.setText(this.post.getLikeCount() + "");
-        tvComment.setText(this.post.getCommentCount() + "");
+        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, post.getContent());
+        tvContent.setText(spannableString);
+        tvLike.setText(post.getLikeCount() + "");
+        tvComment.setText(post.getCommentCount() + "");
+        if (post.getLikeState() == Post.UNKNOWNLIKESTATE) {
+            setIsLiked(onLikedListener);
+        }else{
+            setLikeState(post.getLikeState());
+        }
+      
         if (this.post.getCommentCount()==-1) {
             setCommentCount();
         }
@@ -102,6 +117,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
                 TextView tvTopic = new TextView(context);
                 tvTopic.setText(topic);
                 tvTopic.setBackgroundResource(R.drawable.tv_select);
+                tvTopic.setTextColor(context.getResources().getColor(R.color.white));
                 int padding = (int) MyUtils.dp2px(context, 2);
                 tvTopic.setPadding(padding, padding, padding, padding);
                 final String t = topic;
@@ -118,13 +134,12 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         }
         List<BmobFile> pics = this.post.getFiles();
         if (null != pics && pics.size() > 0) {
-
+            picShowView.deleteAll();
+            picPaths.clear();
             for (BmobFile file : pics) {
                 picPaths.add(new PicPath(PicPath.FLAG_ALBUM, file.getFileUrl(context)));
             }
-//            ivs = new ArrayList<>();
             picShowView.setVisibility(VISIBLE);
-
             picShowView.addAll(picPaths);
             picShowView.removeLast();
             picShowView.setOnItemClick(new PicAddView.OnItemClick() {
@@ -142,27 +157,6 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
                     context.startActivity(intent);
                 }
             });
-//            for (int i = 0; i < pics.size(); i++) {
-//                NetImageView iv = new NetImageView(context);
-//                FrameLayout.LayoutParams p = new FrameLayout.LayoutParams((int) (MyUtils.dp2px(context, NetImageView.SMALL_WIDTH)), (int) (MyUtils.dp2px(context, NetImageView.SMALL_HEIGHT)));
-//                iv.setLayoutParams(p);
-//                iv.setBmobthumbnail(pics.get(i), NetImageView.SMALL_WIDTH, NetImageView.SMALL_HEIGHT);
-//                iv.setAdjustViewBounds(true);
-//                iv.setScaleType(ImageView.ScaleType.FIT_XY);
-//                final int index = i;
-//                iv.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent intent = new Intent(context, ViewPagerAty.class);
-//                        intent.putExtra(ViewPagerAty.PATH, (Serializable) picPaths);
-//                        intent.putExtra(ViewPagerAty.INDEX, index);
-//                        intent.putExtra(ViewPagerAty.FROM, ViewPagerAty.VIEW);
-//                        context.startActivity(intent);
-//                    }
-//                });
-//                ivs.add(iv);
-//                llPics.addView(iv);
-//            }
         } else {
             picShowView.setVisibility(GONE);
         }
@@ -170,6 +164,22 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
 
     }
 
+    /**
+     * 设置点赞的状态
+     * @param likeState
+     */
+    private void setLikeState(int likeState) {
+        if (likeState == Post.NOLIKESTATE) {
+            setNotLikedDrawable();
+        } else if (likeState == Post.LIKEDSTATE) {
+            setLikedDrawable();
+        }
+        
+    }
+
+    /**
+     * 设置评论的数量
+     */
     private void setCommentCount() {
         CommentAction commentAction = new CommentAction(context);
         commentAction.queryCount(post, new CountListener() {
@@ -186,23 +196,46 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         });
     }
 
+    /**
+     * 点赞成功后的方法
+     */
     public void setLikeSuccess() {
+        setLikedDrawable();
+        setLikeCount();
+    }
+
+    /**
+     * 设置点赞后的图标颜色
+     */
+    private void setLikedDrawable() {
         Drawable drawable = ContextCompat.getDrawable(context, R.mipmap.like_press);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         tvLike.setCompoundDrawables(drawable, null, null, null);
-        setLikeCount();
         tvLike.setTextColor(context.getResources().getColor(R.color.primary));
-
     }
 
-    public void setLikeFail() {
+    /**
+     * 设置未点赞的图标颜色
+     */
+    private void setNotLikedDrawable() {
         Drawable drawable = ContextCompat.getDrawable(context, R.mipmap.like);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         tvLike.setCompoundDrawables(drawable, null, null, null);
-        setLikeCount();
         tvLike.setTextColor(context.getResources().getColor(R.color.secondary_text));
     }
 
+    /**
+     * 点赞失败后的方法
+     */
+    public void setLikeFail() {
+        setNotLikedDrawable();
+        setLikeCount();
+       
+    }
+
+    /**
+     * 设置点赞的数量
+     */
     private void setLikeCount() {
         LikeAction likeAction = new LikeAction(context);
         likeAction.queryLikeCount(post);
@@ -215,10 +248,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         });
     }
 
-    @Override
-    public Post getTag() {
-        return post;
-    }
+ 
 
     public void setOnPostClickListener(OnPostClickListener onPostClickListener) {
         this.onPostClickListener = onPostClickListener;
@@ -235,28 +265,61 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
                 break;
             case R.id.tvLike:
                 if (null != onPostClickListener) {
-                    onPostClickListener.onLikeClick(post);
+                    onPostClickListener.onLikeClick();
 
                 }
                 break;
             case R.id.tvComment:
                 if (null != onPostClickListener) {
-                    onPostClickListener.onCommentClick(post);
+                    onPostClickListener.onCommentClick();
 
                 }
                 break;
         }
     }
 
+    /**
+     * 判断是否已经被本人点赞
+     * @param onLikedListener
+     */
+    private void setIsLiked(final OnLikedListener onLikedListener) {
+        LikeAction likeAction = new LikeAction(context);
+        likeAction.querySelfLiked(this.post, new FindListener<User>() {
+            @Override
+            public void onSuccess(List<User> list) {
+                if (null != list && list.size() > 0) {
+                    setLikedDrawable();
+                    if (null != onLikedListener) {
+                        onLikedListener.isLiked();
+                    }
+                }else{
+                    setNotLikedDrawable();
+                    if (null != onLikedListener) {
+                        onLikedListener.isNotLiked();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+
+            }
+        });
+    }
 
     public interface OnPostClickListener {
         void onContentClick(Post post);
 
         void onTopicClick(Post post, String topic);
 
-        void onLikeClick(Post post);
+        void onLikeClick();
 
-        void onCommentClick(Post post);
+        void onCommentClick();
+    }
+    public interface OnLikedListener{
+        void isLiked();
+
+        void isNotLiked();
     }
 
 }

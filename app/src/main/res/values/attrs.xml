@@ -24,5 +24,6 @@
         <attr name="showWordCount" format="boolean" />
         <attr name="editTextHeight" format="dimension" />
         <attr name="editTextmaxLines" format="integer" />
+        <attr name="isEmojiShow" format="boolean" />
     </declare-styleable>
 </resources>

@@ -58,6 +58,7 @@ public class MyUtils {
         if (null == c) {
             return 0;
         }
+        c = c.toString().replaceAll("[em]+\\S+[/em]", "1");
         double len = 0;
         for (int i = 0; i < c.length(); i++) {
             int tmp = (int) c.charAt(i);

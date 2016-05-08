@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zj on 2016/3/21.
  */
-public class GetNewsListLoader extends BaseAsyncLoader<List<News>> {
+public  class GetNewsListLoader extends BaseAsyncLoader<List<News>> {
     private String __EVENTTARGET, __EVENTARGUMENT = "Page$", __VIEWSTATEGENERATOR;
     private int page = 1;
 

@@ -287,13 +287,13 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 toolbar.setTitle(R.string.grades);
                 initScoreFrag();
                 break;
-//            case R.id.menum_post:
-//                AppAnalytics.onEvent(this, AppAnalytics.C_T);
-//                toolbar.setTitle(R.string.tree);
-//                initPostFrag();
-////                startActivity(new Intent(this, PublishPostAty.class));
-//
-//                break;
+            case R.id.menum_post:
+                AppAnalytics.onEvent(this, AppAnalytics.C_T);
+                toolbar.setTitle(R.string.tree);
+                initPostFrag();
+//                startActivity(new Intent(this, PublishPostAty.class));
+
+                break;
         }
         drawerLayout.closeDrawers();
         getColor(menuItem);

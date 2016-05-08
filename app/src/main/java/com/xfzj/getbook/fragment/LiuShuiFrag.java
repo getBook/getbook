@@ -343,10 +343,8 @@ public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeL
         ShareUtils.share(getActivity(), text, title, wrapUrl(billShare.getObjectId()), R.mipmap.nuist);
     }
 
-    private String[] wrapUrl(String id) {
-        String baseUrl = BaseHttp.SHAREBILL + "objectId=" + id + "&download=";
-        String wxUrl = baseUrl + encode(ShareUtils.wxUrl);
-        return new String[]{baseUrl + ShareUtils.otherUrl, wxUrl};
+    private String wrapUrl(String id) {
+        return  BaseHttp.SHAREBILL + "objectId=" + id;
     }
 
     private String encode(String string) {

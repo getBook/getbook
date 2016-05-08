@@ -3,11 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.SecondBookFrag">
+
     <com.xfzj.getbook.views.recycleview.LoadMoreView
-        android:layout_width="match_parent"
         android:id="@+id/loadMoreView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_height="match_parent"/>
+        android:layout_marginRight="2dp" />
+
     <include layout="@layout/no_data" />
 </FrameLayout>

@@ -19,7 +19,11 @@ public abstract class BaseAsyncTask<K, V, T> extends AsyncTask<K, V, T> {
         this.context = context;
         gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     }
-    
+
+    public BaseAsyncTask() {
+        
+    }
+
     public void setProgressDialog(String title,String message) {
         setProgressDialog(title, message, false);
     }

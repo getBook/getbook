@@ -11,6 +11,12 @@ import cn.bmob.v3.datatype.BmobRelation;
  * Created by zj on 2016/4/16.
  */
 public class Post extends BmobObject {
+
+
+    public static final int UNKNOWNLIKESTATE = -1;
+
+    public static final int NOLIKESTATE = 0;
+    public static final int LIKEDSTATE = 1;
     private String content;
     private String[] topic;
 
@@ -19,8 +25,22 @@ public class Post extends BmobObject {
     private String[] pics;
     private List<BmobFile> files;
 
-
     private Integer likeCount, commentCount;
+
+    /**
+     * -1 点赞状态未知
+     * 0 未点赞
+     * 1 已点赞
+     */
+    private int likeState=-1;
+
+    public int getLikeState() {
+        return likeState;
+    }
+
+    public void setLikeState(int likeState) {
+        this.likeState = likeState;
+    }
 
     public Post() {
     }
@@ -34,8 +54,8 @@ public class Post extends BmobObject {
         this.topic = topic;
         this.likes = likes;
         this.pics = pics;
-        this.likeCount=0;
-        this.commentCount=0;
+        this.likeCount = 0;
+        this.commentCount = 0;
     }
 
     public Post(String content, String[] topic, BmobRelation likes, String[] pics, List<BmobFile> files, Integer likeCount, Integer commentCount) {
@@ -49,6 +69,9 @@ public class Post extends BmobObject {
     }
 
     public int getLikeCount() {
+        if (null == likeCount) {
+            return 0;
+        }
         return likeCount;
     }
 
@@ -57,6 +80,9 @@ public class Post extends BmobObject {
     }
 
     public int getCommentCount() {
+        if (null == commentCount) {
+            return 0;
+        }
         return commentCount;
     }
 

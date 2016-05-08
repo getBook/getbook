@@ -63,7 +63,7 @@ public class QueryAction extends BaseAction {
         });
     }
 
-    public  void queryPost(int limit, int skip, final OnQueryListener<List<Post>> onQueryListener) {
+    public void queryPost(final String objectId, int limit, int skip, final OnQueryListener<List<Post>> onQueryListener) {
 
         BmobQuery<Post> query = new BmobQuery<>();
         query.order("-createdAt,-updatedAt");
@@ -72,7 +72,7 @@ public class QueryAction extends BaseAction {
             query.setSkip(skip * limit);
         }
         query.findObjects(context, new FindListener<Post>() {
-            @Override
+            @Override   
             public void onSuccess(List<Post> list) {
                 if (null == list) {
                     MyToast.show(context, context.getString(R.string.net_error));

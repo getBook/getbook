@@ -31,10 +31,10 @@ import cn.bmob.v3.datatype.BmobFile;
  * Created by zj on 2016/2/24.
  */
 public class NetImageView extends ImageView {
-    public static final int SMALL_WIDTH = 150;
-    public static final int SMALL_HEIGHT = 267;
+    public static final int SMALL_WIDTH = 200;
+    public static final int SMALL_HEIGHT = 200;
     public static final int LARGE_WIDTH = 300;
-    public static final int LARGE_HEIGHT = 500;
+    public static final int LARGE_HEIGHT = 800;
     private String url;
     private Context context;
     private File cachePath;
@@ -56,6 +56,10 @@ public class NetImageView extends ImageView {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
             KEEP_ALIVE, TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>(), sThreadFactory);
+    /**
+     * glide图片缓存路径
+     */
+    private String cahceName;
 
     public NetImageView(Context context) {
         this(context, null);
@@ -73,6 +77,14 @@ public class NetImageView extends ImageView {
     public NetImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.context = context;
+    }
+
+    public String getCahceName() {
+        return cahceName;
+    }
+
+    public void setCahceName(String cahceName) {
+        this.cahceName = cahceName;
     }
 
     public String getUrl() {
@@ -185,7 +197,8 @@ public class NetImageView extends ImageView {
         getBmobthumbnail.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
             @Override
             public void onSuccess(String s) {
-                Glide.with(context).load(s).diskCacheStrategy(DiskCacheStrategy.ALL).error(R.mipmap.error).into(NetImageView.this);
+                cahceName = s;
+                Glide.with(context).load(s).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).dontAnimate().into(NetImageView.this);
             }
 
             @Override
@@ -206,6 +219,6 @@ public class NetImageView extends ImageView {
             return;
         }
         setImageResource(R.mipmap.placeholder);
-        Glide.with(context).load(image.getFileUrl(context)).diskCacheStrategy(DiskCacheStrategy.ALL).into(NetImageView.this);
+        Glide.with(context).load(image.getFileUrl(context)).placeholder(R.mipmap.placeholder).diskCacheStrategy(DiskCacheStrategy.ALL).dontAnimate().into(NetImageView.this);
     }
 }

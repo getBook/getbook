@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--获取sd卡写的权限，用于文件上传和下载-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--推送权限-->
     <!--允许读取手机状态 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -188,7 +189,8 @@
         <activity
             android:name=".activity.PublishPostAty"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan|stateHidden">
+            android:windowSoftInputMode = "adjustResize"
+          >
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->

@@ -159,20 +159,13 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         }
     }
 
-    public Bitmap getDebrisImage() {
+    public String getDebrisImage() {
         if (null == ivPic) {
             return null;
         }
-        Drawable d = ivPic.getDrawable();
-        Bitmap bitmap = null;
-        if (d instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable) d).getBitmap();
-        } else if (d instanceof GlideBitmapDrawable) {
-            bitmap = ((GlideBitmapDrawable) d).getBitmap();
-        }
-        return bitmap;
+        return ivPic.getCahceName();
     }
-    
+
     public void doInvalid() {
         if (null == debris) {
             return;
@@ -193,7 +186,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             if (now - update >= Constants.day * 24 * 60 * 60 * 1000) {
                 handleInvalid();
             } else {
-                restartOnSale(debris);
+//                restartOnSale(debris);
             }
         }
     }

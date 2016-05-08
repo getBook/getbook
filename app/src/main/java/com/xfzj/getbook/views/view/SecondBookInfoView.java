@@ -1,7 +1,6 @@
 package com.xfzj.getbook.views.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +69,10 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
         itemView.update(secondBook);
     }
 
-    public Bitmap getSecondBookImage() {
+    public String getSecondBookImage() {
+        if (null == itemView) {
+            return null;
+        }
         return itemView.getSecondBookImage();
     }
 //    private void updateBookInfo(BookInfo bookInfo) {

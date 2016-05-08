@@ -17,10 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.viewpagerindicator.CirclePageIndicator;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.MyToast;
@@ -44,7 +46,7 @@ import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
  */
 public abstract class DetailActivity extends AppActivity implements View.OnClickListener, Toolbar.OnMenuItemClickListener {
     public static final String IMAGE = "DetailActivity.Image";
-    
+
     @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
     @Bind(R.id.simpleUserView)
@@ -196,29 +198,48 @@ public abstract class DetailActivity extends AppActivity implements View.OnClick
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
-                Bitmap bitmap = getIntent().getParcelableExtra(IMAGE);
-                if (null == bitmap) {
-                    bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                }
-                String name = getName();
-                String discount = getDiscount();
-                String text = name+",只要" + discount + "元,快下载盖饭——一款南信大学生专属APP";
-                ShareUtils.share(this, text, name, bitmap, new UMShareListener() {
+                final String image = getIntent().getStringExtra(IMAGE);
+                new BaseAsyncTask<Void, Void, Bitmap>() {
                     @Override
-                    public void onResult(SHARE_MEDIA share_media) {
-                        MyToast.show(getApplicationContext(), getString(R.string.share_succ));
+                    protected void onPost(Bitmap bitmap) {
+                        if (null == bitmap) {
+                            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                        }
+                        String name = getName();
+                        String discount = getDiscount();
+                        String text = name + ",只要" + discount + "元,快下载盖饭——一款南信大学生专属APP";
+                        ShareUtils.share(DetailActivity.this, text, name, bitmap, new UMShareListener() {
+                            @Override
+                            public void onResult(SHARE_MEDIA share_media) {
+                                MyToast.show(getApplicationContext(), getString(R.string.share_succ));
+                            }
+
+                            @Override
+                            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onCancel(SHARE_MEDIA share_media) {
+
+                            }
+                        });
                     }
 
                     @Override
-                    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-
+                    protected Bitmap doExcute(Void[] params) {
+                        if (TextUtils.isEmpty(image)) {
+                            return BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                        }
+                        try {
+                            return Glide.with(getApplicationContext()).load(image).asBitmap().into(-1, -1).get();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return null;
                     }
+                }.execute();
 
-                    @Override
-                    public void onCancel(SHARE_MEDIA share_media) {
-
-                    }
-                });
                 break;
 
         }

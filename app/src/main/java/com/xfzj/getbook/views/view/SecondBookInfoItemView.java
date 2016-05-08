@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.bmob.v3.datatype.BmobFile;
+
 /**
  * Created by zj on 2016/2/29.
  */
@@ -251,15 +253,19 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
         }
     }
 
-    public Bitmap getSecondBookImage() {
-        if (null == ivBook.getDrawable()) {
+    public String getSecondBookImage() {
+        if (null == secondBook) {
             return null;
         }
-        try {
-            return ((GlideBitmapDrawable) ivBook.getDrawable()).getBitmap();
-        } catch (Exception e) {
+        BookInfo bookInfo = secondBook.getBookInfo();
+        if (null == bookInfo) {
+            return  null;
+        }
+        BmobFile bmobFile = bookInfo.getBmobImage();
+        if (null == bmobFile) {
             return null;
         }
+        return bmobFile.getFileUrl(context);
     }
 
     public interface onClickListener<T> {

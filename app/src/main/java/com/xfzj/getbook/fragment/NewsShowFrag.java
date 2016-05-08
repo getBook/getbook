@@ -66,10 +66,6 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         if (getArguments() != null) {
             param = getArguments().getString(PARAM);
         }
-        if (null != savedInstanceState) {
-            lists = (List<News>) savedInstanceState.getSerializable(NEWSLIST);
-
-        }
     }
 
     public void setFab(FloatingActionButton fab) {
@@ -103,6 +99,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         loadMoreView.setRefreshing();
         isRefresh = true;
         getNewsListLoader = (GetNewsListLoader) getLoaderManager().restartLoader(0, null, this);
+        getNewsListLoader.forceLoad();
     }
 
     @Override
@@ -110,6 +107,12 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
         isRefresh = false;
         getNewsListLoader.forceLoad();
 
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+//        onRefresh();
     }
 
     @Override
@@ -145,6 +148,7 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
             newsShowAdapter.addAll(data);
 
         }
+
     }
 
     @Override

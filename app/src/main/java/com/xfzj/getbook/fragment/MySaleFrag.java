@@ -113,9 +113,8 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
 
         } else if (mParam1.equals(COLUMNDEBRIS)) {
             debrises = new ArrayList<>();
-
         } else {
-            getActivity().finish();
+           getFragmentManager().popBackStack();
         }
 
         baseApplication = (BaseApplication) getActivity().getApplication();
@@ -176,6 +175,7 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
 
     @Override
     public void onFail() {
+        pd.dismiss();
         if (null != llnodata) {
             llnodata.setVisibility(View.VISIBLE);
         }
@@ -261,7 +261,8 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
         builder.setTitle(getString(R.string.tishi)).setMessage(getString(R.string.delete_cannot_find)).setPositiveButton(getString(R.string.ensure), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                List<String> lists = new ArrayList<>();
+                List<SecondBook> secondBooks = new ArrayList<>();
+                List<Debris> debrises = new ArrayList<>();
                 List<CheckBox> ints = new ArrayList<>();
                 List<WrapSecondBookInfoItemView> wraps = new ArrayList<>();
                 List<WrapDebrisInfoItemView> wrapDebris = new ArrayList<>();
@@ -273,14 +274,14 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                             wraps.add(wrapSecondBookInfoItemView);
                             SecondBook secondBook = wrapSecondBookInfoItemView.getSecondBookInfoItemView().getSecondBook();
                             if (null != secondBook) {
-                                lists.add(secondBook.getObjectId());
+                                secondBooks.add(secondBook);
                             }
                         } else if (mParam1.equals(COLUMNDEBRIS)) {
                             WrapDebrisInfoItemView wrapDebrisInfoItemView = wrapDebrisInfoItemViews.get(i);
                             wrapDebris.add(wrapDebrisInfoItemView);
                             Debris debris = wrapDebrisInfoItemView.getDebrisContentInfoView().getDebris();
                             if (null != debris) {
-                                lists.add(debris.getObjectId());
+                                debrises.add(debris);
                             }
                         }
                     }
@@ -300,7 +301,7 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                         llnodata.setVisibility(View.VISIBLE);
                     }
                     AppAnalytics.onEvent(getActivity(), AppAnalytics.D_SB);
-                    deleteAction.delete(lists, SecondBook.class);
+                    deleteAction.deleteSecondBook(secondBooks);
                 } else if (mParam1.equals(COLUMNDEBRIS)) {
                     for (WrapDebrisInfoItemView w : wrapDebris) {
                         ll.removeView(w);
@@ -315,7 +316,7 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                         llnodata.setVisibility(View.VISIBLE);
                     }
                     AppAnalytics.onEvent(getActivity(), AppAnalytics.D_DB);
-                    deleteAction.delete(lists, Debris.class);
+                    deleteAction.deleteDebris(debrises);
                 }
 
             }

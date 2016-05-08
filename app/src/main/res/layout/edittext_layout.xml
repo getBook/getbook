@@ -1,39 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.design.widget.TextInputLayout
+        android:layout_weight="1"
         android:id="@+id/til"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/et"
+            android:gravity="top|left"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout
-        android:id="@+id/rlCount"
+        android:layout_weight="0"
+        android:id="@+id/rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/til">
 
-        <TextView
-            android:id="@+id/tvTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="/140" />
+        <ImageView
+            android:id="@+id/ivEmoji"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/ic_launcher" />
 
-        <TextView
-            android:id="@+id/tvNow"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/rlCount"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/tvTotal"
-            android:text="5000" />
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/tvTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="/140" />
+
+            <TextView
+                android:id="@+id/tvNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tvTotal"
+                tools:text="5000" />
+        </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>

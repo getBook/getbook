@@ -152,4 +152,17 @@ public class User extends BmobUser {
         this.id = id;
                 
     }
+
+    public User(String name, boolean gender, String huaName,  String sno, String cardno, String msg, int id, String objectId, String email) {
+        
+        this.name = name;
+        this.gender = gender;
+        this.huaName = huaName;
+        this.sno = sno;
+        this.cardno = cardno;
+        this.msg = msg;
+        this.id = id;
+        setObjectId(objectId);
+        setEmail(email);
+    }
 }

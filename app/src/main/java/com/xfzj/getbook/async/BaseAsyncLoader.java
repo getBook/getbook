@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 /**
  * Created by zj on 2016/3/21.
  */
-public abstract class BaseAsyncLoader<T> extends AsyncTaskLoader<T> {
+public  abstract   class BaseAsyncLoader<T> extends AsyncTaskLoader<T> {
    
     private ProgressDialog pd;
     protected Context context;
@@ -56,6 +56,6 @@ public abstract class BaseAsyncLoader<T> extends AsyncTaskLoader<T> {
         if (null != pd && !pd.isShowing()) {
             pd.show();
         }
-        forceLoad();
+//        forceLoad();
     }
 }

@@ -32,6 +32,8 @@ public class SharedPreferencesUtils {
     private static final String ACCOUNT = "account";
     private static final String COOKIE = "cookie";
     private static final String PHONE = "phone";
+    private static final String OBJECTID = "objectId";
+    private static final String EMAIL = "email";
 
     public static void saveUser(Context context, User user) {
         if (null == user) {
@@ -64,6 +66,12 @@ public class SharedPreferencesUtils {
         editor.putBoolean(GENDER, user.isGender());
         if (!TextUtils.isEmpty(user.getHuaName())) {
             editor.putString(HUANAME, user.getHuaName());
+        }
+        if (!TextUtils.isEmpty(user.getObjectId())) {
+            editor.putString(OBJECTID, user.getObjectId());
+        }
+        if (!TextUtils.isEmpty(user.getEmail())) {
+            editor.putString(EMAIL, user.getEmail());
         }
         editor.apply();
     }
@@ -113,7 +121,9 @@ public class SharedPreferencesUtils {
         String huaName = sp.getString(HUANAME, "");
         String name = sp.getString(NAME, "");
         int id = sp.getInt(ID, 0);
-        return new User(name, gender, huaName, sno, cardno, msg, id);
+        String objectId = sp.getString(OBJECTID, "");
+        String email = sp.getString(EMAIL, "");
+        return new User(name, gender, huaName, sno, cardno, msg, id, objectId, email);
     }
 
     public static void saveUserHeader(Context context, String header) {
