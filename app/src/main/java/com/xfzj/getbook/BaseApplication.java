@@ -10,6 +10,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.utils.FaceConversionUtil;
 import com.xfzj.getbook.utils.FileUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
@@ -53,10 +54,12 @@ public class BaseApplication extends Application {
                 .build();
         Bmob.getInstance().initConfig(config);
         Bmob.initialize(this, "953b4c2054c0d44e168d6725f8df4ff7");
+        Bmob.getInstance().synchronizeTime(getApplicationContext());
         FileUtils.createDownloadDir();
         FeedbackAPI.initAnnoy(this, "23357392");
 //        BmobUpdateAgent.setUpdateCheckConfig(false);
         initSocail();
+        FaceConversionUtil.getInstace().getFileText(getApplicationContext());
     }
 
     private void initSocail() {

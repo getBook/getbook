@@ -30,7 +30,7 @@
             android:id="@+id/ivEmoji"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@mipmap/ic_launcher" />
+            android:background="@drawable/iv_emoji_selector" />
 
         <RelativeLayout
             android:id="@+id/rlCount"

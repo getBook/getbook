@@ -5,35 +5,35 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginBottom="2dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_marginTop="2dp"
         android:minHeight="50dp">
 
         <LinearLayout xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="2dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:minHeight="50dp">
 
                 <TextView
                     android:id="@+id/tvContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left"
+                    android:gravity="left|top"
                     android:padding="5dp"
                     android:textSize="16sp"
 
 
-                    tools:text="十多年来看好萨佛还打算开发活动独立开发活动是客户反馈了但是疯狂的楼市灰尘颗粒的首付款第三方活动开始开始就" />
+                    tools:text="开始开始就" />
 
                 <com.xfzj.getbook.views.gridview.PicShowView
                     android:id="@+id/picShowView"
@@ -43,6 +43,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:layout_weight="0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -67,7 +68,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/tvComment"
                     android:drawableLeft="@mipmap/like"
-                    android:drawablePadding="2dp"
+                    android:drawablePadding="10dp"
                     android:gravity="center"
                     android:textColor="@color/secondary_text"
                     tools:text="5" />
@@ -78,7 +79,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:drawableLeft="@mipmap/comment"
-                    android:drawablePadding="2dp"
+                    android:layout_marginRight="10dp"
+                    android:drawablePadding="10dp"
                     android:gravity="center"
                     android:textColor="@color/secondary_text"
                     tools:text="5" />

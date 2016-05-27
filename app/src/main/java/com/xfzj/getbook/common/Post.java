@@ -25,14 +25,19 @@ public class Post extends BmobObject {
     private String[] pics;
     private List<BmobFile> files;
 
-    private Integer likeCount, commentCount;
+    private int likeCount=-1,CommentCount=-1;
 
+    private BmobRelation focus;
     /**
      * -1 点赞状态未知
      * 0 未点赞
      * 1 已点赞
      */
     private int likeState=-1;
+
+    public Post(String str) {
+        setObjectId(str);
+    }
 
     public int getLikeState() {
         return likeState;
@@ -45,6 +50,26 @@ public class Post extends BmobObject {
     public Post() {
     }
 
+    public BmobRelation getFocus() {
+        return focus;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getCommentCount() {
+        return CommentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        CommentCount = commentCount;
+    }
+
     public void setFiles(List<BmobFile> files) {
         this.files = files;
     }
@@ -54,41 +79,21 @@ public class Post extends BmobObject {
         this.topic = topic;
         this.likes = likes;
         this.pics = pics;
-        this.likeCount = 0;
-        this.commentCount = 0;
     }
 
-    public Post(String content, String[] topic, BmobRelation likes, String[] pics, List<BmobFile> files, Integer likeCount, Integer commentCount) {
+    public Post(String content, String[] topic, BmobRelation likes, String[] pics, List<BmobFile> files) {
         this.content = content;
         this.topic = topic;
         this.likes = likes;
         this.pics = pics;
         this.files = files;
-        this.likeCount = likeCount;
-        this.commentCount = commentCount;
     }
 
-    public int getLikeCount() {
-        if (null == likeCount) {
-            return 0;
-        }
-        return likeCount;
+    public void setFocus(BmobRelation focus) {
+        this.focus = focus;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
 
-    public int getCommentCount() {
-        if (null == commentCount) {
-            return 0;
-        }
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
-    }
 
     public List<BmobFile> getFiles() {
         return files;
@@ -138,6 +143,11 @@ public class Post extends BmobObject {
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        return getObjectId().hashCode();
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o == null) {

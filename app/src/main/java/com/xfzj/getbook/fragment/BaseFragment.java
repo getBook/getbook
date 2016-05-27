@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xfzj.getbook.utils.AppAnalytics;
-import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 
 /**
  * Created by zj on 2016/3/30.
@@ -34,13 +34,20 @@ public class BaseFragment extends Fragment {
     public void onResume() {
         super.onResume();
         AppAnalytics.onPageStart(this.getClass().getSimpleName());
-        MyLog.print("class=",this.getClass().getSimpleName());
     }
 
     @Override
     public void onPause() {
         super.onPause();
         AppAnalytics.onPageEnd(this.getClass().getSimpleName());
+        LoadMoreView loadMoreView = getLoadMoreView();
+        if (null != loadMoreView) {
+            loadMoreView.clearRefresh();
+        }
+    }
+
+    public LoadMoreView getLoadMoreView() {
+        return null;
     }
 
     @Override

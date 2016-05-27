@@ -54,7 +54,10 @@ public class LiuShuiQueryFragment extends BaseFragment implements View.OnClickLi
     public LiuShuiQueryFragment() {
 
     }
-
+    @Override
+    public LoadMoreView getLoadMoreView() {
+        return loadMoreView;
+    }
 
     public static LiuShuiQueryFragment newInstance(String param) {
         LiuShuiQueryFragment liuShuiQueryFragment = new LiuShuiQueryFragment();

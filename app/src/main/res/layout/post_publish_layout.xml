@@ -61,6 +61,11 @@
                         BaseEditText:maxWordCount="140"
                         BaseEditText:showWordCount="true" />
 
+                    <com.xfzj.getbook.views.view.EmojiView
+                        android:id="@+id/emojiView"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="787dp" />
                     <com.xfzj.getbook.views.gridview.PicAddView
                         android:layout_weight="0"
                         android:id="@+id/addView"

@@ -26,6 +26,7 @@ import com.xfzj.getbook.async.GetBillAllAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.Bill;
 import com.xfzj.getbook.common.BillShare;
+import com.xfzj.getbook.common.CommonShareSetting;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyToast;
@@ -40,6 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 
 /**
@@ -299,33 +302,50 @@ public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeL
                     MyToast.show(getActivity(), getActivity().getString(R.string.queryfail));
                     return;
                 }
-                shopGroupFrag.setBill(shopGroups);
-                dealTypeFrag.setBill(dealTypes);
+                if (null != shopGroupFrag) {
+                    shopGroupFrag.setBill(shopGroups);
+                }
+                if (null != dealTypeFrag) {
+                    dealTypeFrag.setBill(dealTypes);
+                }
+                BmobQuery<CommonShareSetting> query = new BmobQuery<CommonShareSetting>();
+                query.findObjects(getActivity(), new FindListener<CommonShareSetting>() {
 
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.share).setMessage(getActivity().getString(R.string.shareyourbill)).setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Gson gson = new Gson();
-                        final String shopJson = gson.toJson(shopGroups);
-                        final String dealTypeJson = gson.toJson(dealTypes.get(0));
-                        final BillShare billShare = new BillShare(shopJson, dealTypeJson);
-                        billShare.save(getActivity(), new SaveListener() {
-                            @Override
-                            public void onSuccess() {
-                                share(dealTypes, year, billShare);
-                            }
+                    public void onSuccess(List<CommonShareSetting> list) {
+                        if (null != list && list.size() == 1) {
+                            if (list.get(0).isOpen()) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setTitle(R.string.share).setMessage(getActivity().getString(R.string.shareyourbill)).setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Gson gson = new Gson();
+                                        final String shopJson = gson.toJson(shopGroups);
+                                        final String dealTypeJson = gson.toJson(dealTypes.get(0));
+                                        final BillShare billShare = new BillShare(shopJson, dealTypeJson);
+                                        billShare.save(getActivity(), new SaveListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                share(dealTypes, year, billShare);
+                                            }
 
-                            @Override
-                            public void onFailure(int i, String s) {
+                                            @Override
+                                            public void onFailure(int i, String s) {
 
+                                            }
+                                        });
+
+                                    }
+                                }).setNegativeButton(R.string.no, null).create().show();
                             }
-                        });
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
 
                     }
-                }).setNegativeButton(R.string.no, null).create().show();
-
+                });
             }
 
             @Override
@@ -344,7 +364,7 @@ public class LiuShuiFrag extends BaseFragment implements ViewPager.OnPageChangeL
     }
 
     private String wrapUrl(String id) {
-        return  BaseHttp.SHAREBILL + "objectId=" + id;
+        return BaseHttp.SHAREBILL + "objectId=" + id;
     }
 
     private String encode(String string) {

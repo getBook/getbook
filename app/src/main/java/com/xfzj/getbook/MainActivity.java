@@ -1,6 +1,7 @@
 package com.xfzj.getbook;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -9,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.IWxCallback;
 import com.umeng.socialize.UMShareAPI;
+import com.xfzj.getbook.action.CommentAction;
 import com.xfzj.getbook.action.LoginAction;
 import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.UploadAction;
@@ -44,14 +45,19 @@ import com.xfzj.getbook.activity.FlashActivity;
 import com.xfzj.getbook.activity.LoginAty;
 import com.xfzj.getbook.activity.SearchAty;
 import com.xfzj.getbook.async.LoginAsync;
+import com.xfzj.getbook.common.Post;
+import com.xfzj.getbook.common.UnreadPost;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.fragment.BaseLibraryFrag;
 import com.xfzj.getbook.fragment.CardFrag;
 import com.xfzj.getbook.fragment.HomeFrag;
 import com.xfzj.getbook.fragment.NewsFrag;
+import com.xfzj.getbook.fragment.NotificationFrag;
+import com.xfzj.getbook.fragment.PostDetailFrag;
 import com.xfzj.getbook.fragment.PostFrag;
 import com.xfzj.getbook.fragment.ScoreFrag;
 import com.xfzj.getbook.utils.AppAnalytics;
+import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.PhotoClipTool;
@@ -59,12 +65,17 @@ import com.xfzj.getbook.utils.ShareUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
 import com.xfzj.getbook.views.view.NavigationHeaderView;
+import com.xfzj.getbook.views.view.NotificationImaheView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
 
 import butterknife.Bind;
 import cn.bmob.v3.BmobQuery;
@@ -73,7 +84,7 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
-public class MainActivity extends BaseActivity implements NavigationHeaderView.OnHeaderClickListener, Toolbar.OnMenuItemClickListener, NavigationView.OnNavigationItemSelectedListener, NavigationHeaderView.OnHuaNameClick {
+public class MainActivity extends BaseActivity implements NavigationHeaderView.OnHeaderClickListener, Toolbar.OnMenuItemClickListener, NavigationView.OnNavigationItemSelectedListener, NavigationHeaderView.OnHuaNameClick, NotificationFrag.OnUnreadPostClick {
     public static final String FROM = "MainActivity.class";
     private static final int IMAGE_FROM_ALBUM = 456;
 
@@ -103,11 +114,34 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     private BaseLibraryFrag baseLibraryFrag;
     private CardFrag cardFrag;
     private ScoreFrag scoreFrag;
+    private NotificationFrag notificationFrag;
     public Menu menu;
     private PostFrag postFrag;
+    private Timer timer;
+    /**
+     * 是否已经显示了NotificationImaheView
+     */
+    private boolean isNoShow = false;
+    /**
+     * 上次和这次获取消息通知的时间
+     */
+    private long lastTime, nowTime;
+    /**
+     * 摇铃的imageview
+     */
+    private NotificationImaheView notificationImaheView;
+    private Set<UnreadPost> unreadPosts = new HashSet<>();
+    private boolean isUnreadPostOpen;
+    private boolean isClickNo;
+    /**
+     * 已经获取过通知的post
+     */
+    private Set<Post> posteds;
+    private List<Post> deletePost;
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+    protected void onSaveInstanceState(Bundle outState) {
+
     }
 
     @Override
@@ -144,17 +178,34 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         baseApplication = (BaseApplication) getApplication();
         user = baseApplication.getUser();
         setDrawerToggle();
-       
-        if(null==savedInstanceState) {
-            isNeedHuaName();
-            isNeedLogin();
-            onNavigationItemSelected(navigationView.getMenu().getItem(0));
-            //bmob自动更新
-            BmobUpdateAgent.update(this);
-            getUnreadFeedBack();
-           
+        isNeedHuaName();
+        isNeedLogin();
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        //bmob自动更新
+        BmobUpdateAgent.update(this);
+        getUnreadFeedBack();
+        showShare();
+    }
+
+    /**
+     * 显示分享对话框
+     */
+    private void showShare() {
+        if (SharedPreferencesUtils.isShowShare(getApplicationContext())) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(R.string.please).setIcon(R.mipmap.ic_launcher).
+                    setMessage(getString(R.string.share_please)).
+                    setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ShareUtils.shareDefautl(MainActivity.this);
+                }
+            }).create().show();
+
+
         }
-       
+
+
     }
 
     private void getUnreadFeedBack() {
@@ -234,6 +285,55 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             } else {
                 super.onBackPressed();
             }
+        } else if (null != postFrag && postFrag.isVisible()) {
+            if (postFrag.isEmojiShow()) {
+                postFrag.hideEmoji();
+            } else {
+                if (null != postFrag.getPostDetailFrag()) {
+                    PostDetailFrag pdf = postFrag.getPostDetailFrag();
+                    if (null != pdf && pdf.isVisible() && isUnreadPostOpen) {
+
+                        FragmentManager cfm = postFrag.getChildFragmentManager();
+                        cfm.getBackStackEntryCount();
+                        if (null != cfm) {
+                            cfm.popBackStack();
+                        }
+                        initNotificationFrag(unreadPosts);
+                        isUnreadPostOpen = false;
+                    } else if (null != pdf && pdf.isVisible()) {
+                        FragmentManager cfm = postFrag.getChildFragmentManager();
+                        if (null != cfm && cfm.getBackStackEntryCount() >= 1) {
+                            cfm.popBackStack();
+                            postFrag.initPostShowFrag();
+                        }
+                    } else {
+                        FragmentManager cfm = postFrag.getChildFragmentManager();
+                        if (null != cfm && cfm.getBackStackEntryCount() > 1) {
+                            cfm.popBackStack();
+                        } else if (null != cfm && cfm.getBackStackEntryCount() == 0) {
+                            postFrag.initPostShowFrag();
+                        } else {
+                            super.onBackPressed();
+                        }
+                    }
+
+                } else {
+                    FragmentManager cfm = postFrag.getChildFragmentManager();
+                    if (null != cfm && cfm.getBackStackEntryCount() > 1) {
+                        cfm.popBackStack();
+                    } else {
+                        super.onBackPressed();
+                    }
+                }
+            }
+        } else if (null != notificationFrag && notificationFrag.isVisible()) {
+            if (null != fm) {
+                fm.popBackStack();
+
+            }
+            if (null != selectedItem) {
+                onNavigationItemSelected(selectedItem);
+            }
         } else {
             super.onBackPressed();
         }
@@ -248,6 +348,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         currentClickItem = menuItem.getTitle();
+        selectedItem = menuItem;
         if (null != baseMySaleFrag && baseMySaleFrag.isVisible() && !baseMySaleFrag.isOriginState()) {
             baseMySaleFrag.setVisibilty(View.GONE);
         }
@@ -290,9 +391,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             case R.id.menum_post:
                 AppAnalytics.onEvent(this, AppAnalytics.C_T);
                 toolbar.setTitle(R.string.tree);
-                initPostFrag();
-//                startActivity(new Intent(this, PublishPostAty.class));
-
+                initPostFrag(null, null);
                 break;
         }
         drawerLayout.closeDrawers();
@@ -300,15 +399,30 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         return true;
     }
 
-    private void initPostFrag() {
-        postFrag = (PostFrag) fm.findFragmentByTag(PostFrag.PARAM);
+    private void initPostFrag(String param, Post post) {
+        postFrag = (PostFrag) fm.findFragmentByTag(PostFrag.ARG_PARAM1);
         if (null == postFrag || postFrag.isDetached()) {
-            postFrag = PostFrag.newInstance(PostFrag.PARAM);
+            postFrag = PostFrag.newInstance(param);
         }
+        postFrag.isInit(TextUtils.isEmpty(param));
+        postFrag.setPost(post);
         if (!frags.contains(postFrag)) {
             frags.add(postFrag);
         }
-        showFrag(postFrag, null);
+        showFrag(postFrag, PostFrag.ARG_PARAM1);
+    }
+
+    private void initNotificationFrag(Set<UnreadPost> unreadPosts) {
+        notificationFrag = (NotificationFrag) fm.findFragmentByTag(NotificationFrag.PARAM);
+        if (null == notificationFrag || notificationFrag.isDetached()) {
+            notificationFrag = NotificationFrag.newInstance(NotificationFrag.PARAM);
+        }
+        notificationFrag.setUnreadPosts(unreadPosts);
+        notificationFrag.setOnUnreadPostClick(this);
+        if (!frags.contains(notificationFrag)) {
+            frags.add(notificationFrag);
+        }
+        showFrag(notificationFrag, NotificationFrag.PARAM, true);
     }
 
     private void initScoreFrag() {
@@ -385,6 +499,10 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     }
 
     private void showFrag(Fragment frag, String tag) {
+        showFrag(frag, tag, false);
+    }
+
+    private void showFrag(Fragment frag, String tag, boolean b) {
         FragmentTransaction ft = fm.beginTransaction();
         if (!frag.isAdded()) {
             ft.add(R.id.fram, frag, tag);
@@ -395,6 +513,9 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             } else {
                 ft.hide(f);
             }
+        }
+        if (b) {
+            ft.addToBackStack(null);
         }
         ft.commit();
         fm.executePendingTransactions();
@@ -576,11 +697,105 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        UnreadPostTak();
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void UnreadPostTak() {
+        if (isNoShow && !isClickNo) {
+            if (null != notificationImaheView) {
+                notificationImaheView.clearAnimation();
+            }
+            menu.findItem(R.id.action_notification).setActionView(null);
+            menu.findItem(R.id.action_notification).setActionView(notificationImaheView);
+        } else {
+            isNoShow = false;
+            isClickNo = false;
+            if (null != notificationImaheView) {
+                notificationImaheView.clearAnimation();
+            }
+            menu.findItem(R.id.action_notification).setActionView(null);
+        }
+        nowTime = System.currentTimeMillis();
+        if (nowTime - lastTime >= Constants.NOTIFICATION_GET_TIME || lastTime == 0) {
+            isNoShow = false;
+            getUnreadPost(menu.findItem(R.id.action_notification));
+            lastTime = nowTime;
+        }
+    }
+
+
+    private void getUnreadPost(final MenuItem item) {
+        if (null == user || null == item) {
+            return;
+        }
+        final List<Post> posts = SharedPreferencesUtils.getFocusPostId(getApplicationContext());
+        if (null == posts) {
+            return;
+        }
+        if (null == posteds) {
+            posteds = new HashSet<>();
+        }
+        Iterator<Post> iterable = posteds.iterator();
+        deletePost = new ArrayList<>();
+        while (iterable.hasNext()) {
+            Post post = iterable.next();
+            for (Post p : posts) {
+                if (p.equals(post)) {
+                    deletePost.add(p);
+                }
+            }
+        }
+        if (null != deletePost) {
+            for (Post post : deletePost) {
+                posts.remove(post);
+            }
+        }
+        for (final Post post : posts) {
+            CommentAction focusAction = new CommentAction(getApplicationContext());
+            focusAction.queryCount(post, new CommentAction.OnCountListener() {
+                @Override
+                public void onCommentCount(final int i) {
+                    int a = SharedPreferencesUtils.isFocusPostUpdate(getApplicationContext(), post.getObjectId(), i);
+                    if (a > 0) {
+                        post.setCommentCount(i);
+                        unreadPosts.add(new UnreadPost(post, a));
+                        if (null == notificationImaheView) {
+                            notificationImaheView = (NotificationImaheView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.notificationimageview_layout, null);
+                            notificationImaheView.clearAnimation();
+                            notificationImaheView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    posteds.addAll(posts);
+                                    isClickNo = true;
+                                    notificationImaheView.clearAnimation();
+                                    item.setActionView(null);
+                                    initNotificationFrag(unreadPosts);
+                                }
+                            });
+                        }
+                        if (!isNoShow) {
+                            isNoShow = true;
+                            if (null != notificationImaheView) {
+                                notificationImaheView.clearAnimation();
+                            }
+                            item.setActionView(null);
+                            item.setActionView(notificationImaheView);
+                        }
+                    } else {
+                        MyLog.print("暂无新消息", "");
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean b;
+
+
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public boolean onMenuItemClick(final MenuItem item) {
         switch (item.getItemId()) {
 //            case R.id.action_scanner:
 //                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -619,8 +834,13 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             case R.id.feedback:
                 openFeedBack();
                 break;
+            case R.id.action_notification:
+////                getWindow().invalidatePanelMenu(Window.FEATURE_OPTIONS_PANEL);
+//                invalidateOptionsMenu();
+                initNotificationFrag(unreadPosts);
+                break;
             case R.id.action_share:
-                if (null != newsFrag&&newsFrag.isVisible()) {
+                if (null != newsFrag && newsFrag.isVisible()) {
                     if (null != newsFrag.getNewsDetailFrag() && newsFrag.getNewsDetailFrag().isVisible()) {
                         newsFrag.getNewsDetailFrag().shareNews();
                         break;
@@ -659,7 +879,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get( this ).onActivityResult( requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case IMAGE_FROM_CAPTURE:
                 if (resultCode == Activity.RESULT_OK) {
@@ -774,5 +994,11 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     @Override
     public void changeHuaName() {
         showHuaNameDialog(true);
+    }
+
+    @Override
+    public void onUnreadPostClick(Post post) {
+        isUnreadPostOpen = true;
+        initPostFrag(PostFrag.POSTDETAIL, post);
     }
 }

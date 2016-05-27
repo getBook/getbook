@@ -45,10 +45,10 @@
             android:value="56fb38aae0f55a39af000a67" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Test" />
+            android:value="${CHANNEL}" />
         <meta-data
             android:name="BMOB_CHANNEL"
-            android:value="Test" />
+            android:value="${CHANNEL}" />
 
         <activity
             android:name="cn.bmob.v3.update.UpdateDialogActivity"
@@ -136,14 +136,17 @@
         </activity>
         <activity
             android:name=".activity.FlashActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/activityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <data android:scheme="getfun" android:host="openbill"/>
+                <data
+                    android:host="openbill"
+                    android:scheme="getfun" />
 
                 <action android:name="android.intent.action.VIEW" />
 
@@ -164,7 +167,6 @@
         </activity>
         <activity
             android:name=".activity.SearchAty"
-            android:hardwareAccelerated="false"
             android:windowSoftInputMode="stateHidden">
 
             <!-- <intent-filter> -->
@@ -189,8 +191,7 @@
         <activity
             android:name=".activity.PublishPostAty"
             android:label="@string/app_name"
-            android:windowSoftInputMode = "adjustResize"
-          >
+            android:windowSoftInputMode="adjustResize">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->

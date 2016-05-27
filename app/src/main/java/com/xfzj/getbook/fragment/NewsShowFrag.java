@@ -59,7 +59,10 @@ public class NewsShowFrag extends BaseFragment implements LoadMoreListen, View.O
     public void setOnNewsClick(NewsShowFrag.OnNewsClick onNewsClick) {
         this.onNewsClick = onNewsClick;
     }
-
+    @Override
+    public LoadMoreView getLoadMoreView() {
+        return loadMoreView;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

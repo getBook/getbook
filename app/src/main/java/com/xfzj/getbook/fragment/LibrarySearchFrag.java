@@ -54,7 +54,10 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
         }
 
     }
-
+    @Override
+    public LoadMoreView getLoadMoreView() {
+        return loadMoreView;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

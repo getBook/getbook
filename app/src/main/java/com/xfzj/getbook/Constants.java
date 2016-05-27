@@ -11,5 +11,9 @@ public class Constants {
     /**
      * 定义树洞信息一次获取的条数
      */
-    public static final int POST_LIMIT=1;
+    public static final int POST_LIMIT=10;
+    /**
+     * 主动获取通知的时间间隔
+     */
+    public static final int NOTIFICATION_GET_TIME = 1000 * 60;
 }

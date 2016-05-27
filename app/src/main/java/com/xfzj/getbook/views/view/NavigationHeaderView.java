@@ -96,6 +96,11 @@ public class NavigationHeaderView extends FrameLayout implements View.OnClickLis
         if (null == user) {
             return;
         }
+        String name = user.getHuaName();
+        if (TextUtils.isEmpty(name)) {
+            tvName.setText(SharedPreferencesUtils.getHuaName(context));
+            return;
+        }
         tvName.setText(user.getHuaName());
     }
 

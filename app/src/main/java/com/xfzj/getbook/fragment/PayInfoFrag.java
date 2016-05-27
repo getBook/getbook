@@ -19,6 +19,7 @@ import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.GetBillAsync;
 import com.xfzj.getbook.async.UcardAsyncTask;
 import com.xfzj.getbook.common.Bill;
+import com.xfzj.getbook.common.CommonShareSetting;
 import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.ShareUtils;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
@@ -28,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by zj on 2016/3/25.
@@ -119,28 +123,42 @@ public class PayInfoFrag extends BaseFragment implements View.OnClickListener, V
      */
     private void queryBill(String startTime, String endTime, final boolean b, final int year) {
         loadMoreView.setVisibility(View.VISIBLE);
-        GetBillAsync getBillAsync = new GetBillAsync(getActivity());
+        final GetBillAsync getBillAsync = new GetBillAsync(getActivity());
         getBillAsync.execute(param, startTime, endTime);
         getBillAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<List<Bill>>() {
             @Override
             public void onSuccess(final List<Bill> bills) {
                 shopGroupAdapter.clear();
                 shopGroupAdapter.addAll(bills);
-                if (param.equals(TYPE2) && bills.size() > 0 && b) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(R.string.share).setMessage("将您的消费情况分享出去，炫耀一下吧！").setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String[] str = bills.get(0).getV().split(",");
-                            str[0] = str[0].substring(1, str[0].length());
-                            String text = year + "年的大学时光，我一共使用一卡通进行了" + str[1] + "笔消费，共计" + str[0] + "元，快来看看你的大学账单吧！快下载盖饭——一款南信大学生专属APP！";
-                            String title = "一卡通" + year + "年消费情况";
-                            ShareUtils.share(getActivity(), text, title, R.mipmap.nuist);
+                BmobQuery<CommonShareSetting> query = new BmobQuery<CommonShareSetting>();
+                query.findObjects(getActivity(), new FindListener<CommonShareSetting>() {
+                    @Override
+                    public void onSuccess(List<CommonShareSetting> list) {
+                        if (null != list && list.size() == 1) {
+                            if (list.get(0).isOpen()) {
+                                if (param.equals(TYPE2) && bills.size() > 0 && b) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setTitle(R.string.share).setMessage("将您的消费情况分享出去，炫耀一下吧！").setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String[] str = bills.get(0).getV().split(",");
+                                            str[0] = str[0].substring(1, str[0].length());
+                                            String text = year + "年的大学时光，我一共使用一卡通进行了" + str[1] + "笔消费，共计" + str[0] + "元，快来看看你的大学账单吧！快下载盖饭——一款南信大学生专属APP！";
+                                            String title = "一卡通" + year + "年消费情况";
+                                            ShareUtils.share(getActivity(), text, title, R.mipmap.nuist);
 
+                                        }
+                                    }).setNegativeButton(R.string.no, null).create().show();
+                                }
+                            }
                         }
-                    }).setNegativeButton(R.string.no, null).create().show();
-                }
+                    }
 
+                    @Override
+                    public void onError(int i, String s) {
+
+                    }
+                });
             }
 
             @Override

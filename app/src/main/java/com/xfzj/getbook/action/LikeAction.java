@@ -28,29 +28,35 @@ public class LikeAction extends BaseAction {
         user = ((BaseApplication) context.getApplicationContext()).getUser();
     }
 
-    public void queryLikeCount(Post post) {
+    public synchronized void queryLikeCount(Post post, final OnLikeCountListener onLikeCountListener) {
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.addWhereRelatedTo("likes", new BmobPointer(post));
         userBmobQuery.addQueryKeys("objectId");
-        userBmobQuery.findObjects(context, new FindListener<User>() {
-            @Override
-            public void onSuccess(List<User> list) {
-                if (null != onLikeCountListener) {
-                    if (null == list || list.size() == 0) {
-                        onLikeCountListener.onLikeCount(0);
-                    } else {
-                        onLikeCountListener.onLikeCount(list.size());
+        try {
+            userBmobQuery.findObjects(context, new FindListener<User>() {
+                @Override
+                public void onSuccess(List<User> list) {
+                    if (null != onLikeCountListener) {
+                        if (null == list || list.size() == 0) {
+                            onLikeCountListener.onLikeCount(0);
+                        } else {
+                            onLikeCountListener.onLikeCount(list.size());
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onError(int i, String s) {
-                if (null != onLikeCountListener) {
-                    onLikeCountListener.onLikeCount(0);
+                @Override
+                public void onError(int i, String s) {
+                    if (null != onLikeCountListener) {
+                        onLikeCountListener.onLikeCount(0);
+                    }
                 }
+            });
+        } catch (Exception e) {
+            if (null != onLikeCountListener) {
+                onLikeCountListener.onLikeCount(-1);
             }
-        });
+        }
     }
 
     /**
@@ -61,26 +67,64 @@ public class LikeAction extends BaseAction {
     public void excute(final Post post) {
         if (post.getLikeState() == Post.LIKEDSTATE) {
             cancelLike(post);
-        }else{
+        } else {
             doLike(post);
         }
     }
 
     /**
      * 查询自己是否点赞
+     *
      * @param post
-     * @param userFindListener
      */
-    public void querySelfLiked(Post post, FindListener<User> userFindListener) {
+    public synchronized void querySelfLiked(Post post, final OnLikeStateListener onLikedListener) {
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.addWhereRelatedTo("likes", new BmobPointer(post));
         userBmobQuery.addQueryKeys("objectId");
-        userBmobQuery.findObjects(context, userFindListener);
+        try {
+            userBmobQuery.findObjects(context, new FindListener<User>() {
+                @Override
+                public void onSuccess(List<User> list) {
+                    if (null != list && list.size() > 0) {
+                        boolean isFind = false;
+                        for (User user : list) {
+                            if (user.getObjectId().equals(LikeAction.this.user.getObjectId())) {
+                                isFind = true;
+                                break;
+                            }
+                        }
+                        if (isFind) {
+                            if (null != onLikedListener) {
+                                onLikedListener.onLiked();
+                            }
+                        } else {
+                            if (null != onLikedListener) {
+                                onLikedListener.onNotLiked();
+                            }
+                        }
+                    } else {
+                        if (null != onLikedListener) {
+                            onLikedListener.onNotLiked();
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    if (null != onLikedListener) {
+                        onLikedListener.onNotLiked();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            if (null != onLikedListener) {
+                onLikedListener.onUnknownLiked();
+            }
+        }
 
     }
 
-    
-    
+
     /**
      * 取消点赞
      */
@@ -92,20 +136,9 @@ public class LikeAction extends BaseAction {
         post.update(context, new UpdateListener() {
             @Override
             public void onSuccess() {
-                post.increment("likeCount", -1);
-                post.update(context, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        if (null != onLikeListener) {
-                            onLikeListener.onCancelLikeSuccess();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-
-                    }
-                });
+                if (null != onLikeListener) {
+                    onLikeListener.onCancelLikeSuccess();
+                }
 
             }
 
@@ -127,23 +160,9 @@ public class LikeAction extends BaseAction {
         post.update(context, new UpdateListener() {
             @Override
             public void onSuccess() {
-                post.increment("likeCount");
-                post.update(context, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        if (null != onLikeListener) {
-                            onLikeListener.onDoLikeSuccess();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-                        if (null != onLikeListener) {
-                            onLikeListener.onLikeFail();
-                        }
-                    }
-                });
-
+                if (null != onLikeListener) {
+                    onLikeListener.onDoLikeSuccess();
+                }
             }
 
             @Override
@@ -170,6 +189,14 @@ public class LikeAction extends BaseAction {
 
         void onLikeFail();
 
+    }
+
+    public interface OnLikeStateListener {
+        void onLiked();
+
+        void onNotLiked();
+
+        void onUnknownLiked();
     }
 
     public interface OnLikeCountListener {

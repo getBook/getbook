@@ -23,6 +23,7 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
     private boolean isRefresh;
     private LoadMoreListen loadMoreListen;
     private LoadMoreLayout.OnScrollCallBack onScrollCallBack;
+    private boolean isInitRefresh = false;
     public LoadMoreView(Context context) {
         this(context, null);
     }
@@ -93,9 +94,14 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
     }
 
     public void setRefreshing() {
+        if (isInitRefresh) {
+            return;
+        }
+        isInitRefresh=true;
         loadMoreLayout.setProgressViewOffset(false, 0, (int) MyUtils.dp2px(context, 26f));
         loadMoreLayout.setRefreshing(true);
     }
+
 
     public RecyclerView getRecycleView() {
         return recyclerView;
@@ -118,10 +124,22 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
         isRefresh = false;
         recyclerView.scrollToPosition(0);
     }
+
     public void setLoadMoreFinish() {
         loadMoreLayout.setLoading(false);
-        
+
     }
-    
-    
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        loadMoreLayout.setCanLoadMore(canLoadMore);
+
+    }
+
+    public void clearRefresh() {
+        if (loadMoreLayout != null) {
+            loadMoreLayout.setRefreshing(false);
+            loadMoreLayout.destroyDrawingCache();
+            loadMoreLayout.clearAnimation();
+        }
+    }
 }

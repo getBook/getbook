@@ -18,15 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 
- ****************************************** 
- * @author 廖乃波
- * @文件名称 : FaceConversionUtil.java
- * @创建时间 : 2013-1-27 下午02:34:09
- * @文件描述 : 表情轉換工具
- ****************************************** 
- */
+
 public class FaceConversionUtil {
 
 	/** 每一页表情的个数 */
@@ -63,7 +55,6 @@ public class FaceConversionUtil {
 	 */
 	public SpannableString getExpressionString(Context context, String str) {
 		SpannableString spannableString = new SpannableString(str.replaceAll("\\[em]","").replaceAll("\\[/em]",""));
-		// 正则表达式比配字符串里是否含有表情，如： 我好[开心]啊
 		String zhengze = "\\[[^\\]]+\\]";
 		// 通过传入的正则表达式来生成一个pattern
 		Pattern sinaPatten = Pattern.compile(zhengze, Pattern.CASE_INSENSITIVE);
@@ -159,6 +150,9 @@ public class FaceConversionUtil {
 		if (data == null) {
 			return;
 		}
+		if (emojis.size() > 0) {
+			return;
+		}
 		ChatEmoji emojEentry;
 		try {
 			for (String str : data) {
@@ -177,7 +171,7 @@ public class FaceConversionUtil {
 					emojis.add(emojEentry);
 				}
 			}
-			int pageCount = (int) Math.ceil(emojis.size() / 20 + 0.1);
+			int pageCount = (int) Math.ceil(emojis.size() / 30 + 0.1);
 
 			for (int i = 0; i < pageCount; i++) {
 				emojiLists.add(getData(i));

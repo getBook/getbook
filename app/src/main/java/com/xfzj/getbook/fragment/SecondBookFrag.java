@@ -174,7 +174,6 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
         }
         skip = 0;
         loadMoreView.setRefreshing();
-
         queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
     }
 
@@ -204,6 +203,11 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
         } else {
             fab.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public LoadMoreView getLoadMoreView() {
+        return loadMoreView;
     }
 
     public void setFloatingBUtton(FloatingActionsMenu fab) {

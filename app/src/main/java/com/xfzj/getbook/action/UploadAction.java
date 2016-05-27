@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 
+import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
@@ -174,6 +175,14 @@ public class UploadAction extends BaseAction {
         post.save(context, new SaveListener() {
             @Override
             public void onSuccess() {
+                BaseApplication baseApplication = ((BaseApplication) context.getApplicationContext());
+                if (null != baseApplication) {
+                    User user = baseApplication.getUser();
+                    if (null != user) {
+                        SharedPreferencesUtils.saveFocusPost(context, post.getObjectId(), 0);
+                    }
+                }
+               
                 onSucc(uploadListener);
             }
 

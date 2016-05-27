@@ -90,7 +90,10 @@ public class DebrisFrag extends BaseFragment implements QueryAction.OnQueryListe
         }
 
     }
-
+    @Override
+    public LoadMoreView getLoadMoreView() {
+        return loadMoreView;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

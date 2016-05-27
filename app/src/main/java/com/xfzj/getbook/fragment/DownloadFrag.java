@@ -79,7 +79,8 @@ public class DownloadFrag extends BaseFragment implements LoaderManager.LoaderCa
         downloadAdapter = new DownloadAdapter(getActivity());
         lv.setAdapter(downloadAdapter);
         if (null == savedInstanceState) {
-            getLoaderManager().initLoader(1, null, this);
+            getLoaderManager().initLoader(1, null, this).forceLoad();
+            
         }
         lv.setOnScrollListener(this);
         lv.setOnScrollCallBack(this);

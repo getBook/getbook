@@ -61,6 +61,10 @@ public abstract class AppActivity extends AppCompatActivity {
     /**
      * 当前被选中的navigation item
      */
+    protected MenuItem selectedItem;
+    
+    
+    
     protected CharSequence currentClickItem;
 
     @Override

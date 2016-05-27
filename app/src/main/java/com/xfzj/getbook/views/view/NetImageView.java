@@ -18,6 +18,8 @@ import com.xfzj.getbook.utils.MyUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -44,6 +46,8 @@ public class NetImageView extends ImageView {
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
     private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private static final long KEEP_ALIVE = 10L;
+
+    private static Map<String, String> map = new HashMap<>();
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
@@ -185,20 +189,29 @@ public class NetImageView extends ImageView {
 
     }
 
-    public void setBmobthumbnail(String uri, int width, int height) {
+    public void setBmobthumbnail(final String uri, int width, int height) {
         if (TextUtils.isEmpty(uri)) {
             setImageResource(R.mipmap.placeholder);
             return;
         }
         setImageResource(R.mipmap.placeholder);
+        if (map.containsKey(uri)) {
+            Glide.with(context).load(map.get(uri)).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).dontAnimate().into(NetImageView.this);
+            return;
+        }
         BmobThumbnail bmobThumbnail = new BmobThumbnail(uri, width, height);
         GetBmobthumbnail getBmobthumbnail = new GetBmobthumbnail(context);
         getBmobthumbnail.executeOnExecutor(THREAD_POOL_EXECUTOR, bmobThumbnail);
         getBmobthumbnail.setOnTaskListener(new BaseAsyncTask.onTaskListener<String>() {
             @Override
             public void onSuccess(String s) {
+                map.put(uri, s);
                 cahceName = s;
-                Glide.with(context).load(s).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).dontAnimate().into(NetImageView.this);
+                try {
+                    Glide.with(context).load(s).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.mipmap.placeholder).error(R.mipmap.error).dontAnimate().into(NetImageView.this);
+                } catch (Exception e) {
+                    setImageResource(R.mipmap.placeholder);
+                }
             }
 
             @Override

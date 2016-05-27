@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xfzj.getbook.views.ResizeFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.xfzj.getbook.views.recycleview.LoadMoreView
+            android:id="@+id/loadMoreView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:padding="5dp"
+            android:id="@+id/llComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/login_et_bg"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxHeight="100dp"
+                    android:background="@null"
+                    android:padding="5dp"
+                    android:hint="匿名评论"
+                    />
+
+                <ImageView
+                    android:id="@+id/ivEmoji"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    android:padding="5dp"
+                    android:background="@drawable/iv_emoji_selector" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/tv_select"
+                android:textColor="@color/white"
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:text="发表" />
+        </LinearLayout>
+
+        <com.xfzj.getbook.views.view.EmojiView
+            android:id="@+id/emojiView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="787dp" />
+    </LinearLayout>
+
+</com.xfzj.getbook.views.ResizeFrameLayout>

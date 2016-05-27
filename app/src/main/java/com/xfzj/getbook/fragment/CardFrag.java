@@ -31,6 +31,7 @@ import com.xfzj.getbook.common.Card;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.AryConversion;
 import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.UpdateListener;
@@ -41,9 +42,9 @@ import cn.bmob.v3.listener.UpdateListener;
 public class CardFrag extends BaseFragment implements View.OnClickListener, BaseAsyncTask.onTaskListener<Card> {
     public static final String ARG_PARAM1 = "CardFrag.class";
     TextView tvCardNo;
- 
+
     FrameLayout framStatus;
-    
+
     TextView tvUnnormal;
     TextView tvRemain;
     ImageView ivChongZhi;
@@ -98,38 +99,40 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
         tvXiuGaiMiMa.setOnClickListener(this);
         tvGuaShi.setOnClickListener(this);
         getCardInfo();
+        showFirstUseDialog();
         return view;
     }
-    
 
+    private void showFirstUseDialog() {
+        if (SharedPreferencesUtils.CardFirstUse(getActivity())) {
+            new AlertDialog.Builder(getActivity()).setTitle(R.string.payinfo).setMessage(getActivity().getString(R.string.card_first_use_dialog_content)).create().show();
+        }
+    }
 
-   
 
     private void getCardInfo() {
         getCardInfoAsync = new GetCardInfoAsync(getActivity());
         getCardInfoAsync.setOnTaskListener(this);
-        getCardInfoAsync.executeOnExecutor(((AppActivity)getActivity()).THREAD_POOL_EXECUTOR);
+        getCardInfoAsync.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR);
     }
-
-
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ivChongZhi:
-                
+
                 chongzhi();
                 break;
             case R.id.tvLiuShui:
-                AppAnalytics.onEvent(getActivity(),AppAnalytics.C_LSCX);
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_LSCX);
                 Intent intent = new Intent(getActivity(), LiuShuiAty.class);
                 intent.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMLIUSHUI);
                 startActivity(intent);
-                
+
                 break;
             case R.id.tvBuZhu:
-                AppAnalytics.onEvent(getActivity(),AppAnalytics.C_BZCX);
+                AppAnalytics.onEvent(getActivity(), AppAnalytics.C_BZCX);
                 Intent intent1 = new Intent(getActivity(), LiuShuiAty.class);
                 intent1.putExtra(LiuShuiAty.FROM, LiuShuiAty.FROMBUZHU);
                 startActivity(intent1);
@@ -140,7 +143,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
             case R.id.tvGuaShi:
 
                 guashi();
-                
+
                 break;
         }
     }
@@ -167,10 +170,10 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
                     MyToast.show(getActivity(), getString(R.string.please_to_input, getString(R.string.card_query_passsword)));
                     return;
                 }
-                final InputMethodManager manager = (InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                final InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 GuaShiAsync guaShiAsync = new GuaShiAsync(getActivity());
-                guaShiAsync.executeOnExecutor(((AppActivity)getActivity()).THREAD_POOL_EXECUTOR,old);
+                guaShiAsync.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR, old);
                 guaShiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
@@ -225,7 +228,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
                 final InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 XiuGaiMiMaAsync xiuGaiMiMaAsync = new XiuGaiMiMaAsync(getActivity());
-                xiuGaiMiMaAsync.executeOnExecutor(((AppActivity)getActivity()).THREAD_POOL_EXECUTOR,old, new1);
+                xiuGaiMiMaAsync.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR, old, new1);
                 xiuGaiMiMaAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {
@@ -330,7 +333,7 @@ public class CardFrag extends BaseFragment implements View.OnClickListener, Base
                 final InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(btn.getWindowToken(), 0);
                 ChongzhiAsync chongzhiAsync = new ChongzhiAsync(getActivity());
-                chongzhiAsync.executeOnExecutor(((AppActivity)getActivity()).THREAD_POOL_EXECUTOR, money, passsword);
+                chongzhiAsync.executeOnExecutor(((AppActivity) getActivity()).THREAD_POOL_EXECUTOR, money, passsword);
                 chongzhiAsync.setOnUcardTaskListener(new UcardAsyncTask.OnUcardTaskListener<String>() {
                     @Override
                     public void onSuccess(String s) {

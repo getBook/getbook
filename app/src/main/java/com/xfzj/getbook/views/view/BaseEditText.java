@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -248,17 +247,8 @@ public class BaseEditText extends FrameLayout implements TextWatcher, View.OnCli
 
     @Override
     public void afterTextChanged(Editable s) {
-        editStart = editText.getSelectionStart();
-        editEnd = editText.getSelectionEnd();
-
         editText.removeTextChangedListener(this);
-
-        while (MyUtils.calculateLength(s.toString()) > maxLength) {
-            s.delete(editStart - 1, editEnd);
-            editStart--;
-            editEnd--;
-        }
-        editText.setSelection(editStart);
+        MyUtils.judgeDeleteWord(editText, s, maxLength);
         if (rlCount.getVisibility() == VISIBLE) {
             long length = MyUtils.calculateLength(editText.getText().toString());
             tvNow.setText(length + "");
@@ -292,38 +282,18 @@ public class BaseEditText extends FrameLayout implements TextWatcher, View.OnCli
     }
 
     public void append(SpannableString spannableString) {
-        editText.append(spannableString);
+        int index = editText.getSelectionStart();
+        Editable edit = editText.getEditableText();
+        if (index < 0 || index >= edit.length() ){
+            edit.append(spannableString);
+        }else{
+            edit.insert(index,spannableString);
+        }
     }
 
     
     public void deleteSpannaleString(String pre, String after) {
-        Editable editable = editText.getEditableText();
-        int start = editText.getSelectionStart();
-        String str = editText.getText().toString();
-        if (!TextUtils.isEmpty(str)) {
-            if (start - after.length() <= 0) {
-                int end = editText.getSelectionEnd();
-                editable.delete(start - 1, end);
-                editText.setSelection(start - 1);
-            } else {
-                String sub = str.substring(start - after.length(), start);
-                if (after.equals(sub)) {
-                    int position = str.lastIndexOf(pre);
-                    if (position != -1) {
-                        editable.delete(position, start);
-                        editText.setSelection(editText.getSelectionStart());
-                    } else {
-                        int end = editText.getSelectionEnd();
-                        editable.delete(start - 1, end);
-                        editText.setSelection(start - 1);
-                    }
-                } else {
-                    int end = editText.getSelectionEnd();
-                    editable.delete(start - 1, end);
-                    editText.setSelection(start - 1);
-                }
-            }
-        }
+        MyUtils.deleteSpannableString(editText, pre, after);
         etrequestFocus();
     }
 

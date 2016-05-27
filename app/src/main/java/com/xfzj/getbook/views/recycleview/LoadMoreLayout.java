@@ -30,6 +30,10 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
     private int mLastY;
 
     private boolean isLoading = false;
+    /**
+     * 设置是否可以上拉加载
+     */
+    private boolean canLoadMore = true;
     private Context context;
     private OnScrollCallBack onScrollCallBack;
 
@@ -111,7 +115,7 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
     }
 
     private boolean canLoad() {
-        return isBottom() && !isLoading && isPullUp() && loadMoreRVAdapter.getItemCount() > 1;
+        return canLoadMore&&isBottom() && !isLoading && isPullUp() && loadMoreRVAdapter.getItemCount() > 1;
     }
 
     private boolean isPullUp() {
@@ -156,6 +160,10 @@ public class LoadMoreLayout extends SwipeRefreshLayout {
 
     public void setAdapter(BaseRecycleViewAdapter adapter) {
         this.loadMoreRVAdapter = (LoadMoreRVAdapter) adapter;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
     }
 
     public interface OnScrollCallBack {

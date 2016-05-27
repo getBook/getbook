@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.xfzj.getbook.views.view.NotificationImaheView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/iv"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:minHeight="@dimen/abc_action_button_min_height_material"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/abc_action_button_min_height_material"
+    android:scaleType="centerInside" />

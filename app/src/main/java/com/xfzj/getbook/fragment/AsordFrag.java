@@ -1,5 +1,6 @@
 package com.xfzj.getbook.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -79,11 +80,16 @@ public class AsordFrag extends BaseFragment {
     }
 
     private void getAsordList() {
+        final ProgressDialog pd = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
+        pd.show();
         GetAsordListAsync getAsordListAsync = new GetAsordListAsync(getActivity());
         getAsordListAsync.executeOnExecutor(AppActivity.THREAD_POOL_EXECUTOR, BaseHttp.GETASORDLIST);
         getAsordListAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<List<AsordBook>>() {
             @Override
             public void onSuccess(List<AsordBook> asordBooks) {
+                if (null!=pd&&pd.isShowing()) {
+                    pd.dismiss();
+                }
                 if (null == loadMoreView) {
                     return;
                 }
@@ -102,6 +108,9 @@ public class AsordFrag extends BaseFragment {
 
             @Override
             public void onFail() {
+                if (null!=pd&&pd.isShowing()) {
+                    pd.dismiss();
+                }
                 if (null == loadMoreView) {
                     return;
                 }

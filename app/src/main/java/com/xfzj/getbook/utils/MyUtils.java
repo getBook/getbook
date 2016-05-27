@@ -1,6 +1,7 @@
 package com.xfzj.getbook.utils;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
@@ -11,18 +12,23 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,6 +100,31 @@ public class MyUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取键盘高度
+     * @param activity
+     * @param view
+     * @param editText
+     */
+    public static void getSoftKeyBoardHeight(final Activity activity, final View view, final EditText editText) {
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (null == view) {
+                    return;
+                }
+                Rect r = new Rect();
+                view.getWindowVisibleDisplayFrame(r);
+                int screenHeight = view.getRootView().getHeight();
+                int heightDifference = screenHeight - (r.bottom - r.top);
+                if(editText.isFocused()) {
+                    SharedPreferencesUtils.saveSoftKeyBoard(activity, heightDifference - getNavigationBarHeight(activity) - getStatusBarHeight(activity));
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
     }
 
     public static DisplayMetrics getScreenMetrics(Context context) {
@@ -214,6 +245,48 @@ public class MyUtils {
         return bmpGrayscale;
     }
 
+
+    public static void deleteSpannableString(EditText editText,String pre,String after) {
+        Editable editable = editText.getEditableText();
+        int start = editText.getSelectionStart();
+        String str = editText.getText().toString();
+        if (!TextUtils.isEmpty(str)) {
+            if (start - after.length() <= 0) {
+                int end = editText.getSelectionEnd();
+                editable.delete(start - 1, end);
+                editText.setSelection(start - 1);
+            } else {
+                String sub = str.substring(start - after.length(), start);
+                if (after.equals(sub)) {
+                    int position = str.lastIndexOf(pre);
+                    if (position != -1) {
+                        editable.delete(position, start);
+                        editText.setSelection(editText.getSelectionStart());
+                    } else {
+                        int end = editText.getSelectionEnd();
+                        editable.delete(start - 1, end);
+                        editText.setSelection(start - 1);
+                    }
+                } else {
+                    int end = editText.getSelectionEnd();
+                    editable.delete(start - 1, end);
+                    editText.setSelection(start - 1);
+                }
+            }
+        }
+    }
+
+
+    public static void judgeDeleteWord(EditText editText,Editable s,int maxLength) {
+     int   editStart = editText.getSelectionStart();
+       int  editEnd = editText.getSelectionEnd();
+        while (MyUtils.calculateLength(s.toString()) > maxLength) {
+            s.delete(editStart - 1, editEnd);
+            editStart--;
+            editEnd--;
+        }
+        editText.setSelection(editStart);
+    }
     public static String getFlag(String uri) {
         return uri.substring(uri.lastIndexOf("."), uri.length());
     }

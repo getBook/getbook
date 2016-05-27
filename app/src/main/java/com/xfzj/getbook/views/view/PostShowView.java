@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,7 +20,6 @@ import com.xfzj.getbook.action.LikeAction;
 import com.xfzj.getbook.activity.ViewPagerAty;
 import com.xfzj.getbook.common.PicPath;
 import com.xfzj.getbook.common.Post;
-import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.utils.FaceConversionUtil;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.gridview.PicAddView;
@@ -31,14 +31,15 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.CountListener;
-import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by zj on 2016/4/17.
  */
-public class PostShowView extends FrameLayout implements View.OnClickListener {
+public class PostShowView extends FrameLayout implements View.OnClickListener, LikeAction.OnLikeCountListener, CommentAction.OnCountListener {
+    @Bind(R.id.cardView)
+    CardView cardView;
     private Context context;
     @Bind(R.id.tvContent)
     TextView tvContent;
@@ -78,34 +79,42 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         this.context = context;
         View view = LayoutInflater.from(context).inflate(R.layout.post_show_layout, null);
         ButterKnife.bind(this, view);
-        tvComment.setOnClickListener(this);
-        tvLike.setOnClickListener(this);
-        tvContent.setOnClickListener(this);
         addView(view);
     }
 
     /**
-     * 
      * @param post
      * @param onLikedListener 本人是否点赞的回调
      */
-    public void update(final Post post,OnLikedListener onLikedListener) {
+    public void update(final Post post, OnLikedListener onLikedListener) {
         if (null == post) {
             return;
         }
-            this.post = post;
-        SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, post.getContent());
-        tvContent.setText(spannableString);
-        tvLike.setText(post.getLikeCount() + "");
-        tvComment.setText(post.getCommentCount() + "");
+        this.post = post;
+        if(post.getContent().contains("[em]")) {
+            SpannableString spannableString = FaceConversionUtil.getInstace().getExpressionString(context, post.getContent());
+            tvContent.setText(spannableString);
+        }else{
+            tvContent.setText(post.getContent());
+        }
+        if (post.getCommentCount() == -1) {
+            tvComment.setText("0");
+            CommentAction commentAction = new CommentAction(context);
+            commentAction.queryCount(post, this);
+        } else {
+            tvComment.setText(post.getCommentCount() + "");
+        }
+        if (post.getLikeCount() == -1) {
+            tvLike.setText("0");
+            LikeAction likeAction = new LikeAction(context);
+            likeAction.queryLikeCount(post, this);
+        } else {
+            tvLike.setText(post.getLikeCount() + "");
+        }
         if (post.getLikeState() == Post.UNKNOWNLIKESTATE) {
             setIsLiked(onLikedListener);
-        }else{
+        } else {
             setLikeState(post.getLikeState());
-        }
-      
-        if (this.post.getCommentCount()==-1) {
-            setCommentCount();
         }
         String[] topics = this.post.getTopic();
         if (topics == null) {
@@ -166,6 +175,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
 
     /**
      * 设置点赞的状态
+     *
      * @param likeState
      */
     private void setLikeState(int likeState) {
@@ -174,7 +184,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         } else if (likeState == Post.LIKEDSTATE) {
             setLikedDrawable();
         }
-        
+
     }
 
     /**
@@ -182,18 +192,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
      */
     private void setCommentCount() {
         CommentAction commentAction = new CommentAction(context);
-        commentAction.queryCount(post, new CountListener() {
-            @Override
-            public void onSuccess(int i) {
-                tvComment.setText(i + "");
-                post.setCommentCount(i);
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-
-            }
-        });
+        commentAction.queryCount(post, this);
     }
 
     /**
@@ -230,7 +229,7 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
     public void setLikeFail() {
         setNotLikedDrawable();
         setLikeCount();
-       
+
     }
 
     /**
@@ -238,26 +237,69 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
      */
     private void setLikeCount() {
         LikeAction likeAction = new LikeAction(context);
-        likeAction.queryLikeCount(post);
-        likeAction.setOnLikeCountListener(new LikeAction.OnLikeCountListener() {
-            @Override
-            public void onLikeCount(int i) {
-                tvLike.setText(i + "");
-                post.setLikeCount(i);
-            }
-        });
+        likeAction.queryLikeCount(post, this);
     }
 
- 
 
     public void setOnPostClickListener(OnPostClickListener onPostClickListener) {
         this.onPostClickListener = onPostClickListener;
     }
+    
+    /**
+     * 判断是否已经被本人点赞
+     *
+     * @param onLikedListener
+     */
+    private void setIsLiked(final OnLikedListener onLikedListener) {
+        LikeAction likeAction = new LikeAction(context);
+        likeAction.querySelfLiked(post, new LikeAction.OnLikeStateListener() {
+            @Override
+            public void onLiked() {
+                setLikedDrawable();
+                if (null != onLikedListener) {
+                    onLikedListener.isLiked();
+                }
+            }
+
+            @Override
+            public void onNotLiked() {
+                if (null != onLikedListener) {
+                    onLikedListener.isNotLiked();
+                }
+            }
+
+            @Override
+            public void onUnknownLiked() {
+                if (null != onLikedListener) {
+                    onLikedListener.isNotLiked();
+                }
+            }
+        });
+
+    }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tvContent:
+    public void onLikeCount(int i) {
+        post.setLikeCount(i);
+        tvLike.setText(i + "");
+        if (null != onLikeCommentCountListener) {
+            onLikeCommentCountListener.onLikeCount(i);
+        }
+    }
+
+    @Override
+    public void onCommentCount(int i) {
+        post.setCommentCount(i);
+        tvComment.setText(i + "");
+        if (null != onLikeCommentCountListener) {
+            onLikeCommentCountListener.onCommentCount(i);
+        }
+    }
+
+    @OnClick({R.id.tvLike, R.id.tvComment, R.id.cardView})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.cardView:
                 if (null != onPostClickListener) {
                     onPostClickListener.onContentClick(post);
 
@@ -278,34 +320,6 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
         }
     }
 
-    /**
-     * 判断是否已经被本人点赞
-     * @param onLikedListener
-     */
-    private void setIsLiked(final OnLikedListener onLikedListener) {
-        LikeAction likeAction = new LikeAction(context);
-        likeAction.querySelfLiked(this.post, new FindListener<User>() {
-            @Override
-            public void onSuccess(List<User> list) {
-                if (null != list && list.size() > 0) {
-                    setLikedDrawable();
-                    if (null != onLikedListener) {
-                        onLikedListener.isLiked();
-                    }
-                }else{
-                    setNotLikedDrawable();
-                    if (null != onLikedListener) {
-                        onLikedListener.isNotLiked();
-                    }
-                }
-            }
-
-            @Override
-            public void onError(int i, String s) {
-
-            }
-        });
-    }
 
     public interface OnPostClickListener {
         void onContentClick(Post post);
@@ -316,10 +330,22 @@ public class PostShowView extends FrameLayout implements View.OnClickListener {
 
         void onCommentClick();
     }
-    public interface OnLikedListener{
+
+    public interface OnLikedListener {
         void isLiked();
 
         void isNotLiked();
     }
 
+    private OnLikeCommentCountListener onLikeCommentCountListener;
+
+    public void setOnLikeCommentCountListener(OnLikeCommentCountListener onLikeCommentCountListener) {
+        this.onLikeCommentCountListener = onLikeCommentCountListener;
+    }
+
+    public interface OnLikeCommentCountListener {
+        void onLikeCount(int i);
+
+        void onCommentCount(int i);
+    }
 }

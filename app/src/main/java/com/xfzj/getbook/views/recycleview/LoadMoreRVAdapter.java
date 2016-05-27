@@ -16,7 +16,7 @@ public abstract class LoadMoreRVAdapter<T>
     public static final int FOOTER = 2;
     private View headerView, footerView;
 
-    private BaseFooterViewHolder<T> tBaseFooterViewHolder;
+    protected BaseFooterViewHolder<T> tBaseFooterViewHolder;
     public LoadMoreRVAdapter(List<T> datas, Context context) {
         super(datas, context);
 
@@ -96,6 +96,7 @@ public abstract class LoadMoreRVAdapter<T>
 
         public abstract void handlefooter();
 
+        
     }
 
 }

@@ -107,6 +107,7 @@ public class EmojiView extends FrameLayout implements AdapterView.OnItemClickLis
 
     }
 
+
     public void setOnCorpusSelectedListener(OnCorpusSelectedListener onCorpusSelectedListener) {
         this.onCorpusSelectedListener = onCorpusSelectedListener;
     }
@@ -124,7 +125,7 @@ public class EmojiView extends FrameLayout implements AdapterView.OnItemClickLis
     }
 
     private void initViewPager() {
-        FaceConversionUtil.getInstace().getFileText(context);
+     
         emojis = FaceConversionUtil.getInstace().emojiLists;
         pageViews = new ArrayList<>();
         // 中间添加表情页
