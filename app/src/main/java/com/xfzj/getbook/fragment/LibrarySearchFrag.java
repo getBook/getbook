@@ -54,6 +54,7 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
         }
 
     }
+
     @Override
     public LoadMoreView getLoadMoreView() {
         return loadMoreView;
@@ -85,6 +86,9 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
         getLibrarySearchAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<List<LibraryBook>>() {
             @Override
             public void onSuccess(List<LibraryBook> libraryBooks) {
+                if (null == loadMoreView) {
+                    return;
+                }
                 loadMoreView.setRefreshFinish();
                 llnodata.setVisibility(View.GONE);
                 loadMoreView.setVisibility(View.VISIBLE);
@@ -94,6 +98,9 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
 
             @Override
             public void onFail() {
+                if (null == loadMoreView) {
+                    return;
+                }
                 loadMoreView.setRefreshFinish();
                 llnodata.setVisibility(View.VISIBLE);
                 loadMoreView.setVisibility(View.GONE);
@@ -105,19 +112,29 @@ public class LibrarySearchFrag extends BaseFragment implements LoadMoreView.Refr
     @Override
     public void onLoadMore() {
         GetLibrarySearchAsync getLibrarySearchAsync = new GetLibrarySearchAsync(getActivity());
-        getLibrarySearchAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(),wrapUrl());
+        getLibrarySearchAsync.executeOnExecutor(AppActivity.getThreadPoolExecutor(), wrapUrl());
         getLibrarySearchAsync.setOnTaskListener(new BaseAsyncTask.onTaskListener<List<LibraryBook>>() {
             @Override
             public void onSuccess(List<LibraryBook> libraryBooks) {
+                if (null == loadMoreView) {
+                    return;
+                }
                 loadMoreView.setLoadMoreFinish();
                 llnodata.setVisibility(View.GONE);
                 loadMoreView.setVisibility(View.VISIBLE);
+                List<LibraryBook> lbs = librarySearchAdapter.getAll();
+                if (null != lbs && lbs.size() > 0 && lbs.get(lbs.size() - 1).equals(libraryBooks.get(libraryBooks.size() - 1))) {
+                    return;
+                }
                 librarySearchAdapter.addAll(libraryBooks);
 
             }
 
             @Override
             public void onFail() {
+                if (null == loadMoreView) {
+                    return;
+                }
                 loadMoreView.setLoadMoreFinish();
             }
         });

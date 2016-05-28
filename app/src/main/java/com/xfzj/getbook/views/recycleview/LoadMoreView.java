@@ -95,6 +95,7 @@ public class LoadMoreView extends LinearLayout implements SwipeRefreshLayout.OnR
 
     public void setRefreshing() {
         if (isInitRefresh) {
+            loadMoreLayout.setRefreshing(true);
             return;
         }
         isInitRefresh=true;

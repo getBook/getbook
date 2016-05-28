@@ -27,7 +27,7 @@ public class LibraryBook {
      * 作者、出版社和年份
      */
     private String ap;
-  
+
     /**
      * 图书位置
      */
@@ -79,7 +79,6 @@ public class LibraryBook {
         this.borrowCount = borrowCount;
     }
 
-  
 
     public LibraryBook() {
     }
@@ -120,4 +119,24 @@ public class LibraryBook {
                 ", guancang='" + guancang + '\'' +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        return position.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (null == o) {
+            return false;
+        }
+        if (o instanceof LibraryBook) {
+            if (((LibraryBook) o).getPosition().equals(getPosition())) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
 }

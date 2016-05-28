@@ -182,7 +182,11 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         isNeedLogin();
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
         //bmob自动更新
-        BmobUpdateAgent.update(this);
+        try {
+            BmobUpdateAgent.update(this);
+        } catch (Exception e) {
+
+        }
         getUnreadFeedBack();
         showShare();
     }
@@ -196,11 +200,11 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
             builder.setTitle(R.string.please).setIcon(R.mipmap.ic_launcher).
                     setMessage(getString(R.string.share_please)).
                     setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    ShareUtils.shareDefautl(MainActivity.this);
-                }
-            }).create().show();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ShareUtils.shareDefautl(MainActivity.this);
+                        }
+                    }).create().show();
 
 
         }
@@ -829,7 +833,11 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 builder.setMessage(R.string.aboutconten).setTitle(R.string.about).setIcon(R.mipmap.ic_launcher).create().show();
                 break;
             case R.id.update:
-                BmobUpdateAgent.forceUpdate(MainActivity.this);
+                try {
+                    BmobUpdateAgent.forceUpdate(MainActivity.this);
+                } catch (Exception e) {
+
+                }
                 break;
             case R.id.feedback:
                 openFeedBack();
