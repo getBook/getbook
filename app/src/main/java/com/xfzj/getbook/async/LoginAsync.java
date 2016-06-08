@@ -15,7 +15,8 @@ public class LoginAsync extends BaseAsyncTask<Integer, Integer, LoginAction.Call
     private LoginAction.CallBack callBack;
     private String huaName;
 
-   
+    public static final int LOGIN_ALL = 0;
+    public static final int SILENT_LOGIN = 1;
     public LoginAsync(Context context, String userName, String password) {
         this(context, null, userName, password);
     }
@@ -42,6 +43,9 @@ public class LoginAsync extends BaseAsyncTask<Integer, Integer, LoginAction.Call
 
     @Override
     protected LoginAction.CallBack doExcute(Integer[] params) {
-        return loginAction.loginAll(huaName, userName, password, callBack);
+        if(null!=params&&params[0]==LOGIN_ALL) {
+            return loginAction.loginAll(huaName, userName, password, callBack);
+        }
+        return loginAction.silentLogin(huaName, userName, password, callBack);
     }
 }

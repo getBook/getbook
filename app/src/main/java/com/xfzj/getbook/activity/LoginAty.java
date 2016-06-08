@@ -152,7 +152,7 @@ public class LoginAty extends AppActivity {
                 handler.sendEmptyMessage(0);
             }
         });
-        loginAsync.executeOnExecutor(THREAD_POOL_EXECUTOR);
+        loginAsync.executeOnExecutor(THREAD_POOL_EXECUTOR,LoginAsync.LOGIN_ALL);
     }
 
     @Override

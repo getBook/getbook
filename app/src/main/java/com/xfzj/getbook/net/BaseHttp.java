@@ -35,7 +35,8 @@ public class BaseHttp {
     public static final String GETASORDLIST = "http://lib2.nuist.edu.cn/reader/asord_lst.php";
     public static final String RECOMMENDBOOK = "http://lib2.nuist.edu.cn/asord/asord_redr.php?click_type=commit";
     public static final String SHAREBILL = "http://139.129.7.80/sharebill?";
-    
+    public static final String PAPERSEARCH = "http://idoc.duohuo.org/api/v1/search/docs?q=";
+
 
     public BaseHttp() {
 

@@ -28,7 +28,7 @@ public class LikeAction extends BaseAction {
         user = ((BaseApplication) context.getApplicationContext()).getUser();
     }
 
-    public synchronized void queryLikeCount(Post post, final OnLikeCountListener onLikeCountListener) {
+    public  void queryLikeCount(Post post, final OnLikeCountListener onLikeCountListener) {
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.addWhereRelatedTo("likes", new BmobPointer(post));
         userBmobQuery.addQueryKeys("objectId");
@@ -77,7 +77,7 @@ public class LikeAction extends BaseAction {
      *
      * @param post
      */
-    public synchronized void querySelfLiked(Post post, final OnLikeStateListener onLikedListener) {
+    public  void querySelfLiked(Post post, final OnLikeStateListener onLikedListener) {
         BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.addWhereRelatedTo("likes", new BmobPointer(post));
         userBmobQuery.addQueryKeys("objectId");

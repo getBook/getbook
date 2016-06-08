@@ -64,6 +64,11 @@ public class ScoreItemView extends FrameLayout {
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if ("优秀".equals(str)) {
+                tvScore.setTextColor(context.getResources().getColor(R.color.primary));
+            } else  {
+                tvScore.setTextColor(context.getResources().getColor(R.color.primary_text));
+            }
         }
         tvScore.setText(str);
     }

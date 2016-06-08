@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xfzj.getbook.BaseApplication;
+import com.xfzj.getbook.activity.AppActivity;
+import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.common.User;
 import com.xfzj.getbook.net.BaseHttp;
 import com.xfzj.getbook.net.HttpHelper;
@@ -102,6 +104,45 @@ public class LoginAction extends BaseAction {
         loginBmob(user, callBack, isModify);
     }
 
+    /**
+     * 
+     * @param huaName
+     * @param userName
+     * @param password
+     * @param callBack
+     * @return
+     */
+    public CallBack silentLogin(final String huaName, final String userName, final String password, final CallBack callBack) {
+        User user = new User();
+        user.setUsername(userName);
+        user.setPassword(password);
+        user.login(context, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                new BaseAsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected void onPost(Void aVoid) {
+                        
+                    }
+
+                    @Override
+                    protected Void doExcute(Void[] params) {
+                        loginAll(huaName, userName, password, null);
+                        return null;
+                    }
+                }.executeOnExecutor(AppActivity.THREAD_POOL_EXECUTOR);
+               
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                if (null != callBack) {
+                    callBack.onFail();
+                }
+            }
+        });
+        return callBack;
+    }
     /**
      * 登陆学校的系统，获取最新的msg
      *

@@ -25,7 +25,7 @@ public class CommentAction extends BaseAction {
         user = ((BaseApplication) context.getApplicationContext()).getUser();
     }
 
-    public synchronized void queryCount(Post post, final OnCountListener onCountListener) {
+    public  void queryCount(Post post, final OnCountListener onCountListener) {
         BmobQuery<Comment> commentBmobQuery = new BmobQuery<>();
         commentBmobQuery.addWhereEqualTo("post", post);
         try {

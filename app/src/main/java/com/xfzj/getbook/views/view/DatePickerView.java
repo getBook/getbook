@@ -186,7 +186,7 @@ public class DatePickerView extends FrameLayout implements View.OnClickListener 
         }, year, month - 1, day);
 
         datePickerDialog.setTitle(title);
-        datePickerDialog.create();
+//        datePickerDialog.create();
         datePickerDialog.show();
     }
 

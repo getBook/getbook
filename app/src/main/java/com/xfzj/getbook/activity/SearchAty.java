@@ -24,6 +24,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.fragment.DebrisFrag;
 import com.xfzj.getbook.fragment.LibrarySearchFrag;
+import com.xfzj.getbook.fragment.PaperSearchFrag;
 import com.xfzj.getbook.fragment.SecondBookFrag;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
@@ -50,6 +51,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     private SecondBookFrag sbFrag;
     private DebrisFrag debrisFrag;
     private LibrarySearchFrag librarySearchFrag;
+    private PaperSearchFrag paperSearchFrag;
     private FragmentManager fm;
     private String query;
 
@@ -74,15 +76,24 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
         initSaleFrag();
         initWantFrag();
         initLibrarySearchFrag();
+        initPaperSearchFrag();
         List<Fragment> lists = new ArrayList<>();
         lists.add(sbFrag);
         lists.add(debrisFrag);
         lists.add(librarySearchFrag);
+        lists.add(paperSearchFrag);
         pager.setAdapter(new TestAdapter(getSupportFragmentManager(), lists));
         slidingTabStrip.setViewPager(pager);
         slidingTabStrip.setOnPageChangeListener(this);
         initTabsValue();
         setSelectedTextColor(0);
+    }
+
+    private void initPaperSearchFrag() {
+        paperSearchFrag = (PaperSearchFrag) fm.findFragmentByTag(PaperSearchFrag.PARAM);
+        if (null == paperSearchFrag) {
+            paperSearchFrag = PaperSearchFrag.newInstance(PaperSearchFrag.PARAM);
+        }
     }
 
     private void initLibrarySearchFrag() {
@@ -192,6 +203,8 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
             debrisFrag.searchKey(query);
         } else if (index == 2) {
             librarySearchFrag.searchKey(query);
+        } else if (index == 3) {
+            paperSearchFrag.searchKey(query);
         }
         searchView.clearFocus();
 
@@ -244,7 +257,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
     private void setSelectedTextColor(int position) {
         View view = slidingTabStrip.getChildAt(0);
         if (view instanceof LinearLayout) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 View viewText = ((LinearLayout) view).getChildAt(i);
                 TextView tabTextView = (TextView) viewText;
                 if (viewText instanceof TextView) {
@@ -273,7 +286,7 @@ public class SearchAty extends AppActivity implements SearchView.OnQueryTextList
 
     private class TestAdapter extends FragmentPagerAdapter {
         private List<Fragment> lists;
-        private int[] tag = new int[]{R.string.secondbook, R.string.drugstore, R.string.library};
+        private int[] tag = new int[]{R.string.secondbook, R.string.drugstore, R.string.library,R.string.paper};
 
         public TestAdapter(FragmentManager manager, List<Fragment> lists) {
             super(manager);

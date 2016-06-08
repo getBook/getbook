@@ -202,7 +202,7 @@
     <string name="recommendfail">荐购失败</string>
     <string name="feedback">反馈建议</string>
     <string name="check_update">检查更新</string>
-    <string name="aboutconten">版本号：1.3\n功能：\n1、发布二手书物品，快把闲置物品挂上去把\n2、浏览校园公告，从此再也不需要登教务处啦\n3、图书馆搜索、借阅、荐购一应俱全，方便到不行\n4、成绩查询，一查到底\n5、接入一卡通，该有的都有\n6、匿名发帖，把秘密丢在树洞\nPs:这款APP从设计、开发到测试，只有我一个人，难免会有bug，所以当您遇到问题或者看哪里不爽，请给我反馈建议，我会及时回复，谢谢！</string>
+    <string name="aboutconten">版本号：1.4\n功能：\n1、发布二手书物品，快把闲置物品挂上去把\n2、浏览校园公告，从此再也不需要登教务处啦\n3、图书馆搜索、借阅、荐购一应俱全，方便到不行\n4、成绩查询，一查到底\n5、接入一卡通，该有的都有\n6、匿名发帖，把秘密丢在树洞\n7、搜索往年考试试卷，考试拿高分\nPs:这款APP从设计、开发到测试，只有我一个人，难免会有bug，所以当您遇到问题或者看哪里不爽，请给我反馈建议，我会及时回复，谢谢！</string>
     <string name="feedback_unread">你有%1$d条反馈建议回复未读</string>
     <string name="thismsgfrom">\n——本条消息来自</string>
     <string name="share">分享</string>
@@ -221,4 +221,8 @@
     <string name="no_notification">暂无通知</string>
     <string name="please">跪求</string>
     <string name="share_please">亲爱的小伙伴，为了保证您以后可以在这里找到更多您想要的二手物品或者更快速的售出您的二手物品，希望您可以将App分享出去，让更多的南信大小伙伴来使用。\n跪求！！！！！！！！！</string>
+    <string name="paper">试卷</string>
+    <string name="general">通修课</string>
+    <string name="professional">专业课</string>
+    <string name="duohuo_support">多火工作室提供支持\n更多功能请访问 http://idoc.duohuo.org/</string>
 </resources>

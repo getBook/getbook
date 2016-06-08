@@ -18,14 +18,10 @@ import com.xfzj.getbook.utils.MyToast;
 import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.views.view.BaseToolBar;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
  * Created by zj on 2016/2/27.
  */
 public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemClickListener {
-    @Bind(R.id.baseToolbar)
     BaseToolBar baseToolBar;
     Toolbar toolbar;
     public static final String FROM = "CaptureAty.class";
@@ -33,7 +29,7 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
     public void onCreate(Bundle icicle) {
         
         super.onCreate(icicle);
-        ButterKnife.bind(this);
+        baseToolBar = (BaseToolBar) findViewById(R.id.baseToolbar);
         baseToolBar.initToolbar(this, getString(R.string.sao_yi_sao));
         toolbar = baseToolBar.getToolbar();
         toolbar.setOnMenuItemClickListener(this);
