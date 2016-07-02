@@ -80,7 +80,7 @@ public class SecondBookInfoView extends FrameLayout implements View.OnClickListe
 //            return;
 //        }
 //        tvIsbn.setText(bookInfo.getIsbn());
-//        ivBook.setBmobImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book),0,0);
+//        ivBook.setNetImage(bookInfo.getImage(), BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_book),0,0);
 //        String[] a = bookInfo.getAuthor();
 //        if (null != a && a.length > 0) {
 //            StringBuilder sb = new StringBuilder();

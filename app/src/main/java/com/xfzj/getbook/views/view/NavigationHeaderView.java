@@ -110,7 +110,7 @@ public class NavigationHeaderView extends FrameLayout implements View.OnClickLis
         }
         String header = SharedPreferencesUtils.getUserHeader(context);
         if (!TextUtils.isEmpty(header)) {
-            cvHeader.setBmobImage(header);
+            cvHeader.setNetImage(header);
         } else {
             Intent intent = new Intent(context, GetHeaderSerVice.class);
             context.startService(intent);

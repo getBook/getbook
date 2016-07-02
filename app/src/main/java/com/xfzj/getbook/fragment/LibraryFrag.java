@@ -327,7 +327,7 @@ public class LibraryFrag extends BaseFragment {
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header) && null != libraryInfo && null != user && libraryInfo.getAccount().equals(user.getSno())) {
             circleImageView.setVisibility(View.VISIBLE);
-            circleImageView.setBmobImage(header);
+            circleImageView.setNetImage(header);
         } else {
            circleImageView.setVisibility(View.GONE);
         }

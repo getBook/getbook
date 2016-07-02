@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.SecondBook;
@@ -30,7 +29,7 @@ import cn.bmob.v3.datatype.BmobFile;
 /**
  * Created by zj on 2016/2/29.
  */
-public class SecondBookInfoItemView extends FrameLayout implements View.OnLongClickListener, View.OnClickListener {
+public class SecondBookInfoItemView extends FrameLayout implements View.OnLongClickListener, View.OnClickListener, NetImageView.OnImageCallBack {
     private TextView tvBookName, tvIsbn, tvBookAuthor, tvPublisher, tvPrice, tvOldPrice, tvNewold, tvDate, tvCount, tvYuan;
     private NetImageView ivBook;
     private Context context;
@@ -39,6 +38,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     private SecondBook secondBook;
     private ImageView ivDate, ivCount, ivNewOld, ivYxj;
     private LinearLayout llitemView;
+    private OnImageCallBack onImageCallBack;
 
     public <T> void setOnSecondBookInfoClick(onClickListener<T> onSecondBookInfoClick) {
         this.onSecondBookInfoClick = onSecondBookInfoClick;
@@ -136,7 +136,8 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
             return;
         }
         tvIsbn.setText(bookInfo.getIsbn());
-        ivBook.setBmobFileImage(bookInfo.getBmobImage());
+        ivBook.setNetImage(bookInfo.getCoverImage(), this);
+
         String[] a = bookInfo.getAuthor();
         if (null != a && a.length > 0) {
             StringBuilder sb = new StringBuilder();
@@ -189,27 +190,9 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
         if (null == secondBook) {
             return;
         }
-        String updateTime = secondBook.getUpdatedAt();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = sdf.parse(updateTime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if (null == date) {
+        if (secondBook.isOvertime()) {
             handleInvalid();
-        } else {
-            long update = date.getTime();
-            long now = System.currentTimeMillis();
-            if (now - update >= Constants.day * 24 * 60 * 60 * 1000) {
-                handleInvalid();
-            } else {
-                restartOnSale(secondBook);
-            }
         }
-
-
     }
 
     private void handleInvalid() {
@@ -226,7 +209,7 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
     }
 
     public void restartOnSale(SecondBook secondBook) {
-        ivBook.setBmobFileImage(secondBook.getBookInfo().getBmobImage());
+        ivBook.setNetImage(secondBook.getBookInfo().getCoverImage());
         int color1 = context.getResources().getColor(R.color.accent);
         int color2 = context.getResources().getColor(R.color.primary_text);
         tvBookName.setTextColor(color2);
@@ -259,13 +242,28 @@ public class SecondBookInfoItemView extends FrameLayout implements View.OnLongCl
         }
         BookInfo bookInfo = secondBook.getBookInfo();
         if (null == bookInfo) {
-            return  null;
+            return null;
         }
         BmobFile bmobFile = bookInfo.getBmobImage();
         if (null == bmobFile) {
             return null;
         }
         return bmobFile.getFileUrl(context);
+    }
+
+    @Override
+    public void onLoaded() {
+        if (null != onImageCallBack) {
+            onImageCallBack.onLoaded();
+        }
+    }
+
+    public void setOnImageCallBack(OnImageCallBack onImageCallBack) {
+        this.onImageCallBack = onImageCallBack;
+    }
+
+    public interface OnImageCallBack {
+        void onLoaded();
     }
 
     public interface onClickListener<T> {

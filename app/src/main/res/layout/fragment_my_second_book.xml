@@ -5,23 +5,12 @@
     android:background="@color/background"
     tools:context=".fragment.MySaleFrag">
 
-    <!--<com.xfzj.getbook.views.recycleview.BaseLoadRecycleView-->
-    <!--android:id="@+id/recycleView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginLeft="2dp"-->
-    <!--android:layout_marginRight="2dp" />-->
-    <ScrollView
+    <com.xfzj.getbook.views.recycleview.LoadMoreView
+        android:id="@+id/loadMoreView"
         android:layout_width="match_parent"
-        android:scrollbars="none"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/ll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp" />
 
     <include layout="@layout/no_data3" />
 

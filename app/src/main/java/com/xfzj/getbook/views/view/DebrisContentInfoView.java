@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.xfzj.getbook.Constants;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.utils.MyUtils;
@@ -27,12 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import cn.bmob.v3.datatype.BmobFile;
-
 /**
  * Created by zj on 2016/3/6.
  */
-public class DebrisContentInfoView extends FrameLayout implements View.OnClickListener, View.OnLongClickListener {
+public class DebrisContentInfoView extends FrameLayout implements View.OnClickListener, View.OnLongClickListener, NetImageView.OnImageCallBack {
 
     private Context context;
 
@@ -42,6 +39,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
     private LinearLayout ll;
     private onCLickListener onCLickListener;
     private onLongCLickListener onLongCLickListener;
+    private OnImageCallBack onImageCallBack;
     private Debris debris;
     private ImageView ivDate, ivCount, ivNewOld, ivYxj;
 
@@ -94,15 +92,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
             return;
         }
         this.debris = debris;
-        BmobFile file = debris.getFiles().get(0);
-        if (null == file) {
-            ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
-        } else {
-            int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobthumbnail(file, NetImageView.SMALL_WIDTH, NetImageView.SMALL_HEIGHT);
-        }
-
-
+        ivPic.setNetImage(debris.getPicture(), this);
         String title = debris.getTitle();
         if (TextUtils.isEmpty(title)) {
             tvTitle.setText(context.getString(R.string.no_title));
@@ -131,7 +121,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         }
         tvOldPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
-        String strDate = debris.getUpdatedAt();
+        String strDate = debris.getCreatedAt();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
         try {
@@ -170,24 +160,9 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         if (null == debris) {
             return;
         }
-        String updateTime = debris.getUpdatedAt();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = sdf.parse(updateTime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if (null == date) {
+        if (debris.isOvertime()) {
             handleInvalid();
-        } else {
-            long update = date.getTime();
-            long now = System.currentTimeMillis();
-            if (now - update >= Constants.day * 24 * 60 * 60 * 1000) {
-                handleInvalid();
-            } else {
-//                restartOnSale(debris);
-            }
+        
         }
     }
 
@@ -214,14 +189,7 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
     }
 
     public void restartOnSale(Debris debris) {
-        BmobFile file = debris.getFiles().get(0);
-
-        if (null == file) {
-            ivPic.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.image_default));
-        } else {
-            int i = (int) MyUtils.dp2px(context, 120f);
-            ivPic.setBmobthumbnail(file, NetImageView.SMALL_WIDTH, NetImageView.SMALL_HEIGHT);
-        }
+        ivPic.setNetImage(debris.getPicture());
         Resources res = context.getResources();
         int color1 = res.getColor(R.color.primary_text);
         int color2 = res.getColor(R.color.accent);
@@ -244,6 +212,10 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         this.onLongCLickListener = onLongCLickListener;
     }
 
+    public void setOnImageCallBack(OnImageCallBack onImageCallBack) {
+        this.onImageCallBack = onImageCallBack;
+    }
+
     @Override
     public void onClick(View v) {
         if (null != onCLickListener) {
@@ -259,6 +231,16 @@ public class DebrisContentInfoView extends FrameLayout implements View.OnClickLi
         return true;
     }
 
+    @Override
+    public void onLoaded() {
+        if (null != onImageCallBack) {
+            onImageCallBack.onLoaded();
+        }
+    }
+
+    public interface OnImageCallBack {
+        void onLoaded();
+    }
 
     public interface onCLickListener {
         void onClick(Debris debris);

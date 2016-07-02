@@ -1,66 +1,55 @@
 package com.xfzj.getbook.action;
 
-import android.content.Context;
-
+import com.xfzj.getbook.common.CreatedAt;
 import com.xfzj.getbook.common.Debris;
 import com.xfzj.getbook.common.SecondBook;
-
-import java.util.List;
-
-import cn.bmob.v3.listener.UpdateListener;
+import com.xfzj.getbook.newnet.ApiException;
+import com.xfzj.getbook.newnet.GetFunApi;
+import com.xfzj.getbook.newnet.NetRxWrap;
+import com.xfzj.getbook.newnet.NormalSubscriber;
 
 /**
  * Created by zj on 2016/3/13.
  */
 public class RefreshAction extends BaseAction {
-    private Context context;
-
-    public RefreshAction(Context context) {
-        this.context = context;
-    }
-
-
-    public  void refresh(List<String> lists, Class Clazz) {
+    
+    public static void refresh(String id, final OnRefreshCallBack onRefreshCallBack, Class Clazz) {
         if (Clazz.equals(SecondBook.class)) {
-            SecondBook secondBook = new SecondBook();
-            for (String id : lists) {
-                secondBook.setObjectId(id);
-                secondBook.update(context, new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-//                        MyToast.show(context, context.getString(R.string.delete_success));
-                    }
+            NetRxWrap.wrap(GetFunApi.refreshSecondBook(id)).subscribe(new NormalSubscriber<CreatedAt>() {
+                @Override
+                protected void onFail(ApiException ex) {
 
-                    @Override
-                    public void onFailure(int i, String s) {
+                }
 
+                @Override
+                protected void onNextResult(CreatedAt createdAt) {
+                    if (null != onRefreshCallBack) {
+                        onRefreshCallBack.onRefreshSucc(createdAt);
                     }
-                });
-            }
-            
+                }
+            });
 
 
         }else if (Clazz.equals(Debris.class)) {
-            Debris debris = new Debris();
-            for (String id : lists) {
-                debris.setObjectId(id);
-                debris.update(context, new UpdateListener() {
+                NetRxWrap.wrap(GetFunApi.refreshDebries(id)).subscribe(new NormalSubscriber<CreatedAt>() {
                     @Override
-                    public void onSuccess() {
-//                        MyToast.show(context, context.getString(R.string.delete_success));
+                    protected void onFail(ApiException ex) {
+
                     }
 
                     @Override
-                    public void onFailure(int i, String s) {
-
+                    protected void onNextResult(CreatedAt createdAt) {
+                        if (null != onRefreshCallBack) {
+                            onRefreshCallBack.onRefreshSucc(createdAt);
+                        }
                     }
                 });
-            }
-
         }
 
     }
-
+  public interface OnRefreshCallBack{
+      void onRefreshSucc(CreatedAt createdAt);
+  }
 
   
 }

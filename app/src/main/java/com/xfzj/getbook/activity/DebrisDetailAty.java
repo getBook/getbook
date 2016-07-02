@@ -58,6 +58,9 @@ public class DebrisDetailAty extends DetailActivity {
 
     @Override
     protected void setBaseInfo() {
+        if (null == debris) {
+            return;
+        }
         tvTitle.setText(debris.getTitle());
         String strprice = debris.getDiscount();
         if (TextUtils.isEmpty(strprice)) {

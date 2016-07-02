@@ -25,6 +25,8 @@ public class BookInfo extends BmobObject{
     private String originPrice;
     @Expose
     private String image;
+
+    private String coverImage;
     
     private BmobFile bmobImage;
     @Expose
@@ -48,6 +50,14 @@ public class BookInfo extends BmobObject{
     @Expose
     @SerializedName("author")
     private String[] author;
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
 
     public String getIsbn() {
         return isbn;

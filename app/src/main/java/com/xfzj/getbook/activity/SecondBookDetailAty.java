@@ -40,6 +40,10 @@ public class SecondBookDetailAty extends DetailActivity {
     @Override
     protected void onViewCreate(Bundle savedInstanceState) {
         secondBook = getIntentData();
+        if (null == secondBook) {
+            finish();
+            return;
+        }
         user = secondBook.getUser();
         if (null == user) {
             finish();
@@ -77,6 +81,9 @@ public class SecondBookDetailAty extends DetailActivity {
 
     @Override
     protected void setBaseInfo() {
+        if (null == secondBook) {
+            return;
+        }
         String strprice = secondBook.getDiscount();
         if (TextUtils.isEmpty(strprice)) {
             price.setText(getString(R.string.no_price));

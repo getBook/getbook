@@ -72,7 +72,6 @@ public class ScoreFrag extends BaseFragment implements View.OnClickListener,Ucar
         scoreQueryAsync = new ScoreQueryAsync(getActivity());
         scoreQueryAsync.setOnUcardTaskListener(this);
         scoreQueryAsync.executeOnExecutor(((AppActivity)getActivity()).THREAD_POOL_EXECUTOR);
-
     }
 
 
@@ -101,8 +100,6 @@ public class ScoreFrag extends BaseFragment implements View.OnClickListener,Ucar
             wrapWrapScoreItemView.update(scores);
             ll.addView(wrapWrapScoreItemView);
         }
-
-
     }
 
     @Override

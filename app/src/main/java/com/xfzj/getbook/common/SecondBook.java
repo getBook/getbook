@@ -1,5 +1,7 @@
 package com.xfzj.getbook.common;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,8 +21,10 @@ public class SecondBook extends BmobObject {
     private String tips;
     private String telePhone;
     private List<BmobFile> files;
-
-
+    @SerializedName("_id")
+   private String id;
+    
+    private boolean overtime;
     public SecondBook() {
         
     }
@@ -34,6 +38,15 @@ public class SecondBook extends BmobObject {
         this.tips = tips;
         this.telePhone = telePhone;
     }
+
+    public boolean isOvertime() {
+        return overtime;
+    }
+
+    public void setOvertime(boolean overtime) {
+        this.overtime = overtime;
+    }
+
     public List<BmobFile> getFiles() {
         return files;
     }
@@ -47,6 +60,14 @@ public class SecondBook extends BmobObject {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public BookInfo getBookInfo() {

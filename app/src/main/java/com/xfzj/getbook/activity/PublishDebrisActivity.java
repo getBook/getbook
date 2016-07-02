@@ -55,8 +55,7 @@ public class PublishDebrisActivity extends PublishThingAty {
         List<String> lists = picAddView.getPath();
         String[] str = (String[]) lists.toArray(new String[lists.size()]);
         Debris debris = new Debris(BmobUser.getCurrentUser(getApplicationContext(), User.class), etTitle.getText().toString(), etDescribe.getText().toString(), str, etPrice.getText().toString(), originPrice.getText().toString(), plusMinusView.getText(), etNewOld.getText().toString(), etTele.getText().toString());
-        UploadAction uploadPicAction = new UploadAction(PublishDebrisActivity.this, debris);
-        uploadPicAction.publishDebris(this);
+        UploadAction.publishDebris(PublishDebrisActivity.this,debris,this);
     }
 
     @Override

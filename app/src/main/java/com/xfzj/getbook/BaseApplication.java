@@ -24,16 +24,19 @@ public class BaseApplication extends Application {
     private Display display;
     private DisplayMetrics dm;
     private static BaseApplication baseApplication;
-    private User user;
+    private static User user;
 
     public BaseApplication() {
-
+        baseApplication = this;
     }
 
 
     public static BaseApplication newInstance() {
-        if (null == baseApplication) {
-            baseApplication = new BaseApplication();
+        Class baseapplcation = BaseApplication.class;
+        synchronized (baseapplcation) {
+            if (null == baseApplication) {
+                baseApplication = new BaseApplication();
+            }
         }
         return baseApplication;
     }
@@ -46,11 +49,11 @@ public class BaseApplication extends Application {
         AnalyticsConfig.enableEncrypt(true);
         MobclickAgent.setDebugMode(false);
 //        //设置BmobConfig
-        BmobConfig config =new BmobConfig.Builder()
+        BmobConfig config = new BmobConfig.Builder()
                 //请求超时时间（单位为秒）：默认15s
                 .setConnectTimeout(30)
                 //文件分片上传时每片的大小（单位字节），默认512*1024
-                .setBlockSize(500*1024)
+                .setBlockSize(500 * 1024)
                 .build();
         Bmob.getInstance().initConfig(config);
         Bmob.initialize(this, "953b4c2054c0d44e168d6725f8df4ff7");
@@ -69,7 +72,7 @@ public class BaseApplication extends Application {
         Config.isloadUrl = true;
         PlatformConfig.setWeixin("wx6bb9118d609db96b", "c9143676f95866c7cec7ffbd32228174");
         //微信 appid appsecret
-        PlatformConfig.setSinaWeibo("1046885584","4592ac985a563323e1af824eb96c2a33");
+        PlatformConfig.setSinaWeibo("1046885584", "4592ac985a563323e1af824eb96c2a33");
         //新浪微博 appkey appsecret
         PlatformConfig.setQQZone("1105302925", "M9YJo5sA3J4RYZAE");
         // QQ和Qzone appid appkey
@@ -78,7 +81,7 @@ public class BaseApplication extends Application {
 
     public User getUser() {
         if (null == user) {
-            return SharedPreferencesUtils.getUser(getApplicationContext());
+            return SharedPreferencesUtils.getUser(this);
         }
         return user;
     }

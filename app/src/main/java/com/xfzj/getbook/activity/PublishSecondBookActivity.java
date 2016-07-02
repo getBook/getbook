@@ -87,8 +87,7 @@ public class PublishSecondBookActivity extends PublishThingAty {
         }
 
         SecondBook secondBook = new SecondBook(BmobUser.getCurrentUser(getApplicationContext(), User.class), info, etPrice.getText().toString().trim(), etNewOld.getText().toString().trim(), plusMinusView.getText(), str, etDescribe.getText().toString(), etTele.getText().toString().trim());
-        UploadAction uploadPicAction = new UploadAction(PublishSecondBookActivity.this, secondBook, bif.getBookInfo());
-        uploadPicAction.publishSecondBook(this);
+        UploadAction.publishSecondBook(PublishSecondBookActivity.this, secondBook, this);
     }
 
     @Override

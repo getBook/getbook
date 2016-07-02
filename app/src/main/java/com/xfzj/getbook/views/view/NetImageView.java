@@ -9,6 +9,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.async.BaseAsyncTask;
 import com.xfzj.getbook.async.GetBmobthumbnail;
@@ -164,16 +167,31 @@ public class NetImageView extends ImageView {
         return cachePath.getPath();
     }
 
-    public void setBmobImage(final String name) {
+    public void setNetImage(final String name) {
+        setNetImage(name, null);
+    }
+    public void setNetImage(final String name, final OnImageCallBack onImageCallBack) {
         if (TextUtils.isEmpty(name)) {
             setImageResource(R.mipmap.placeholder);
             return;
         }
+        this.cahceName = name;
         setImageResource(R.mipmap.placeholder);
-        Glide.with(context).load(name).error(R.mipmap.error).diskCacheStrategy(DiskCacheStrategy.ALL).into(NetImageView.this);
+        Glide.with(context).load(name).error(R.mipmap.error).diskCacheStrategy(DiskCacheStrategy.ALL).dontAnimate().into(new ViewTarget<NetImageView, GlideDrawable>(NetImageView.this) {
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                setImageDrawable(resource.getCurrent());
+                if (null != onImageCallBack) {
+                    onImageCallBack.onLoaded();
+                }
+            }
+
+
+        });
     }
-
-
+    public interface OnImageCallBack{
+        void onLoaded();
+    }
     /**
      * 设置bmobfile上传图片的缩略图
      *

@@ -225,4 +225,12 @@
     <string name="general">通修课</string>
     <string name="professional">专业课</string>
     <string name="duohuo_support">多火工作室提供支持\n更多功能请访问 http://idoc.duohuo.org/</string>
+    <string name="unlogin">您现在处于未登录状态</string>
+    <string name="update_fail">修改失败</string>
+    <string name="no_debris">这里是空的\n快来做第一个发布的人吧</string>
+    <string name="update_success">修改成功</string>
+    <string name="publish_fail">发布失败</string>
+    <string name="upload_image_fail">上传图片失败</string>
+    <string name="upload_bookinfo_fail">上传书籍基本信息失败</string>
+    <string name="delete_fail">删除失败</string>
 </resources>

@@ -25,16 +25,18 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
     BaseToolBar baseToolBar;
     Toolbar toolbar;
     public static final String FROM = "CaptureAty.class";
+
     @Override
     public void onCreate(Bundle icicle) {
-        
+
         super.onCreate(icicle);
         baseToolBar = (BaseToolBar) findViewById(R.id.baseToolbar);
-        baseToolBar.initToolbar(this, getString(R.string.sao_yi_sao));
-        toolbar = baseToolBar.getToolbar();
-        toolbar.setOnMenuItemClickListener(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
+        if (null != baseToolBar) {
+            baseToolBar.initToolbar(this, getString(R.string.sao_yi_sao));
+            toolbar = baseToolBar.getToolbar();
+            toolbar.setOnMenuItemClickListener(this);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -44,15 +46,15 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
 
     @Override
     protected int[] setFrameWidthHeight() {
-       int width= MyUtils.getScreenWidth(getApplicationContext());
-        return new int[]{width*4/5,width*3/5};
+        int width = MyUtils.getScreenWidth(getApplicationContext());
+        return new int[]{width * 4 / 5, width * 3 / 5};
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
@@ -61,6 +63,7 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
         }
         return false;
     }
+
     @Override
     protected void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
         restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
@@ -74,17 +77,17 @@ public class CaptureAty extends CaptureActivity implements Toolbar.OnMenuItemCli
                 return;
             }
             String from = getIntent().getStringExtra(FROM);
-            if(TextUtils.isEmpty(from)) {
+            if (TextUtils.isEmpty(from)) {
                 startPublishActivity(rawResult.getText());
             } else if (from.equals(RecommendFrag.class.getName())) {
                 startRecommendFrag(rawResult.getText());
             }
 
 
-        }else {
+        } else {
             MyToast.show(getApplicationContext(), "暂时只能识别书本的条形码哦");
         }
-        
+
 
     }
 

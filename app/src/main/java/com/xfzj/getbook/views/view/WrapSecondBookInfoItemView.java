@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/2/29.
  */
-public class WrapSecondBookInfoItemView extends FrameLayout implements SecondBookInfoItemView.onClickListener<Object>,SecondBookInfoItemView.onLongClickListener {
+public class WrapSecondBookInfoItemView extends FrameLayout implements SecondBookInfoItemView.onClickListener<Object>,SecondBookInfoItemView.onLongClickListener, SecondBookInfoItemView.OnImageCallBack {
     private CheckBox cb;
     private SecondBookInfoItemView secondBookInfoItemView;
     private Context context;
@@ -62,13 +62,9 @@ public class WrapSecondBookInfoItemView extends FrameLayout implements SecondBoo
             return;
         }
         this.secondBook = secondBook;
+        secondBookInfoItemView.setOnImageCallBack(this);
         secondBookInfoItemView.update(secondBook);
-        secondBookInfoItemView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                secondBookInfoItemView.doInvalid();
-            }
-        }, 500);
+     
   
 
     }
@@ -106,6 +102,11 @@ public class WrapSecondBookInfoItemView extends FrameLayout implements SecondBoo
         if (null != onLongClickListener) {
             onLongClickListener.onLongClick(o);
         }
+    }
+
+    @Override
+    public void onLoaded() {
+        secondBookInfoItemView.doInvalid();
     }
 
     public interface onClickListener<T> {

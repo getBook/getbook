@@ -156,7 +156,7 @@ public class MyFrag extends BaseFragment implements View.OnClickListener {
         }
         String header = SharedPreferencesUtils.getUserHeader(getActivity());
         if (!TextUtils.isEmpty(header)) {
-            iv.setBmobImage(header);
+            iv.setNetImage(header);
         } else {
             Intent intent = new Intent(getActivity(), GetHeaderSerVice.class);
             getActivity().startService(intent);

@@ -12,5 +12,6 @@
         android:layout_height="match_parent"/>
     <include layout="@layout/no_data" />
     <include layout="@layout/no_data2" />
+
 </FrameLayout>
 

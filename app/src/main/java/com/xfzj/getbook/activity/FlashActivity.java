@@ -10,8 +10,7 @@ import android.view.View;
 import com.xfzj.getbook.MainActivity;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.common.User;
-
-import cn.bmob.v3.BmobUser;
+import com.xfzj.getbook.utils.SharedPreferencesUtils;
 
 
 /**
@@ -47,8 +46,8 @@ public class FlashActivity extends AppActivity {
         if (handleIntent()) {
             return;
         }
-        user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
-        if (null != user) {
+        user = SharedPreferencesUtils.getUser(getApplicationContext());
+        if (null != user&&!TextUtils.isEmpty(user.getSno())) {
             jump2MainAty();
         } else {
             handler.sendEmptyMessageDelayed(0, 3000);
@@ -66,7 +65,7 @@ public class FlashActivity extends AppActivity {
         String from = getIntent().getStringExtra(FROM);
         if (!TextUtils.isEmpty(from)) {
             if (EXITACCOUNT.equals(from)) {
-                jump2Login( getIntent().getStringExtra(LoginAty.ACCOUNT));
+                jump2Login(getIntent().getStringExtra(LoginAty.ACCOUNT));
             } else if (EXITAPP.equals(from)) {
                 finish();
             }
@@ -85,6 +84,7 @@ public class FlashActivity extends AppActivity {
         startActivity(i);
         finish();
     }
+
     private void jump2Login() {
         jump2Login(null);
     }

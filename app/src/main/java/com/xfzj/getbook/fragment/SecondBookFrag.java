@@ -20,11 +20,16 @@ import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.activity.DetailActivity;
 import com.xfzj.getbook.activity.SecondBookDetailAty;
 import com.xfzj.getbook.common.SecondBook;
+import com.xfzj.getbook.common.SecondBookModel;
+import com.xfzj.getbook.newnet.ApiException;
+import com.xfzj.getbook.newnet.GetFunApi;
+import com.xfzj.getbook.newnet.NetRxWrap;
+import com.xfzj.getbook.newnet.NormalSubscriber;
+import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
 import com.xfzj.getbook.views.recycleview.LoadMoreLayout;
 import com.xfzj.getbook.views.recycleview.LoadMoreListen;
 import com.xfzj.getbook.views.recycleview.LoadMoreView;
-import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.views.view.SecondBookInfoView;
 
 import java.util.ArrayList;
@@ -60,7 +65,7 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
 
 
     private SaleAdapter saleAdapter;
-    private QueryAction queryAction;
+//    private QueryAction queryAction;
     private List<SecondBook> secondBooks = new ArrayList<>();
 
     private String key;
@@ -110,14 +115,14 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
         loadMoreView.setOnrefreshListener(this);
         loadMoreView.setOnLoadMoreListen(this);
         loadMoreView.setOnScrollCallBack(this);
-        queryAction = new QueryAction(getActivity().getApplicationContext());
         if (mParam1.equals(FROMMAIN)) {
             loadMoreView.setRefreshing();
-            queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
+//            queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
+              onRefresh();
         }else {
             AppAnalytics.onEvent(getActivity(), AppAnalytics.SB_SEARCH);
         }
-        queryAction.setOnQueryListener(this);
+//        queryAction.setOnQueryListener(this);
         return view;
     }
 
@@ -174,12 +179,62 @@ public class SecondBookFrag extends BaseFragment implements QueryAction.OnQueryL
         }
         skip = 0;
         loadMoreView.setRefreshing();
-        queryAction.querySecondBookInfo(MAX_NUM, limit, skip, key);
+        NetRxWrap.wrap(GetFunApi.getSecondBook(skip))
+                .subscribe(new NormalSubscriber<SecondBookModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+
+                    }
+
+                    @Override
+                    public void onNextResult(SecondBookModel secondBookModel) {
+                        List<SecondBook> secondBooks = secondBookModel.getSecondBooks();
+                        if (secondBooks.size() == 0) {
+                            loadMoreView.setVisibility(View.GONE);
+                            if (mParam1.equals(FROMMAIN)) {
+                                llError.setVisibility(View.VISIBLE);
+                            } else if (mParam1.equals(FROMSEARCH)) {
+                                llnodata.setVisibility(View.VISIBLE);
+                            }
+                            return;
+                        }
+                        loadMoreView.setRefreshFinish();
+                        saleAdapter.clear();
+                        loadMoreView.setVisibility(View.VISIBLE);
+                        if (mParam1.equals(FROMMAIN) && null != llError) {
+                            llError.setVisibility(View.GONE);
+                        } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
+                            llnodata.setVisibility(View.GONE);
+                        }
+                        saleAdapter.addAll(secondBooks);
+                    }
+                });
     }
 
     @Override
     public void onLoadMore() {
-        queryAction.querySecondBookInfo(MAX_NUM, limit, ++skip, key);
+        NetRxWrap.wrap(GetFunApi.getSecondBook(++skip))
+                .subscribe(new NormalSubscriber<SecondBookModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+
+                    }
+
+                    @Override
+                    public void onNextResult(SecondBookModel secondBookModel) {
+                        loadMoreView.setLoadMoreFinish();
+                        List<SecondBook> secondBooks = secondBookModel.getSecondBooks();
+                        if (secondBooks.size() == 0) {
+                            return;
+                        }
+                        if (mParam1.equals(FROMMAIN) && null != llError) {
+                            llError.setVisibility(View.GONE);
+                        } else if (mParam1.equals(FROMSEARCH) && null != llnodata) {
+                            llnodata.setVisibility(View.GONE);
+                        }
+                        saleAdapter.addAll(secondBooks);
+                    }
+                });
     }
 
     @Override

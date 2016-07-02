@@ -46,11 +46,13 @@ public class SharedPreferencesUtils {
     private static final String SHARESETTING = "sharesetting";
     private static final String SHARESETTINGCOUNT = "sharesettingcount";
     private static final String SHARESETTINGB = "sharesettingb";
+    private static final String GETFUNCOOKIE = "getfuncookie";
 
     public static void saveUser(Context context, User user) {
         if (null == user) {
             return;
         }
+        saveUserHeader(context, user.getAvator());
         SharedPreferences sp = context.getSharedPreferences(USERPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         if (!TextUtils.isEmpty(user.getUsername())) {
@@ -88,6 +90,22 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
+    /**
+     * 存储getfun的cookie
+     * @param context
+     * @param cookie
+     */
+    public static void saveGetFunCookie(Context context, String cookie) {
+        SharedPreferences sp = context.getSharedPreferences(GETFUNCOOKIE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(GETFUNCOOKIE, cookie);
+        editor.apply();
+        
+    }
+    public static String getGetFunCookie(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(GETFUNCOOKIE, Context.MODE_PRIVATE);
+      return  sp.getString(GETFUNCOOKIE, "");
+    }
     /**
      * 存储键盘高度
      *

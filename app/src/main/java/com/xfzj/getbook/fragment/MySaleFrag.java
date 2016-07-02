@@ -1,11 +1,12 @@
 package com.xfzj.getbook.fragment;
 
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,25 +16,36 @@ import android.widget.LinearLayout;
 import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
 import com.xfzj.getbook.action.DeleteAction;
-import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.RefreshAction;
 import com.xfzj.getbook.activity.BaseMySaleFrag;
+import com.xfzj.getbook.common.CreatedAt;
 import com.xfzj.getbook.common.Debris;
+import com.xfzj.getbook.common.DebrisModel;
 import com.xfzj.getbook.common.SecondBook;
-import com.xfzj.getbook.common.User;
+import com.xfzj.getbook.common.SecondBookModel;
+import com.xfzj.getbook.newnet.ApiException;
+import com.xfzj.getbook.newnet.GetFunApi;
+import com.xfzj.getbook.newnet.NetRxWrap;
+import com.xfzj.getbook.newnet.NormalSubscriber;
 import com.xfzj.getbook.utils.AppAnalytics;
+import com.xfzj.getbook.utils.MyToast;
+import com.xfzj.getbook.views.recycleview.FooterLoadMoreRVAdapter;
+import com.xfzj.getbook.views.recycleview.LoadMoreListen;
+import com.xfzj.getbook.views.recycleview.LoadMoreView;
 import com.xfzj.getbook.views.view.WrapDebrisInfoItemView;
 import com.xfzj.getbook.views.view.WrapSecondBookInfoItemView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MySaleFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListener<List<Object>>, WrapSecondBookInfoItemView.onClickListener, WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onClickListener, WrapDebrisInfoItemView.onLongClickListener {
+public class MySaleFrag extends BaseFragment implements WrapSecondBookInfoItemView.onLongClickListener, WrapDebrisInfoItemView.onLongClickListener, LoadMoreView.RefreshListener, LoadMoreListen {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,16 +55,17 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
     private String mParam1;
     public static final String COLUMNSECONDBOOK = "columnsecondbook";
     public static final String COLUMNDEBRIS = "columndebris";
-    private QueryAction queryAction;
+    //    private QueryAction queryAction;
     private BaseApplication baseApplication;
-    private User user;
     private List<SecondBook> secondBooks;
     private List<Debris> debrises;
-    private List<WrapSecondBookInfoItemView> wrapSecondBookInfoItemViews;
-    private List<WrapDebrisInfoItemView> wrapDebrisInfoItemViews;
-    private LinearLayout ll;
-    private List<CheckBox> cbs = new ArrayList<>();
-    private ProgressDialog pd;
+    private Set<WrapSecondBookInfoItemView> wrapSecondBookInfoItemViews;
+    private Set<WrapDebrisInfoItemView> wrapDebrisInfoItemViews;
+    private LoadMoreView loadMoreView;
+    private Set<CheckBox> cbs = new HashSet<>();
+    private DebrisAdapter debrisAdapter;
+    private SecondBookAdapter secondBookAdapter;
+    private int skip = 0;
 
 
     public MySaleFrag() {
@@ -85,20 +98,38 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
 
     }
 
-    private void doQuery() {
-        if (null == user) {
-            getActivity().finish();
-            return;
-        }
-        pd = ProgressDialog.show(getActivity(), null, getString(R.string.loading));
-        pd.setCancelable(true);
-        if (mParam1.equals(COLUMNSECONDBOOK)) {
-            queryAction.querySelfSecondBook(user.getObjectId());
-        } else if (mParam1.equals(COLUMNDEBRIS)) {
-            queryAction.querySelfDebris(user.getObjectId());
-        } else {
-            getActivity().finish();
-        }
+    private void onRefreshDebries() {
+        NetRxWrap.wrap(GetFunApi.getUserDebris(skip))
+                .subscribe(new NormalSubscriber<DebrisModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+                        if (null != loadMoreView) {
+                            loadMoreView.setVisibility(View.GONE);
+                        }
+                        if (null != llnodata) {
+                            llnodata.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onNextResult(DebrisModel debrisModel) {
+                        List<Debris> debrises = debrisModel.getDebrises();
+                        if (debrises.size() == 0) {
+                            if (null != loadMoreView) {
+                                loadMoreView.setVisibility(View.GONE);
+                            }
+                            if (null != llnodata) {
+                                llnodata.setVisibility(View.VISIBLE);
+                            }
+                            return;
+                        }
+                        loadMoreView.setRefreshFinish();
+                        debrisAdapter.clear();
+                        loadMoreView.setVisibility(View.VISIBLE);
+                        debrisAdapter.addAll(debrises);
+                    }
+                });
+
     }
 
     @Override
@@ -107,91 +138,32 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_second_book, container, false);
         llnodata = (LinearLayout) view.findViewById(R.id.llnodata);
-        ll = (LinearLayout) view.findViewById(R.id.ll);
+        loadMoreView = (LoadMoreView) view.findViewById(R.id.loadMoreView);
+        wrapDebrisInfoItemViews = new HashSet<>();
+        wrapSecondBookInfoItemViews = new HashSet<>();
         if (mParam1.equals(COLUMNSECONDBOOK)) {
             secondBooks = new ArrayList<>();
-
+            secondBookAdapter = new SecondBookAdapter(secondBooks, getActivity());
+            loadMoreView.setAdapter(secondBookAdapter);
         } else if (mParam1.equals(COLUMNDEBRIS)) {
             debrises = new ArrayList<>();
+            debrisAdapter = new DebrisAdapter(debrises, getActivity());
+            loadMoreView.setAdapter(debrisAdapter);
         } else {
-           getFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
         }
-
+        loadMoreView.setOnrefreshListener(this);
+        loadMoreView.setOnLoadMoreListen(this);
         baseApplication = (BaseApplication) getActivity().getApplication();
-        user = baseApplication.getUser();
-        if (null == user) {
-            getActivity().finish();
-        }
-        queryAction = new QueryAction(getActivity());
-        queryAction.setOnQueryListener(this);
-        doQuery();
+        onRefresh();
         return view;
     }
-
-
-    @Override
-    public void onSuccess(List<Object> lists) {
-        pd.dismiss();
-        if ((null == lists || lists.size() == 0)) {
-            if (null != llnodata) {
-                llnodata.setVisibility(View.VISIBLE);
-            }
-        } else {
-            if (null != llnodata) {
-                llnodata.setVisibility(View.GONE);
-            }
-            if (lists.get(0) instanceof SecondBook) {
-                wrapSecondBookInfoItemViews = new ArrayList<>();
-                for (int i = 0; i < lists.size(); i++) {
-                    WrapSecondBookInfoItemView wrapSecondBookInfoItemView = new WrapSecondBookInfoItemView(getActivity());
-                    wrapSecondBookInfoItemView.update((SecondBook) lists.get(i));
-                    CheckBox cb = wrapSecondBookInfoItemView.getCb();
-                    cbs.add(cb);
-                    wrapSecondBookInfoItemView.setViewOnClickListener(this);
-                    wrapSecondBookInfoItemView.setViewOnLongClickListener(this);
-                    wrapSecondBookInfoItemViews.add(wrapSecondBookInfoItemView);
-                    ll.addView(wrapSecondBookInfoItemView);
-                }
-            } else if (lists.get(0) instanceof Debris) {
-                wrapDebrisInfoItemViews = new ArrayList<>();
-                for (int i = 0; i < lists.size(); i++) {
-                    WrapDebrisInfoItemView wrapDebrisInfoItemView = new WrapDebrisInfoItemView(getActivity());
-                    wrapDebrisInfoItemView.update((Debris) lists.get(i));
-                    CheckBox cb = wrapDebrisInfoItemView.getCb();
-                    cbs.add(cb);
-                    wrapDebrisInfoItemView.setViewOnClickListener(this);
-                    wrapDebrisInfoItemView.setViewOnLongClickListener(this);
-                    wrapDebrisInfoItemViews.add(wrapDebrisInfoItemView);
-                    ll.addView(wrapDebrisInfoItemView);
-                }
-
-            } else {
-                getActivity().finish();
-            }
-        }
-
-
-    }
-
-    @Override
-    public void onFail() {
-        pd.dismiss();
-        if (null != llnodata) {
-            llnodata.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onClick(Object o) {
-    }
-
-
     @Override
     public void onLongClick(Object o) {
         ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.VISIBLE);
         setCbVisibility(View.VISIBLE);
 
-    
+
     }
 
     public void setCbVisibility(int i) {
@@ -215,40 +187,38 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                 List<CheckBox> ints = new ArrayList<>();
                 List<WrapSecondBookInfoItemView> wraps = new ArrayList<>();
                 List<WrapDebrisInfoItemView> wrapDebris = new ArrayList<>();
-                for (int i = 0; i < cbs.size(); i++) {
-                    if (cbs.get(i).isChecked()) {
-                        ints.add(cbs.get(i));
+                List<CheckBox> checkBoxes = new ArrayList<CheckBox>(cbs);
+                for (int i = 0; i < checkBoxes.size(); i++) {
+                    if (checkBoxes.get(i).isChecked()) {
+                        ints.add(checkBoxes.get(i));
                         if (mParam1.equals(COLUMNSECONDBOOK)) {
-                            WrapSecondBookInfoItemView wrapSecondBookInfoItemView = wrapSecondBookInfoItemViews.get(i);
-                            wraps.add(wrapSecondBookInfoItemView);
-                            SecondBook secondBook = wrapSecondBookInfoItemView.getSecondBookInfoItemView().getSecondBook();
+                            SecondBook secondBook = secondBookAdapter.getAll().get(i);
                             if (null != secondBook) {
-                                lists.add(secondBook.getObjectId());
+                                AppAnalytics.onEvent(getActivity(), AppAnalytics.R_SB);
+                                final WrapSecondBookInfoItemView wrapSecondBookInfoItemView = new ArrayList<>(wrapSecondBookInfoItemViews).get(i);
+                                RefreshAction.refresh(secondBook.getId(), new RefreshAction.OnRefreshCallBack() {
+                                    @Override
+                                    public void onRefreshSucc(CreatedAt createdAt) {
+                                        AppAnalytics.onEvent(getActivity(), AppAnalytics.R_SB);
+                                        wrapSecondBookInfoItemView.refresh();
+                                    }
+                                }, SecondBook.class);
+
                             }
                         } else if (mParam1.equals(COLUMNDEBRIS)) {
-                            WrapDebrisInfoItemView wrapDebrisInfoItemView = wrapDebrisInfoItemViews.get(i);
-                            wrapDebris.add(wrapDebrisInfoItemView);
-                            Debris debris = wrapDebrisInfoItemView.getDebrisContentInfoView().getDebris();
+                            Debris debris = debrisAdapter.getAll().get(i);
                             if (null != debris) {
-                                lists.add(debris.getObjectId());
+                                AppAnalytics.onEvent(getActivity(), AppAnalytics.R_DB);
+                                final WrapDebrisInfoItemView wrapDebrisInfoItemView = new ArrayList<>(wrapDebrisInfoItemViews).get(i);
+                                RefreshAction.refresh(debris.getId(), new RefreshAction.OnRefreshCallBack() {
+                                    @Override
+                                    public void onRefreshSucc(CreatedAt createdAt) {
+                                        wrapDebrisInfoItemView.refresh();
+                                    }
+                                }, Debris.class);
                             }
                         }
                     }
-                }
-                RefreshAction refreshAction = new RefreshAction(getActivity());
-                if (mParam1.equals(COLUMNSECONDBOOK)) {
-                    for (WrapSecondBookInfoItemView w : wraps) {
-                        w.refresh();
-                    }
-                    AppAnalytics.onEvent(getActivity(), AppAnalytics.R_SB);
-                    refreshAction.refresh(lists, SecondBook.class);
-                } else if (mParam1.equals(COLUMNDEBRIS)) {
-                    for (WrapDebrisInfoItemView w : wrapDebris) {
-                        w.refresh();
-
-                    }
-                    AppAnalytics.onEvent(getActivity(), AppAnalytics.R_DB);
-                    refreshAction.refresh(lists, Debris.class);
                 }
             }
         }).setNegativeButton(getString(R.string.cancel), null).create().show();
@@ -262,34 +232,66 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 List<SecondBook> secondBooks = new ArrayList<>();
-                List<Debris> debrises = new ArrayList<>();
+                List<String> debrises = new ArrayList<>();
                 List<CheckBox> ints = new ArrayList<>();
                 List<WrapSecondBookInfoItemView> wraps = new ArrayList<>();
                 List<WrapDebrisInfoItemView> wrapDebris = new ArrayList<>();
-                for (int i = 0; i < cbs.size(); i++) {
-                    if (cbs.get(i).isChecked()) {
-                        ints.add(cbs.get(i));
+                List<CheckBox> checkBoxes = new ArrayList<CheckBox>(cbs);
+                for (int i = 0; i < checkBoxes.size(); i++) {
+                    if (checkBoxes.get(i).isChecked()) {
+                        ints.add(checkBoxes.get(i));
                         if (mParam1.equals(COLUMNSECONDBOOK)) {
-                            WrapSecondBookInfoItemView wrapSecondBookInfoItemView = wrapSecondBookInfoItemViews.get(i);
-                            wraps.add(wrapSecondBookInfoItemView);
-                            SecondBook secondBook = wrapSecondBookInfoItemView.getSecondBookInfoItemView().getSecondBook();
+
+                            final SecondBook secondBook = secondBookAdapter.getAll().get(i);
                             if (null != secondBook) {
-                                secondBooks.add(secondBook);
+                                DeleteAction.delete(secondBook.getId(), new DeleteAction.OnDeleteCallBack() {
+                                    @Override
+                                    public void onDeleteSucc() {
+                                        AppAnalytics.onEvent(getActivity(), AppAnalytics.D_SB);
+                                        MyToast.show(getActivity(), secondBook.getBookInfo().getBookName() + getString(R.string.delete_success));
+                                        secondBookAdapter.remove(secondBook);
+                                        cbs.remove(secondBook);
+                                        wrapSecondBookInfoItemViews.remove(secondBook);
+
+                                    }
+
+                                    @Override
+                                    public void onDelteFail(String error) {
+                                        MyToast.show(getActivity(), secondBook.getBookInfo().getBookName() + getString(R.string.delete_fail));
+                                    }
+                                }, SecondBook.class);
+
+
                             }
                         } else if (mParam1.equals(COLUMNDEBRIS)) {
-                            WrapDebrisInfoItemView wrapDebrisInfoItemView = wrapDebrisInfoItemViews.get(i);
-                            wrapDebris.add(wrapDebrisInfoItemView);
-                            Debris debris = wrapDebrisInfoItemView.getDebrisContentInfoView().getDebris();
+//                        
+                            final Debris debris = debrisAdapter.getAll().get(i);
                             if (null != debris) {
-                                debrises.add(debris);
+                                DeleteAction.delete(debris.getId(), new DeleteAction.OnDeleteCallBack() {
+                                    @Override
+                                    public void onDeleteSucc() {
+                                        AppAnalytics.onEvent(getActivity(), AppAnalytics.D_DB);
+                                        MyToast.show(getActivity(), debris.getTitle() + getString(R.string.delete_success));
+                                        debrisAdapter.remove(debris);
+                                        cbs.remove(debris);
+                                        wrapSecondBookInfoItemViews.remove(debris);
+                                    }
+
+                                    @Override
+                                    public void onDelteFail(String error) {
+                                        MyToast.show(getActivity(), debris.getTitle() + getString(R.string.delete_fail));
+                                    }
+                                }, Debris.class);
+
+
                             }
                         }
                     }
                 }
-                DeleteAction deleteAction = new DeleteAction(getActivity());
+//                DeleteAction deleteAction = new DeleteAction(getActivity());
                 if (mParam1.equals(COLUMNSECONDBOOK)) {
                     for (WrapSecondBookInfoItemView w : wraps) {
-                        ll.removeView(w);
+//                        ll.removeView(w);
                         wrapSecondBookInfoItemViews.remove(w);
 
                     }
@@ -300,28 +302,183 @@ public class MySaleFrag extends BaseFragment implements QueryAction.OnQueryListe
                         ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.GONE);
                         llnodata.setVisibility(View.VISIBLE);
                     }
-                    AppAnalytics.onEvent(getActivity(), AppAnalytics.D_SB);
-                    deleteAction.deleteSecondBook(secondBooks);
+
+//                    deleteAction.deleteSecondBook(secondBooks);
                 } else if (mParam1.equals(COLUMNDEBRIS)) {
                     for (WrapDebrisInfoItemView w : wrapDebris) {
-                        ll.removeView(w);
-                        wrapDebrisInfoItemViews.remove(w);
+//                        ll.removeView(w);
+//                        wrapDebrisInfoItemViews.remove(w);
 
                     }
                     for (CheckBox i : ints) {
                         cbs.remove(i);
                     }
-                    if (wrapDebrisInfoItemViews.size() == 0) {
-                        ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.GONE);
-                        llnodata.setVisibility(View.VISIBLE);
-                    }
-                    AppAnalytics.onEvent(getActivity(), AppAnalytics.D_DB);
-                    deleteAction.deleteDebris(debrises);
+//                    if (wrapDebrisInfoItemViews.size() == 0) {
+//                        ((BaseMySaleFrag) getParentFragment()).setVisibilty(View.GONE);
+//                        llnodata.setVisibility(View.VISIBLE);
+//                    }
+
+//                    deleteAction.deleteDebris(debrises);
                 }
 
             }
         }).setNegativeButton(getString(R.string.cancel), null).create().show();
 
 
+    }
+
+    @Override
+    public void onRefresh() {
+        skip = 0;
+        loadMoreView.setRefreshing();
+        if (mParam1.equals(COLUMNSECONDBOOK)) {
+            onRefreshSecondBook();
+        } else if (mParam1.equals(COLUMNDEBRIS)) {
+            onRefreshDebries();
+        }
+    }
+
+    private void onRefreshSecondBook() {
+        NetRxWrap.wrap(GetFunApi.getUserSecondBook(skip))
+                .subscribe(new NormalSubscriber<SecondBookModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+                        if (null != loadMoreView) {
+                            loadMoreView.setVisibility(View.GONE);
+                        }
+                        if (null != llnodata) {
+                            llnodata.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onNextResult(SecondBookModel secondBookModel) {
+                        List<SecondBook> secondBooks = secondBookModel.getSecondBooks();
+                        if (secondBooks.size() == 0) {
+                            if (null != loadMoreView) {
+                                loadMoreView.setVisibility(View.GONE);
+                            }
+                            if (null != llnodata) {
+                                llnodata.setVisibility(View.VISIBLE);
+                            }
+                            return;
+                        }
+                        loadMoreView.setRefreshFinish();
+                        secondBookAdapter.clear();
+                        loadMoreView.setVisibility(View.VISIBLE);
+                        secondBookAdapter.addAll(secondBooks);
+                    }
+                });
+    }
+
+
+    @Override
+    public void onLoadMore() {
+        if (mParam1.equals(COLUMNSECONDBOOK)) {
+            onLoadMoreSecondBook();
+        } else if (mParam1.equals(COLUMNDEBRIS)) {
+            onLoadMoreDebries();
+        }
+
+    }
+
+    private void onLoadMoreSecondBook() {
+        NetRxWrap.wrap(GetFunApi.getUserSecondBook(++skip))
+                .subscribe(new NormalSubscriber<SecondBookModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+
+                    }
+
+                    @Override
+                    public void onNextResult(SecondBookModel secondBookModel) {
+                        loadMoreView.setLoadMoreFinish();
+                        List<SecondBook> secondBooks = secondBookModel.getSecondBooks();
+                        if (secondBooks.size() == 0) {
+                            return;
+                        }
+                        secondBookAdapter.addAll(secondBooks);
+                    }
+                });
+    }
+
+    private void onLoadMoreDebries() {
+        NetRxWrap.wrap(GetFunApi.getUserDebris(++skip))
+                .subscribe(new NormalSubscriber<DebrisModel>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+
+                    }
+
+                    @Override
+                    public void onNextResult(DebrisModel debrisModel) {
+                        loadMoreView.setLoadMoreFinish();
+                        List<Debris> debrises = debrisModel.getDebrises();
+                        if (debrises.size() == 0) {
+                            return;
+                        }
+//                        loadMoreView.setVisibility(View.VISIBLE);
+                        debrisAdapter.addAll(debrises);
+                    }
+                });
+    }
+
+    private class DebrisAdapter extends FooterLoadMoreRVAdapter<Debris> {
+
+        public DebrisAdapter(List<Debris> datas, Context context) {
+            super(datas, context);
+        }
+
+        @Override
+        protected View getNormalView() {
+            return new WrapDebrisInfoItemView(context);
+        }
+
+
+        @Override
+        protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
+            return new NormalViewHolder<Debris>(view, viewType) {
+                @Override
+                protected void setNormalContent(View itemView, Debris item, int viewType) {
+                    if (itemView instanceof WrapDebrisInfoItemView) {
+                        ((WrapDebrisInfoItemView) itemView).update(item);
+                        ((WrapDebrisInfoItemView) itemView).setViewOnLongClickListener(MySaleFrag.this);
+                        CheckBox cb = ((WrapDebrisInfoItemView) itemView).getCb();
+                        cbs.add(cb);
+                        wrapDebrisInfoItemViews.add((WrapDebrisInfoItemView) itemView);
+
+                    }
+                }
+            };
+        }
+    }
+
+    private class SecondBookAdapter extends FooterLoadMoreRVAdapter<SecondBook> {
+
+        public SecondBookAdapter(List<SecondBook> datas, Context context) {
+            super(datas, context);
+        }
+
+        @Override
+        protected View getNormalView() {
+            return new WrapSecondBookInfoItemView(context);
+        }
+
+
+        @Override
+        protected RecyclerView.ViewHolder getNormalViewHolder(View view, int viewType) {
+            return new NormalViewHolder<SecondBook>(view, viewType) {
+                @Override
+                protected void setNormalContent(View itemView, SecondBook item, int viewType) {
+                    if (itemView instanceof WrapSecondBookInfoItemView) {
+                        ((WrapSecondBookInfoItemView) itemView).update(item);
+                        ((WrapSecondBookInfoItemView) itemView).setViewOnLongClickListener(MySaleFrag.this);
+                        CheckBox cb = ((WrapSecondBookInfoItemView) itemView).getCb();
+                        cbs.add(cb);
+                        wrapSecondBookInfoItemViews.add((WrapSecondBookInfoItemView) itemView);
+                    }
+                }
+            };
+        }
     }
 }

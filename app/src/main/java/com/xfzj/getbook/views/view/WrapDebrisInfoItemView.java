@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by zj on 2016/2/29.
  */
-public class WrapDebrisInfoItemView extends FrameLayout implements DebrisContentInfoView.onCLickListener, DebrisContentInfoView.onLongCLickListener {
+public class WrapDebrisInfoItemView extends FrameLayout implements DebrisContentInfoView.onCLickListener, DebrisContentInfoView.onLongCLickListener, DebrisContentInfoView.OnImageCallBack {
     private CheckBox cb;
     private DebrisContentInfoView debrisContentInfoView;
     private Context context;
@@ -62,13 +62,8 @@ public class WrapDebrisInfoItemView extends FrameLayout implements DebrisContent
             return;
         }
         this.debris = debris;
+        debrisContentInfoView.setOnImageCallBack(this);
         debrisContentInfoView.update(debris);
-        debrisContentInfoView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                debrisContentInfoView.doInvalid();
-            }
-        }, 500);
     }
 
 
@@ -100,6 +95,11 @@ public class WrapDebrisInfoItemView extends FrameLayout implements DebrisContent
         if (null != onLongClickListener) {
             onLongClickListener.onLongClick(debris);
         }
+    }
+
+    @Override
+    public void onLoaded() {
+        debrisContentInfoView.doInvalid();
     }
 
     public interface onClickListener<T> {

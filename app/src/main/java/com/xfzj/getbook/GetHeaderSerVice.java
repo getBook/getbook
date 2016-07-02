@@ -70,7 +70,7 @@ public class GetHeaderSerVice extends Service implements BaseAsyncTask.onTaskLis
             return;
         }
         UploadAction uploadAction = new UploadAction();
-        uploadAction.uploadHeader(getApplicationContext(), user, str);
+//        uploadAction.uploadHeader(getApplicationContext(), user, str);
     }
 
     @Override

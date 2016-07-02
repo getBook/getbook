@@ -5,6 +5,14 @@ package com.xfzj.getbook;
  */
 public class Constants {
     /**
+     * 定义杂货铺信息一次获取的条数
+     */
+    public static final int DEBRIS_LIMIT=10;
+    /**
+     * 定义二手书信息一次获取的条数
+     */
+    public static final int SECONDBOOK_LIMIT=10;
+    /**
      * 定义获取二手物品过期的时间
      */
     public static final int day=15;

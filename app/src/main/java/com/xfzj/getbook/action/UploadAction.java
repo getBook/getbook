@@ -6,34 +6,39 @@ import android.content.Intent;
 
 import com.xfzj.getbook.BaseApplication;
 import com.xfzj.getbook.R;
+import com.xfzj.getbook.common.Avator;
 import com.xfzj.getbook.common.BookInfo;
 import com.xfzj.getbook.common.Debris;
+import com.xfzj.getbook.common.ImageModel;
 import com.xfzj.getbook.common.Post;
 import com.xfzj.getbook.common.SecondBook;
 import com.xfzj.getbook.common.User;
-import com.xfzj.getbook.utils.MyLog;
+import com.xfzj.getbook.newnet.ApiException;
+import com.xfzj.getbook.newnet.BaseSubscriber;
+import com.xfzj.getbook.newnet.GetFunApi;
+import com.xfzj.getbook.newnet.NetRxWrap;
+import com.xfzj.getbook.newnet.NormalSubscriber;
 import com.xfzj.getbook.utils.MyToast;
-import com.xfzj.getbook.utils.MyUtils;
 import com.xfzj.getbook.utils.SharedPreferencesUtils;
 import com.xfzj.getbook.views.view.NavigationHeaderView;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadBatchListener;
 import cn.bmob.v3.listener.UploadFileListener;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zj on 2016/2/28.
  */
 public class UploadAction extends BaseAction {
-    private  Post post;
+    private Post post;
     private Context context;
     private SecondBook secondBook;
     private ProgressDialog pd;
@@ -54,13 +59,14 @@ public class UploadAction extends BaseAction {
         this.debris = debris;
         setProgressDialog(context.getString(R.string.publishing));
     }
+
     public UploadAction(Context context, Post post) {
 
         this.context = context;
         this.post = post;
         setProgressDialog(context.getString(R.string.publishing));
     }
-    
+
     public UploadAction() {
     }
 
@@ -70,13 +76,37 @@ public class UploadAction extends BaseAction {
         pd.setCanceledOnTouchOutside(false);
     }
 
-    public static  void saveHeader(Context context, String header) {
+    public static void saveHeader(Context context, String header) {
         SharedPreferencesUtils.saveUserHeader(context, header);
         context.sendBroadcast(new Intent(NavigationHeaderView.ACTION));
     }
-    public void uploadHeader(final Context context, final User user, String str) {
-        uploadHeader(context, user, new File(str));
+
+    public static void uploadHeader(final Context context, File file) {
+        NetRxWrap.wrap(GetFunApi.updateAvator(file))
+                .subscribe(new BaseSubscriber<Avator>() {
+                    @Override
+                    protected void onError(ApiException ex) {
+                        MyToast.show(context, ex.getDisplayMessage());
+                    }
+
+                    @Override
+                    protected void onPermissionError(ApiException ex) {
+                        MyToast.show(context, ex.getDisplayMessage());
+                    }
+
+                    @Override
+                    protected void onResultError(ApiException ex) {
+                        MyToast.show(context, ex.getDisplayMessage());
+                    }
+
+                    @Override
+                    public void onNextResult(Avator avator) {
+                        MyToast.show(context, context.getString(R.string.update_success));
+                        saveHeader(context, avator.getAvator());
+                    }
+                });
     }
+
     public void uploadHeader(final Context context, final User user, File file) {
         final BmobFile bmobFile = new BmobFile(file);
         bmobFile.uploadblock(context, new UploadFileListener() {
@@ -88,7 +118,7 @@ public class UploadAction extends BaseAction {
                 user.update(context, new UpdateListener() {
                     @Override
                     public void onSuccess() {
-                        saveHeader(context,bmobFile.getFileUrl(context));
+                        saveHeader(context, bmobFile.getFileUrl(context));
                     }
 
                     @Override
@@ -104,39 +134,38 @@ public class UploadAction extends BaseAction {
             }
         });
     }
-    public void publishDebris(final UploadListener uploadListener) {
 
-        pd.show();
-        BmobFile.uploadBatch(context, debris.getPics(), new UploadBatchListener() {
+    public static void publishDebris(final Context context, final Debris debris, final UploadListener uploadListener) {
+        NetRxWrap.wrap(GetFunApi.uploadFiles(debris.getPics())).flatMap(new Func1<List<ImageModel>, Observable<String[]>>() {
             @Override
-            public void onSuccess(List<BmobFile> list, List<String> list1) {
-                if (list1.size() == debris.getPics().length) {
-                    String[] str = list1.toArray(new String[debris.getPics().length]);
-                    debris.setFiles(list);
-                    debris.save(context, new SaveListener() {
-                        @Override
-                        public void onSuccess() {
-                            onSucc(uploadListener);
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            MyToast.show(context, "发布失败，请重试" + i + s);
-                            onFail(uploadListener);
-                        }
-                    });
+            public Observable<String[]> call(List<ImageModel> imageModels) {
+                List<String> url = new ArrayList<>();
+                for (ImageModel imageModel : imageModels) {
+                    url.add(imageModel.getId());
                 }
+                return Observable.just(url.toArray(new String[url.size()]));
+            }
+        }).subscribe(new NormalSubscriber<String[]>(context, null, context.getString(R.string.publishing), true) {
+            @Override
+            protected void onNextResult(String[] imageModels) {
+                debris.setPics(imageModels);
+                NetRxWrap.wrap(GetFunApi.publishDebris(debris)).subscribe(new NormalSubscriber<String>() {
+                    @Override
+                    protected void onNextResult(String aVoid) {
+
+                        onSuccess(context, uploadListener);
+                    }
+
+                    @Override
+                    protected void onFail(ApiException ex) {
+                        onFailure(context, uploadListener, context.getString(R.string.publish_fail), ex.getDisplayMessage());
+                    }
+                });
             }
 
             @Override
-            public void onProgress(int i, int i1, int i2, int i3) {
-//                MyLog.print("onProgress","当前："+i+" 完成"+i1+" 总共"+i2+"完成"+i3);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                MyToast.show(context, "上传图片失败，请重试" + s);
-                onFail(uploadListener);
+            protected void onFail(ApiException ex) {
+                onFailure(context, uploadListener, context.getString(R.string.upload_image_fail), ex.getDisplayMessage());
             }
         });
     }
@@ -166,7 +195,7 @@ public class UploadAction extends BaseAction {
             @Override
             public void onError(int i, String s) {
                 MyToast.show(context, "上传图片失败，请重试" + s);
-                onFail(uploadListener);
+//                onFailure(uploadListener);
             }
         });
     }
@@ -182,130 +211,81 @@ public class UploadAction extends BaseAction {
                         SharedPreferencesUtils.saveFocusPost(context, post.getObjectId(), 0);
                     }
                 }
-               
-                onSucc(uploadListener);
+
+//                UploadAction.this.onSuccess(uploadListener);
             }
 
             @Override
             public void onFailure(int i, String s) {
                 MyToast.show(context, "发布失败，请重试" + i + s);
-                onFail(uploadListener);
+//                UploadAction.this.onFailure(uploadListener);
             }
         });
     }
 
-    public void publishSecondBook(final UploadListener uploadListener) {
-
-        pd.show();
-        BmobQuery<BookInfo> query = new BmobQuery<>();
-        query.addWhereEqualTo("isbn", bookInfo.getIsbn());
-        query.findObjects(context, new FindListener<BookInfo>() {
-            @Override
-            public void onSuccess(List<BookInfo> list) {
-                if (null != list && list.size() > 0) {
-                    secondBook.setBookInfo(list.get(0));
-                    uploadSecondBook(uploadListener);
-                }else{
-                    File file = MyUtils.getDiskCacheDir(context, bookInfo.getIsbn() + ".jpg");
-
-                    final BmobFile bmobFile = new BmobFile(file);
-
-                    bmobFile.uploadblock(context, new UploadFileListener() {
-                        @Override
-                        public void onSuccess() {
-                            bookInfo.setBmobImage(bmobFile);
-                            secondBook.setBookInfo(bookInfo);
-                            bookInfo.save(context, new SaveListener() {
-                                @Override
-                                public void onSuccess() {
-                                    uploadSecondBook(uploadListener);
-                                }
-
-                                @Override
-                                public void onFailure(int i, String s) {
-                                    if (i == 105) {
-                                        uploadSecondBook(uploadListener);
-                                    } else {
-                                        MyToast.show(context, "发布失败，请重试" + i + s);
-                                        onFail(uploadListener);
-                                    }
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            MyToast.show(context, "上传图片失败，请重试" + i + s);
-                            onFail(uploadListener);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onError(int i, String s) {
-              
-            }
-        });
-
-
-    }
-
-    private void onSucc(UploadListener uploadListener) {
-        if (pd.isShowing()) {
-            pd.dismiss();
+    public static void publishSecondBook(final Context context, final SecondBook secondBook, final UploadListener uploadListener) {
+        if (null == secondBook || null == secondBook.getBookInfo()) {
+            onFailure(context, uploadListener, context.getString(R.string.publish_fail), "信息错误，请重填");
+            return;
         }
+        NetRxWrap.wrap(GetFunApi.uploadBookInfo(secondBook.getBookInfo())).subscribe(new NormalSubscriber<String>() {
+            @Override
+            protected void onFail(ApiException ex) {
+                onFailure(context, uploadListener, context.getString(R.string.upload_bookinfo_fail), ex.getDisplayMessage());
+            }
+
+            @Override
+            protected void onNextResult(String s) {
+                NetRxWrap.wrap(GetFunApi.uploadFiles(secondBook.getPictures())).flatMap(new Func1<List<ImageModel>, Observable<String[]>>() {
+                    @Override
+                    public Observable<String[]> call(List<ImageModel> imageModels) {
+                        List<String> url = new ArrayList<>();
+                        for (ImageModel imageModel : imageModels) {
+                            url.add(imageModel.getId());
+                        }
+                        return Observable.just(url.toArray(new String[url.size()]));
+                    }
+                }).subscribe(new NormalSubscriber<String[]>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+                        onFailure(context, uploadListener, context.getString(R.string.upload_image_fail), ex.getDisplayMessage());
+                    }
+
+                    @Override
+                    protected void onNextResult(String[] strings) {
+                        secondBook.setPictures(strings);
+                        NetRxWrap.wrap(GetFunApi.publishSecondBook(secondBook)).subscribe(new NormalSubscriber<String>() {
+                            @Override
+                            protected void onFail(ApiException ex) {
+                                onFailure(context, uploadListener, context.getString(R.string.publish_fail), ex.getDisplayMessage());
+                            }
+
+                            @Override
+                            protected void onNextResult(String s) {
+                                onSuccess(context, uploadListener);
+                            }
+                        });
+                    }
+                });
+            }
+
+        });
+    }
+
+    public static void onSuccess(Context context, UploadListener uploadListener) {
+        MyToast.show(context, context.getString(R.string.publish_success));
         if (null != uploadListener) {
             uploadListener.onSuccess();
 
         }
     }
 
-    private void onFail(UploadListener uploadListener) {
-        if (pd.isShowing()) {
-            pd.dismiss();
-        }
+    public static void onFailure(Context context, UploadListener uploadListener, String... str) {
+        MyToast.show(context, str[0] + ":" + str[1]);
         if (null != uploadListener) {
             uploadListener.onFail();
         }
     }
-
-    private void uploadSecondBook(final UploadListener uploadListener) {
-        MyLog.print("pics", Arrays.toString(secondBook.getPictures()));
-        BmobFile.uploadBatch(context, secondBook.getPictures(), new cn.bmob.v3.listener.UploadBatchListener() {
-            @Override
-            public void onSuccess(List<BmobFile> list, List<String> list1) {
-                if (list1.size() == secondBook.getPictures().length) {
-                    String[] str = list1.toArray(new String[list1.size()]);
-                    secondBook.setFiles(list);
-                    secondBook.save(context, new SaveListener() {
-                        @Override
-                        public void onSuccess() {
-                            onSucc(uploadListener);
-                        }
-
-                        @Override
-                        public void onFailure(int i, String s) {
-                            MyToast.show(context, "发布失败，请重试");
-                            onFail(uploadListener);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onProgress(int i, int i1, int i2, int i3) {
-
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                MyToast.show(context, "上传图片失败，请重试" + i + s);
-                onFail(uploadListener);
-            }
-        });
-    }
-
 
     public interface UploadListener {
         void onSuccess();

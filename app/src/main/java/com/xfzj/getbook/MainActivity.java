@@ -31,21 +31,18 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.IWxCallback;
 import com.umeng.socialize.UMShareAPI;
 import com.xfzj.getbook.action.CommentAction;
 import com.xfzj.getbook.action.LoginAction;
-import com.xfzj.getbook.action.QueryAction;
 import com.xfzj.getbook.action.UploadAction;
 import com.xfzj.getbook.activity.BaseActivity;
 import com.xfzj.getbook.activity.BaseMySaleFrag;
 import com.xfzj.getbook.activity.FlashActivity;
 import com.xfzj.getbook.activity.LoginAty;
 import com.xfzj.getbook.activity.SearchAty;
-import com.xfzj.getbook.async.LoginAsync;
 import com.xfzj.getbook.common.Post;
 import com.xfzj.getbook.common.UnreadPost;
 import com.xfzj.getbook.common.User;
@@ -57,6 +54,10 @@ import com.xfzj.getbook.fragment.NotificationFrag;
 import com.xfzj.getbook.fragment.PostDetailFrag;
 import com.xfzj.getbook.fragment.PostFrag;
 import com.xfzj.getbook.fragment.ScoreFrag;
+import com.xfzj.getbook.newnet.ApiException;
+import com.xfzj.getbook.newnet.BaseSubscriber;
+import com.xfzj.getbook.newnet.GetFunApi;
+import com.xfzj.getbook.newnet.NetRxWrap;
 import com.xfzj.getbook.utils.AppAnalytics;
 import com.xfzj.getbook.utils.MyLog;
 import com.xfzj.getbook.utils.MyToast;
@@ -79,14 +80,7 @@ import java.util.Set;
 import java.util.Timer;
 
 import butterknife.Bind;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.listener.BmobUpdateListener;
-import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
-import cn.bmob.v3.update.UpdateResponse;
-import cn.bmob.v3.update.UpdateStatus;
 
 public class MainActivity extends BaseActivity implements NavigationHeaderView.OnHeaderClickListener, Toolbar.OnMenuItemClickListener, NavigationView.OnNavigationItemSelectedListener, NavigationHeaderView.OnHuaNameClick, NotificationFrag.OnUnreadPostClick {
     public static final String FROM = "MainActivity.class";
@@ -578,38 +572,13 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
 
 
     private void isNeedHuaName() {
-
-        if (null != user) {
-            BmobQuery<User> query = new BmobQuery<>();
-            query.addWhereEqualTo("sno", user.getSno());
-            query.findObjects(getApplicationContext(), new FindListener<User>() {
-                @Override
-                public void onSuccess(List<User> list) {
-                    if (null != list && list.size() != 0) {
-                        serverUser = list.get(0);
-                        if (TextUtils.isEmpty(serverUser.getHuaName())) {
-                            showHuaNameDialog(false);
-                        } else {
-                            SharedPreferencesUtils.saveHuaName(getApplicationContext(), serverUser.getHuaName());
-                            user.setHuaName(serverUser.getHuaName());
-                            baseApplication.setUser(user);
-                        }
-                    } else {
-                        showHuaNameDialog(false);
-                    }
-                }
-
-                @Override
-                public void onError(int i, String s) {
-
-                }
-            });
+        if (null != user && TextUtils.isEmpty(user.getHuaName())) {
+            showHuaNameDialog(false);
         }
     }
 
     private void showHuaNameDialog(boolean cancelable) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
         final View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.huaname, null);
         final AlertDialog ad = builder.setTitle(getString(R.string.sethuaname)).setView(view).setCancelable(cancelable).create();
         ad.show();
@@ -632,33 +601,31 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
     }
 
     private void uploadHuaName(final String huaName, final AlertDialog alertDialog) {
-        QueryAction queryAction = new QueryAction(getApplicationContext(), new QueryAction.OnQueryListener<Boolean>() {
+        NetRxWrap.wrap(GetFunApi.updateHuaName(huaName)).subscribe(new BaseSubscriber<String>() {
             @Override
-            public void onSuccess(Boolean aBoolean) {
-                user.setHuaName(huaName);
-                user.update(getApplicationContext(), serverUser.getObjectId(), new UpdateListener() {
-                    @Override
-                    public void onSuccess() {
-                        SharedPreferencesUtils.saveHuaName(getApplicationContext(), huaName);
-                        baseApplication.setUser(user);
-                        alertDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onFailure(int i, String s) {
-
-
-                    }
-                });
+            protected void onError(ApiException ex) {
+                MyToast.show(getApplicationContext(), getString(R.string.update_fail));
             }
 
             @Override
-            public void onFail() {
-                MyToast.show(getApplicationContext(), "该昵称已经存在！");
+            protected void onPermissionError(ApiException ex) {
+                MyToast.show(getApplicationContext(), getString(R.string.unlogin));
+            }
+
+            @Override
+            protected void onResultError(ApiException ex) {
+                MyToast.show(getApplicationContext(), ex.getDisplayMessage());
+            }
+
+            @Override
+            public void onNextResult(String aVoid) {
+                MyToast.show(getApplicationContext(), getString(R.string.update_success));
+                user.setHuaName(huaName);
+                SharedPreferencesUtils.saveHuaName(getApplicationContext(), huaName);
+                baseApplication.setUser(user);
+                alertDialog.dismiss();
             }
         });
-        queryAction.queryHasHuaName(huaName);
-
     }
 
     /**
@@ -670,7 +637,7 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
         if (!TextUtils.isEmpty(from) && from.equals(FlashActivity.FROM)) {
             //需要登陆一次获得最新的cookie
 
-            final User user = BmobUser.getCurrentUser(getApplicationContext(), User.class);
+            final User user = SharedPreferencesUtils.getUser(getApplicationContext());
             if (null == user) {
                 jump2Login("");
                 return;
@@ -682,32 +649,18 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 jump2Login(user.getSno());
                 return;
             }
-            LoginAsync loginAsync = new LoginAsync(getApplicationContext(), user.getSno(), password);
-
-            loginAsync.setCallback(new LoginAction.CallBack() {
+            LoginAction.login(false, MainActivity.this, user.getSno(), password, new LoginAction.CallBack() {
                 @Override
                 public void onSuccess() {
-//                    MyToast.show(getApplicationContext(), getString(R.string.login_success));
-                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_SUCCESS);
                 }
 
                 @Override
-                public void onFail() {
-                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_FAIL);
-                    MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail));
-                    jump2Login(user.getSno());
-                }
-
-                @Override
-                public void onModify() {
-                    AppAnalytics.onEvent(getApplicationContext(), AppAnalytics.LOGIN_MODIFY);
+                public void onFail(ApiException ex) {
+                    MyToast.show(getApplicationContext(), getString(R.string.id_verify_fail) + ex.getDisplayMessage());
                     jump2Login(user.getSno());
                 }
             });
-            loginAsync.executeOnExecutor(THREAD_POOL_EXECUTOR, loginAsync.SILENT_LOGIN);
         }
-
-
     }
 
     private void jump2Login(String str) {
@@ -954,21 +907,9 @@ public class MainActivity extends BaseActivity implements NavigationHeaderView.O
                 break;
             case PHOTO_CLIP:
                 if (resultCode == Activity.RESULT_OK) {
-                    QueryAction queryAction = new QueryAction(getApplicationContext(), new QueryAction.OnQueryListener<User>() {
-                        @Override
-                        public void onSuccess(User user) {
-                            UploadAction uploadAction = new UploadAction();
-                            uploadAction.uploadHeader(getApplicationContext(), user, IMAGE_CLIP_PATH);
-                        }
-
-                        @Override
-                        public void onFail() {
-                            MyToast.show(getApplicationContext(), "头像更换失败");
-                        }
-                    });
-                    queryAction.queryUserSelf(user);
+                    UploadAction.uploadHeader(MainActivity.this,IMAGE_CLIP_PATH);
+                    break;
                 }
-                break;
         }
     }
 
